@@ -178,12 +178,16 @@ def build_html(brief: dict, size: str) -> str:
 
 
 def render_brief(page, brief: dict) -> list[Path]:
-    """Renderiza feed (1080x1350) e story (1080x1920) de um brief."""
+    """Renderiza feed (1080x1350) e story (1080x1920) de um brief.
+
+    Quizzes saem só em feed: o sticker de enquete do Instagram não pode ser
+    adicionado via API, então a versão story sem ele não tem utilidade real.
+    """
     written = []
-    for size, w, h, out_dir in [
-        ("feed", 1080, 1350, OUT_FEED),
-        ("story", 1080, 1920, OUT_STORY),
-    ]:
+    sizes = [("feed", 1080, 1350, OUT_FEED)]
+    if brief.get("template") != "quiz":
+        sizes.append(("story", 1080, 1920, OUT_STORY))
+    for size, w, h, out_dir in sizes:
         html = build_html(brief, size)
 
         # Salva HTML temporário pra debug e pra Playwright carregar com fontes do Google
