@@ -37,15 +37,21 @@ COOLDOWN_HOURS = 6  # não reroda autogen mais que isso (evita race)
 
 # --------------------- preview helpers ---------------------
 
-def _render_brief(brief_id: str) -> bool:
-    """Chama src/render.py pro brief especificado. Retorna True se ok."""
+def _render_brief(brief_id: str) -> tuple[bool, str]:
+    """Chama src/render.py pro brief. Retorna (ok, error_tail) onde error_tail é
+    o final do stderr/stdout (últimos ~300 chars) quando ok=False; vazio quando ok."""
     cmd = [sys.executable, str(ROOT / "src" / "render.py"), brief_id]
     proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
     if proc.stdout:
         sys.stdout.write(proc.stdout)
     if proc.stderr:
         sys.stderr.write(proc.stderr)
-    return proc.returncode == 0
+    if proc.returncode == 0:
+        return True, ""
+    tail = (proc.stderr or proc.stdout or f"exit={proc.returncode}").strip()
+    # pega últimas linhas, limita a 300 chars
+    tail = tail[-300:]
+    return False, tail
 
 
 def _save_brief_json(brief: dict) -> Path:
@@ -228,8 +234,12 @@ def on_brief_regen(approval: dict, instruction: str) -> None:
     review = reviewer.review(new_brief)
     _save_brief_json(new_brief)
     _replace_caption_md(new_brief)
-    if not _render_brief(new_brief["id"]):
-        notify(f"⚠️ render falhou após ajuste de <code>{html.escape(new_brief['id'])}</code>")
+    ok, err = _render_brief(new_brief["id"])
+    if not ok:
+        notify(
+            f"⚠️ render falhou após ajuste de <code>{html.escape(new_brief['id'])}</code>\n"
+            f"<pre>{html.escape(err)}</pre>"
+        )
         return
     # Nova approval (descarta a antiga via archive na decisão).
     new_aid = _create_approval(new_brief, plan_entry, review)
@@ -350,8 +360,12 @@ def maybe_generate_batch() -> int:
                 review = reviewer.review(brief)
             _save_brief_json(brief)
             _append_caption_md(brief)
-            if not _render_brief(brief["id"]):
-                notify(f"⚠️ render falhou em <code>{html.escape(brief['id'])}</code>; pulando")
+            ok, err = _render_brief(brief["id"])
+            if not ok:
+                notify(
+                    f"⚠️ render falhou em <code>{html.escape(brief['id'])}</code>; pulando\n"
+                    f"<pre>{html.escape(err)}</pre>"
+                )
                 continue
             aid = _create_approval(brief, entry, review)
             _send_preview(brief, entry, review, aid)

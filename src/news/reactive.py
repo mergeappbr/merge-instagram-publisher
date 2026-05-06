@@ -93,8 +93,12 @@ def trigger_reactive_post(item: dict) -> None:
     try:
         autogen_runner._save_brief_json(brief)  # type: ignore[attr-defined]
         autogen_runner._append_caption_md(brief)  # type: ignore[attr-defined]
-        if not autogen_runner._render_brief(brief["id"]):  # type: ignore[attr-defined]
-            notify(f"⚠️ render falhou em reativo <code>{html.escape(brief['id'])}</code>")
+        ok, err = autogen_runner._render_brief(brief["id"])  # type: ignore[attr-defined]
+        if not ok:
+            notify(
+                f"⚠️ render falhou em reativo <code>{html.escape(brief['id'])}</code>\n"
+                f"<pre>{html.escape(err)}</pre>"
+            )
             return
     except Exception as e:  # noqa: BLE001
         notify(
