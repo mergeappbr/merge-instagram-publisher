@@ -37,7 +37,7 @@ Env vars necessárias (.env na raiz):
   META_GRAPH_ACCESS_TOKEN   Page Access Token (long-lived) da Page Merge
   IG_BUSINESS_ACCOUNT_ID    IG Business ID do @mergeapp.wellness
   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
-  R2_BUCKET, R2_PUBLIC_BASE_URL
+  R2_BUCKET, R2_PUBLIC_BASE_URL (ou R2_PUBLIC_BASE — qualquer um dos dois)
 """
 
 from __future__ import annotations

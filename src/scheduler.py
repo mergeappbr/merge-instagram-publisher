@@ -337,6 +337,36 @@ def _start_bot_thread() -> None:
     print("scheduler · bot thread iniciada")
 
 
+def _validate_env() -> list[str]:
+    """Checa envs críticas. Retorna lista de problemas (vazia = ok).
+
+    Pares OR (R2_PUBLIC_BASE_URL ou R2_PUBLIC_BASE) — basta uma das duas.
+    """
+    import os
+
+    required = [
+        "META_GRAPH_ACCESS_TOKEN",
+        "IG_BUSINESS_ACCOUNT_ID",
+        "R2_ACCOUNT_ID",
+        "R2_ACCESS_KEY_ID",
+        "R2_SECRET_ACCESS_KEY",
+        "R2_BUCKET",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "ANTHROPIC_API_KEY_MERGE",
+    ]
+    or_groups = [("R2_PUBLIC_BASE_URL", "R2_PUBLIC_BASE")]
+
+    problems: list[str] = []
+    for key in required:
+        if not os.environ.get(key, "").strip():
+            problems.append(key)
+    for group in or_groups:
+        if not any(os.environ.get(k, "").strip() for k in group):
+            problems.append(" OU ".join(group))
+    return problems
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true", help="1 passada e sai")
@@ -347,6 +377,16 @@ def main(argv: list[str] | None = None) -> None:
     print(f"Merge scheduler · TZ={TZ} · tick={TICK_SECONDS}s")
     print(f"  calendar : {CALENDAR}")
     print(f"  published: {PUBLISHED}")
+
+    env_problems = _validate_env()
+    if env_problems:
+        msg_console = "ENV CRÍTICAS faltando: " + ", ".join(env_problems)
+        print(f"⚠ {msg_console}")
+        notify(
+            "🚨 <b>Merge worker · ENVS FALTANDO</b>\n"
+            "Publicações vão falhar até corrigir no Railway:\n"
+            "<pre>" + html.escape("\n".join(f"- {p}" for p in env_problems)) + "</pre>"
+        )
 
     if not args.once and not args.dry_run and not args.no_bot:
         _start_bot_thread()
