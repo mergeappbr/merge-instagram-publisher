@@ -81,6 +81,28 @@ REEL_WAIT_TIMEOUT = 600  # reels demoram mais a processar
 # R2 upload (S3 compatible)
 # ---------------------------------------------------------------------------
 
+_TRAILING_GARBAGE = "\"' \t\r\n/%"
+
+
+def _resolve_public_base() -> str:
+    """Lê R2_PUBLIC_BASE_URL (ou fallback R2_PUBLIC_BASE), tira aspas/espaços/
+    barras e qualquer % residual no final. Valida que começa com https://."""
+    raw = (
+        os.environ.get("R2_PUBLIC_BASE_URL")
+        or os.environ.get("R2_PUBLIC_BASE")
+        or ""
+    )
+    cleaned = raw.strip().strip('"').strip("'")
+    # Tira lixo no final (% url-encoded mal colado, barras, aspas)
+    while cleaned and cleaned[-1] in _TRAILING_GARBAGE:
+        cleaned = cleaned[:-1]
+    if not cleaned.startswith(("https://", "http://")):
+        sys.exit(
+            f"R2_PUBLIC_BASE_URL inválida (precisa começar com https://): {raw!r}"
+        )
+    return cleaned
+
+
 def _content_type(path: Path) -> str:
     ext = path.suffix.lower()
     return {
@@ -103,10 +125,7 @@ def upload_to_r2(local_paths: list[Path], prefix: str) -> list[str]:
     access_key = os.environ["R2_ACCESS_KEY_ID"]
     secret_key = os.environ["R2_SECRET_ACCESS_KEY"]
     bucket = os.environ["R2_BUCKET"]
-    public_base = (
-        os.environ.get("R2_PUBLIC_BASE_URL")
-        or os.environ["R2_PUBLIC_BASE"]
-    ).rstrip("/")
+    public_base = _resolve_public_base()
 
     client = boto3.client(
         "s3",

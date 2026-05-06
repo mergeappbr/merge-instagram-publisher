@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import csv
 import html
+import json
 import subprocess
 import sys
 import threading
@@ -50,6 +51,7 @@ PUBLISHED = ROOT / "output" / "published.csv"
 SKIPPED_STATE = ROOT / "output" / ".skipped_slots.txt"
 SUMMARY_STATE = ROOT / "output" / ".last_summary_date.txt"
 INSIGHTS_COLLECT_STATE = ROOT / "output" / ".last_insights_collect.txt"
+SLOT_FAILURES_STATE = ROOT / "output" / ".slot_failures.json"
 
 TZ = ZoneInfo("America/Sao_Paulo")
 TICK_SECONDS = 60
@@ -58,6 +60,7 @@ RUNWAY_LOW_THRESHOLD_DAYS = 7
 RUNWAY_AUTOGEN_THRESHOLD_DAYS = 14  # gatilho pra Fase B (autogen)
 SUMMARY_HOUR = 9  # envia resumo diário no primeiro tick após 09:00 BRT
 INSIGHTS_COLLECT_HOUR = 7  # coleta de insights 1x/dia, depois das 07h BRT
+MAX_SLOT_FAILURES = 3  # após N falhas consecutivas, slot é pausado pra revisão
 
 
 def parse_dt(value: str) -> datetime:
@@ -113,6 +116,45 @@ def mark_skipped(post_id: str) -> None:
         f.write(f"{_norm(post_id)}\n")
 
 
+def _load_slot_failures() -> dict[str, int]:
+    """{post_id_norm: consecutive_failures}. Ausente = 0."""
+    if not SLOT_FAILURES_STATE.exists():
+        return {}
+    try:
+        data = json.loads(SLOT_FAILURES_STATE.read_text(encoding="utf-8"))
+        return {k: int(v) for k, v in data.items()} if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_slot_failures(state: dict[str, int]) -> None:
+    SLOT_FAILURES_STATE.parent.mkdir(parents=True, exist_ok=True)
+    SLOT_FAILURES_STATE.write_text(json.dumps(state), encoding="utf-8")
+
+
+def record_slot_failure(post_id: str) -> int:
+    """Incrementa contador de falhas; retorna o novo total."""
+    state = _load_slot_failures()
+    key = _norm(post_id)
+    state[key] = state.get(key, 0) + 1
+    _save_slot_failures(state)
+    return state[key]
+
+
+def reset_slot_failure(post_id: str) -> None:
+    state = _load_slot_failures()
+    key = _norm(post_id)
+    if key in state:
+        state.pop(key)
+        _save_slot_failures(state)
+
+
+def slot_paused(post_id: str) -> bool:
+    """True se slot já estourou MAX_SLOT_FAILURES — não tentar de novo."""
+    state = _load_slot_failures()
+    return state.get(_norm(post_id), 0) >= MAX_SLOT_FAILURES
+
+
 def load_calendar() -> list[dict]:
     if not CALENDAR.exists():
         sys.exit(f"calendar.csv não encontrado em {CALENDAR}")
@@ -129,6 +171,9 @@ def find_due_slots(now: datetime) -> list[dict]:
     for row in rows:
         norm_id = _norm(row["post_id"])
         if norm_id in done or norm_id in skipped:
+            continue
+        if slot_paused(row["post_id"]):
+            # já alertamos quando estourou; agora silencia até reset manual
             continue
         when = parse_dt(row["scheduled_at"])
         if when > now:
@@ -221,7 +266,7 @@ def maybe_daily_summary(now: datetime) -> None:
             f"\n\n⚠️ runway abaixo de {RUNWAY_LOW_THRESHOLD_DAYS} dias — "
             f"hora de gerar mais conteúdo (Fase B)"
         )
-    notify(msg, silent=not runway_low)
+    notify(msg, silent=not runway_low, force=True)
     SUMMARY_STATE.parent.mkdir(parents=True, exist_ok=True)
     SUMMARY_STATE.write_text(today, encoding="utf-8")
 
@@ -303,6 +348,7 @@ def tick(dry_run: bool = False) -> int:
         if ok:
             n_ok += 1
             if not dry_run:
+                reset_slot_failure(row["post_id"])
                 notify(
                     f"✅ <b>Merge</b> · post "
                     f"<code>{html.escape(row['post_id'])}</code> publicado "
@@ -310,13 +356,31 @@ def tick(dry_run: bool = False) -> int:
                     f"{html.escape(row['format'])})"
                 )
         else:
-            print(f"✗ falha em {row['post_id']} — vai tentar de novo no próximo tick")
+            failures = record_slot_failure(row["post_id"])
             tail = err[-300:] if err else "(sem stderr)"
-            notify(
-                f"❌ <b>Merge</b> · falha publicando "
-                f"<code>{html.escape(row['post_id'])}</code>\n"
-                f"<pre>{html.escape(tail)}</pre>"
+            print(
+                f"✗ falha em {row['post_id']} ({failures}/{MAX_SLOT_FAILURES})"
             )
+            if failures >= MAX_SLOT_FAILURES:
+                # alerta UMA vez quando estoura — força bypass do dedupe
+                notify(
+                    f"🛑 <b>Merge</b> · slot "
+                    f"<code>{html.escape(row['post_id'])}</code> "
+                    f"<b>pausado</b> após {failures} falhas consecutivas.\n"
+                    f"Revise manualmente e remova "
+                    f"<code>output/.slot_failures.json</code> pra retomar.\n"
+                    f"<pre>{html.escape(tail)}</pre>",
+                    force=True,
+                )
+            else:
+                # falhas intermediárias: notify normal (passa pelo dedupe,
+                # então mensagem idêntica não repete dentro da janela de 1h)
+                notify(
+                    f"❌ <b>Merge</b> · falha publicando "
+                    f"<code>{html.escape(row['post_id'])}</code> "
+                    f"({failures}/{MAX_SLOT_FAILURES})\n"
+                    f"<pre>{html.escape(tail)}</pre>"
+                )
     return n_ok
 
 
@@ -398,6 +462,7 @@ def main(argv: list[str] | None = None) -> None:
         f"{info['slots_pending']} posts na fila\n"
         f"próximo: <code>{html.escape(info['next_slot'] or '—')}</code>",
         silent=True,
+        force=True,
     )
 
     if args.once:
