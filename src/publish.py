@@ -103,7 +103,10 @@ def upload_to_r2(local_paths: list[Path], prefix: str) -> list[str]:
     access_key = os.environ["R2_ACCESS_KEY_ID"]
     secret_key = os.environ["R2_SECRET_ACCESS_KEY"]
     bucket = os.environ["R2_BUCKET"]
-    public_base = os.environ["R2_PUBLIC_BASE_URL"].rstrip("/")
+    public_base = (
+        os.environ.get("R2_PUBLIC_BASE_URL")
+        or os.environ["R2_PUBLIC_BASE"]
+    ).rstrip("/")
 
     client = boto3.client(
         "s3",
