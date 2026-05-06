@@ -1,0 +1,19 @@
+{
+  "id": "24_feature_smile",
+  "template": "feature",
+  "pillar": "comunidade",
+  "title": "Feature · sorriso na transição",
+  "vars": {
+    "BG_IMAGE": "villarinho_smile.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "POR QUE A GENTE TREINA",
+    "HEADLINE": "ninguém treina por <span class=\"hl\">métrica</span>.",
+    "LEAD": "Treina pelo café depois. Pela foto torta no fim. Pela mensagem do amigo que cruzou a linha. Pelo dia em que o corpo respondeu sem dor. Métrica é só desculpa pra continuar voltando."
+  },
+  "story_vars": {
+    "PILL": "POR QUE A GENTE TREINA",
+    "HEADLINE": "por que <span class=\"hl\">você</span> treina?",
+    "LEAD": "Manda na caixinha. A resposta nunca é a métrica."
+  }
+}

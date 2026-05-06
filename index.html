@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Merge — Lote piloto · revisão</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A0A0A;
+      --ink: #F2F2F2;
+      --muted: #6E6E6E;
+      --orange: #FF6900;
+      --hairline: rgba(255,255,255,0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      padding: 64px 80px 40px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    header .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      border: 1.5px solid var(--hairline);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    header .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); }
+    header h1 {
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin: 24px 0 12px;
+      text-transform: lowercase;
+    }
+    header h1 em { color: var(--orange); font-style: normal; }
+    header p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 780px;
+      line-height: 1.5;
+      margin: 0;
+    }
+    .legend {
+      padding: 24px 80px;
+      display: flex;
+      gap: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .legend strong { color: var(--ink); }
+    section {
+      padding: 56px 80px;
+      border-bottom: 1px solid var(--hairline);
+    }
+    section h2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 28px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: #141414;
+      border: 1px solid var(--hairline);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card .img-wrap {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 4 / 5; /* feed */
+    }
+    .card.is-story .img-wrap { aspect-ratio: 9 / 16; }
+    .card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .card .meta {
+      padding: 18px 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card .meta .id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--orange);
+      letter-spacing: 0.06em;
+    }
+    .card .meta .name { font-size: 16px; font-weight: 600; }
+    .card .meta .pillar {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    footer {
+      padding: 40px 80px 80px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    footer code {
+      background: #141414;
+      border: 1px solid var(--hairline);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--ink);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="pill"><span class="dot"></span>MERGE · LOTES 01 → 03 · 35 POSTS + 1 STORY INTRO</span>
+    <h1>onde o <em>wellness</em> acontece.</h1>
+    <p>Revisão dos lotes pré-lançamento (jul/2026). Identidade visual extraída do Pitch Deck 2026: fundo preto, Inter 900, palavra-chave em laranja Merge (#FF6900), highlight em bloco, lowercase com ponto final. Renderização determinística via Playwright a partir de templates HTML/CSS + briefs JSON. Stories diferenciados via story_vars para engajamento (enquetes, caixinhas, marca-amigo).</p>
+  </header>
+
+  <div class="legend">
+    <span><strong>Formatos:</strong> stat · quote · quiz · compare · carrossel cover</span>
+    <span><strong>Pilares:</strong> mercado · marca · modalidades · produto</span>
+    <span><strong>Tamanhos:</strong> feed 1080×1350 · story 1080×1920</span>
+  </div>
+
+  <section>
+    <h2>FEED · 1080 × 1350</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/01_stat_mercado.png" alt="Stat 73M"></div>
+        <div class="meta">
+          <span class="id">01 · STAT</span>
+          <span class="name">73M brasileiros em movimento</span>
+          <span class="pillar">pilar · mercado</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/02_quote_manifesto.png" alt="Quote manifesto"></div>
+        <div class="meta">
+          <span class="id">02 · QUOTE</span>
+          <span class="name">onde o wellness acontece.</span>
+          <span class="pillar">pilar · marca</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/03_quiz_triatlo.png" alt="Quiz Ironman"></div>
+        <div class="meta">
+          <span class="id">03 · QUIZ</span>
+          <span class="name">quanto tem um ironman?</span>
+          <span class="pillar">pilar · triatlo</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/04_compare_fragmentado.png" alt="Compare antes vs agora"></div>
+        <div class="meta">
+          <span class="id">04 · COMPARE</span>
+          <span class="name">cinco apps, três planilhas, zero conexão</span>
+          <span class="pillar">pilar · marca</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/05_carousel_cover_modalidades.png" alt="Carrossel cover triatlo"></div>
+        <div class="meta">
+          <span class="id">05 · CARROSSEL COVER</span>
+          <span class="name">triatlo no brasil</span>
+          <span class="pillar">pilar · modalidades</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>FEATURES TEMÁTICOS · COM IMAGEM DE FUNDO · 1080 × 1350</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/06_feature_londres_fem.png" alt="Recorde feminino Londres"></div>
+        <div class="meta">
+          <span class="id">06 · FEATURE</span>
+          <span class="name">londres entrou pra história</span>
+          <span class="pillar">pilar · atualidade-corrida</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/07_feature_londres_masc.png" alt="Elite masculina Londres"></div>
+        <div class="meta">
+          <span class="id">07 · FEATURE</span>
+          <span class="name">42,195 km no limite</span>
+          <span class="pillar">pilar · atualidade-corrida</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/08_feature_gadget_wearable.png" alt="Wearables"></div>
+        <div class="meta">
+          <span class="id">08 · FEATURE</span>
+          <span class="name">o relógio mede. e o resto?</span>
+          <span class="pillar">pilar · gadgets</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/09_feature_nutricao_prova.png" alt="Nutrição pré-prova"></div>
+        <div class="meta">
+          <span class="id">09 · FEATURE</span>
+          <span class="name">comeu certo, correu mais</span>
+          <span class="pillar">pilar · nutrição</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/10_feature_comunidade_swim.png" alt="Pelotão das 5am"></div>
+        <div class="meta">
+          <span class="id">10 · FEATURE</span>
+          <span class="name">3.1× mais retenção com squad</span>
+          <span class="pillar">pilar · comunidade</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>STORIES · 1080 × 1920</h2>
+    <div class="grid">
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/01_stat_mercado.png" alt="Stat 73M (story)"></div>
+        <div class="meta"><span class="id">01 · STAT</span><span class="name">73M brasileiros em movimento</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/02_quote_manifesto.png" alt="Quote (story)"></div>
+        <div class="meta"><span class="id">02 · QUOTE</span><span class="name">onde o wellness acontece.</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/03_quiz_triatlo.png" alt="Quiz (story)"></div>
+        <div class="meta"><span class="id">03 · QUIZ</span><span class="name">quanto tem um ironman?</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/04_compare_fragmentado.png" alt="Compare (story)"></div>
+        <div class="meta"><span class="id">04 · COMPARE</span><span class="name">5 apps vs 1 ecossistema</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/05_carousel_cover_modalidades.png" alt="Carrossel cover (story)"></div>
+        <div class="meta"><span class="id">05 · CARROSSEL COVER</span><span class="name">triatlo no brasil</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/06_feature_londres_fem.png" alt="Recorde feminino (story)"></div>
+        <div class="meta"><span class="id">06 · FEATURE</span><span class="name">londres entrou pra história</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/07_feature_londres_masc.png" alt="Elite masculina (story)"></div>
+        <div class="meta"><span class="id">07 · FEATURE</span><span class="name">42,195 km no limite</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/08_feature_gadget_wearable.png" alt="Wearables (story)"></div>
+        <div class="meta"><span class="id">08 · FEATURE</span><span class="name">o relógio mede. e o resto?</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/09_feature_nutricao_prova.png" alt="Nutrição (story)"></div>
+        <div class="meta"><span class="id">09 · FEATURE</span><span class="name">comeu certo, correu mais</span></div>
+      </div>
+      <div class="card is-story">
+        <div class="img-wrap"><img src="output/stories/10_feature_comunidade_swim.png" alt="Comunidade swim (story)"></div>
+        <div class="meta"><span class="id">10 · FEATURE</span><span class="name">3.1× mais retenção com squad</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>LOTE 02 · CONTINUAÇÃO · 1080 × 1350</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/11_stat_bike_brasil.png" alt="50M bike"></div>
+        <div class="meta">
+          <span class="id">11 · STAT</span>
+          <span class="name">o país que pedala em silêncio</span>
+          <span class="pillar">pilar · modalidade-bike</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/12_stat_sono.png" alt="Sono"></div>
+        <div class="meta">
+          <span class="id">12 · STAT</span>
+          <span class="name">treino é o que não aparece no relógio</span>
+          <span class="pillar">pilar · recovery</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/13_stat_vo2.png" alt="VO2 max"></div>
+        <div class="meta">
+          <span class="id">13 · STAT</span>
+          <span class="name">vo2 max é o novo colesterol</span>
+          <span class="pillar">pilar · longevidade</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/14_quiz_pace_10k.png" alt="Pace 10k"></div>
+        <div class="meta">
+          <span class="id">14 · QUIZ</span>
+          <span class="name">pace médio de quem termina 10k</span>
+          <span class="pillar">pilar · corrida</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/15_quiz_zonas_fc.png" alt="Zonas FC"></div>
+        <div class="meta">
+          <span class="id">15 · QUIZ</span>
+          <span class="name">treino de base · qual zona?</span>
+          <span class="pillar">pilar · treino</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/16_quote_comunidade.png" alt="Sozinho"></div>
+        <div class="meta">
+          <span class="id">16 · QUOTE</span>
+          <span class="name">ninguém aguenta sozinho</span>
+          <span class="pillar">pilar · marca</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/17_quote_ritual.png" alt="Ritual"></div>
+        <div class="meta">
+          <span class="id">17 · QUOTE</span>
+          <span class="name">wellness é ritual, não trend</span>
+          <span class="pillar">pilar · marca</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/18_compare_planilha.png" alt="Planilha"></div>
+        <div class="meta">
+          <span class="id">18 · COMPARE</span>
+          <span class="name">treino bom se ajusta</span>
+          <span class="pillar">pilar · produto-treino</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/19_compare_squad.png" alt="Squad"></div>
+        <div class="meta">
+          <span class="id">19 · COMPARE</span>
+          <span class="name">sozinho ou squad?</span>
+          <span class="pillar">pilar · comunidade</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/20_feature_openwater.png" alt="Águas abertas"></div>
+        <div class="meta">
+          <span class="id">20 · FEATURE</span>
+          <span class="name">a primeira braçada</span>
+          <span class="pillar">pilar · natação</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/21_feature_bike_duo.png" alt="Bike duo"></div>
+        <div class="meta">
+          <span class="id">21 · FEATURE</span>
+          <span class="name">vácuo é o segundo treino</span>
+          <span class="pillar">pilar · bike road</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/22_feature_run.png" alt="Longão"></div>
+        <div class="meta">
+          <span class="id">22 · FEATURE</span>
+          <span class="name">o longão é onde a cabeça ganha massa</span>
+          <span class="pillar">pilar · corrida</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/23_feature_swim_face.png" alt="Técnica natação"></div>
+        <div class="meta">
+          <span class="id">23 · FEATURE</span>
+          <span class="name">técnica antes de volume</span>
+          <span class="pillar">pilar · natação</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/24_feature_smile.png" alt="Por que treina"></div>
+        <div class="meta">
+          <span class="id">24 · FEATURE</span>
+          <span class="name">ninguém treina por métrica</span>
+          <span class="pillar">pilar · comunidade</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/25_feature_recovery.png" alt="Descanso"></div>
+        <div class="meta">
+          <span class="id">25 · FEATURE</span>
+          <span class="name">descansar também é treinar</span>
+          <span class="pillar">pilar · recovery</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>STORIES · LOTE 02 · 1080 × 1920 · COM ENGAJAMENTO</h2>
+    <div class="grid">
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/11_stat_bike_brasil.png" alt="50M bike (story)"></div><div class="meta"><span class="id">11 · STAT</span><span class="name">50 milhões · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/12_stat_sono.png" alt="Sono (story)"></div><div class="meta"><span class="id">12 · STAT</span><span class="name">dorme quanto? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/13_stat_vo2.png" alt="VO2 (story)"></div><div class="meta"><span class="id">13 · STAT</span><span class="name">vo2 max · caixinha</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/14_quiz_pace_10k.png" alt="Pace 10k (story)"></div><div class="meta"><span class="id">14 · QUIZ</span><span class="name">qual seu pace? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/15_quiz_zonas_fc.png" alt="Zonas FC (story)"></div><div class="meta"><span class="id">15 · QUIZ</span><span class="name">qual sua zona? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/16_quote_comunidade.png" alt="Sozinho (story)"></div><div class="meta"><span class="id">16 · QUOTE</span><span class="name">marca quem treina contigo</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/17_quote_ritual.png" alt="Ritual (story)"></div><div class="meta"><span class="id">17 · QUOTE</span><span class="name">qual seu ritual? · caixinha</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/18_compare_planilha.png" alt="Planilha (story)"></div><div class="meta"><span class="id">18 · COMPARE</span><span class="name">planilha ou plano? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/19_compare_squad.png" alt="Squad (story)"></div><div class="meta"><span class="id">19 · COMPARE</span><span class="name">sozinho ou squad? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/20_feature_openwater.png" alt="Open water (story)"></div><div class="meta"><span class="id">20 · FEATURE</span><span class="name">já encarou? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/21_feature_bike_duo.png" alt="Bike duo (story)"></div><div class="meta"><span class="id">21 · FEATURE</span><span class="name">com quem você pedala? · marca</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/22_feature_run.png" alt="Longão (story)"></div><div class="meta"><span class="id">22 · FEATURE</span><span class="name">qual seu longão? · caixinha</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/23_feature_swim_face.png" alt="Técnica (story)"></div><div class="meta"><span class="id">23 · FEATURE</span><span class="name">técnica ou volume? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/24_feature_smile.png" alt="Por que (story)"></div><div class="meta"><span class="id">24 · FEATURE</span><span class="name">por que você treina? · caixinha</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/25_feature_recovery.png" alt="Recovery (story)"></div><div class="meta"><span class="id">25 · FEATURE</span><span class="name">quanto descansa? · enquete</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>LOTE 03 · APP REVEAL + FEATURES · 1080 × 1350</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/26_mockup_feed.png" alt="App feed"></div>
+        <div class="meta">
+          <span class="id">26 · MOCKUP</span>
+          <span class="name">veja quem treinou hoje</span>
+          <span class="pillar">pilar · produto-feed</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/27_mockup_activities.png" alt="Activities"></div>
+        <div class="meta">
+          <span class="id">27 · MOCKUP</span>
+          <span class="name">qualquer esporte. perto.</span>
+          <span class="pillar">pilar · produto-activities</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/28_mockup_workouts.png" alt="Workouts"></div>
+        <div class="meta">
+          <span class="id">28 · MOCKUP</span>
+          <span class="name">seu plano respira</span>
+          <span class="pillar">pilar · produto-treino</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/29_mockup_zones.png" alt="Zones"></div>
+        <div class="meta">
+          <span class="id">29 · MOCKUP</span>
+          <span class="name">z2 com nome e número</span>
+          <span class="pillar">pilar · produto-treino</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/30_mockup_metrics.png" alt="Metrics"></div>
+        <div class="meta">
+          <span class="id">30 · MOCKUP</span>
+          <span class="name">histórico que vira história</span>
+          <span class="pillar">pilar · produto-perfil</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/31_mockup_chat.png" alt="Chat coach"></div>
+        <div class="meta">
+          <span class="id">31 · MOCKUP</span>
+          <span class="name">treinador a um toque</span>
+          <span class="pillar">pilar · produto-coach</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/32_feature_race.png" alt="Race face"></div>
+        <div class="meta">
+          <span class="id">32 · FEATURE</span>
+          <span class="name">no dia, conta os meses</span>
+          <span class="pillar">pilar · triatlo</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/33_feature_rain.png" alt="Rain run"></div>
+        <div class="meta">
+          <span class="id">33 · FEATURE</span>
+          <span class="name">chuva é a tatuagem que ninguém vê</span>
+          <span class="pillar">pilar · comunidade</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/34_feature_duo.png" alt="Duo mixed"></div>
+        <div class="meta">
+          <span class="id">34 · FEATURE</span>
+          <span class="name">ela puxa. ele puxa.</span>
+          <span class="pillar">pilar · comunidade</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="img-wrap"><img src="output/feed/35_feature_mtb.png" alt="MTB trail"></div>
+        <div class="meta">
+          <span class="id">35 · FEATURE</span>
+          <span class="name">trilha ensina o resto</span>
+          <span class="pillar">pilar · mtb</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>STORIES · LOTE 03 · 1080 × 1920 · APP REVEAL + ENGAJAMENTO</h2>
+    <div class="grid">
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/36_intro_spoilers.png" alt="Intro spoilers (story)"></div><div class="meta"><span class="id">36 · INTRO</span><span class="name">vamos aos primeiros spoilers?</span><span class="pillar">story-only · capa do reveal</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/26_mockup_feed.png" alt="App feed (story)"></div><div class="meta"><span class="id">26 · MOCKUP</span><span class="name">primeiro spoiler · feed</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/27_mockup_activities.png" alt="Activities (story)"></div><div class="meta"><span class="id">27 · MOCKUP</span><span class="name">marca em 2 toques</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/28_mockup_workouts.png" alt="Workouts (story)"></div><div class="meta"><span class="id">28 · MOCKUP</span><span class="name">plano que respira</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/29_mockup_zones.png" alt="Zones (story)"></div><div class="meta"><span class="id">29 · MOCKUP</span><span class="name">z2 com bpm e pace</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/30_mockup_metrics.png" alt="Metrics (story)"></div><div class="meta"><span class="id">30 · MOCKUP</span><span class="name">12 dias de streak</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/31_mockup_chat.png" alt="Chat (story)"></div><div class="meta"><span class="id">31 · MOCKUP</span><span class="name">sem grupo de whats</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/32_feature_race.png" alt="Race (story)"></div><div class="meta"><span class="id">32 · FEATURE</span><span class="name">qual próxima? · caixinha</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/33_feature_rain.png" alt="Rain (story)"></div><div class="meta"><span class="id">33 · FEATURE</span><span class="name">já treinou na chuva? · enquete</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/34_feature_duo.png" alt="Duo (story)"></div><div class="meta"><span class="id">34 · FEATURE</span><span class="name">quem te puxa? · marca</span></div></div>
+      <div class="card is-story"><div class="img-wrap"><img src="output/stories/35_feature_mtb.png" alt="MTB (story)"></div><div class="meta"><span class="id">35 · FEATURE</span><span class="name">terra ou asfalto? · enquete</span></div></div>
+    </div>
+  </section>
+
+  <footer>
+    Pipeline: <code>python3 src/render.py</code> · briefs em <code>content/briefs/*.json</code> · templates em <code>templates/*.html</code> · output em <code>output/{feed,stories}/*.png</code>
+  </footer>
+</body>
+</html>

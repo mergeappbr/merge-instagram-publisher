@@ -1,0 +1,13 @@
+{
+  "id": "52_4_lesoes_aquiles",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Lesão 3 · tendinite de aquiles",
+  "vars": {
+    "STAT_NUM": "03",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "LESÃO · TENDINITE DE AQUILES",
+    "HEADLINE": "<span class=\"hl\">aquiles</span>: dor atrás do tornozelo.",
+    "LEAD": "Inflamação do tendão. Causa: muito tiro forte cedo, fraqueza de panturrilha, super shoes sem adaptação. Prevenção: heel drops excêntricos 3×15, progressão lenta de intensidade, atenção redobrada a placa de carbono."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "64_quiz_exercicio_corredor",
+  "template": "quiz",
+  "pillar": "fortalecimento",
+  "title": "Quiz · exercício mais importante para corredor",
+  "vars": {
+    "BG_IMAGE": "strength_deadlift_woman_power.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "HEADLINE": "<span class=\"hl\">qual exercício</span> tu não pode pular?",
+    "LEAD": "Pra quem corre. Comenta sua aposta antes da resposta no próximo post.",
+    "OPT_A": "agachamento",
+    "OPT_B": "panturrilha",
+    "OPT_C": "ponte de glúteo",
+    "OPT_D": "prancha"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">qual</span> tu não pula?",
+    "LEAD": "Vota na enquete. A maioria pula justo o que mais previne lesão."
+  }
+}

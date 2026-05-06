@@ -1,0 +1,16 @@
+{
+  "id": "61_4_zone3_vanquish",
+  "template": "stat",
+  "pillar": "comparativo-natacao",
+  "title": "Wetsuit · Zone3 Vanquish X",
+  "vars": {
+    "STAT_NUM": "5",
+    "STAT_UNIT": "mm",
+    "STAT_CAPTION": "ZONE3 VANQUISH X · TORSO",
+    "HEADLINE": "<span class=\"hl\">vanquish x</span>: nadador forte.",
+    "LEAD": "Yamamoto 40 · costuras seladas a quente · 5mm torso · 1.5mm ombro.<br><br>Flutuação menor de propósito. Pra nadador que já tem posição. US$ 800.",
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 45%"
+  }
+}

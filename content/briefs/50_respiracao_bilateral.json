@@ -1,0 +1,19 @@
+{
+  "id": "50_respiracao_bilateral",
+  "template": "feature",
+  "pillar": "educacional-natacao",
+  "title": "Respiração bilateral",
+  "vars": {
+    "BG_IMAGE": "villarinho_swim_face.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "TÉCNICA",
+    "HEADLINE": "respira <span class=\"hl\">pros dois lados</span>.",
+    "LEAD": "Respiração só de um lado cria assimetria de quadril, ombros e rotação. A cada 3 braçadas alterna o lado. Em águas abertas é o que te salva quando o sol bate de um lado e a onda do outro."
+  },
+  "story_vars": {
+    "PILL": "TÉCNICA",
+    "HEADLINE": "respira <span class=\"hl\">de qual</span> lado?",
+    "LEAD": "Vota: só direita · só esquerda · alterna · 3 braçadas. Cada um conta uma história."
+  }
+}

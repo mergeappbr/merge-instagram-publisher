@@ -1,0 +1,19 @@
+{
+  "id": "17_quote_ritual",
+  "template": "quote",
+  "pillar": "marca",
+  "title": "Quote · wellness é ritual",
+  "vars": {
+    "BG_IMAGE": "villarinho_smile.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "MANIFESTO · RITUAL",
+    "HEADLINE": "wellness é <span class=\"hl-block\">ritual</span>, não trend.",
+    "LEAD": "Não é a roupa nova. É a alarm das 5h. É o tênis na porta. É o copo d'água antes do café. É o que se repete quando ninguém tá olhando."
+  },
+  "story_vars": {
+    "PILL": "RITUAL",
+    "HEADLINE": "qual seu <span class=\"hl-block\">ritual</span>?",
+    "LEAD": "Manda na caixinha. A gente compartilha os melhores."
+  }
+}

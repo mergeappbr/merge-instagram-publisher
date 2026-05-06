@@ -1,0 +1,18 @@
+{
+  "id": "58_3_novablast5",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Daily trainer · Asics Novablast 5",
+  "vars": {
+    "STAT_NUM": "8",
+    "STAT_UNIT": "mm",
+    "STAT_KICKER": "DROP",
+    "STAT_CAPTION": "ASICS NOVABLAST 5",
+    "HEADLINE": "<span class=\"hl\">novablast 5</span>: a cama elástica.",
+    "LEAD": "FF Blast Max · 246g · pilha 41,5mm · drop 8mm. Salta a cada passada. Devolução absurda, geometria estável agora na 5.",
+    "PRICE": "R$ 1.099",
+    "BG_IMAGE": "novablast_5.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%"
+  }
+}

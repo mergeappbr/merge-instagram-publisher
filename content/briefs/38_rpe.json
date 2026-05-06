@@ -1,0 +1,19 @@
+{
+  "id": "38_rpe",
+  "template": "quote",
+  "pillar": "educacional-corrida",
+  "title": "RPE · escala de percepção de esforço",
+  "vars": {
+    "PILL": "PERCEPÇÃO DE ESFORÇO",
+    "HEADLINE": "<span class=\"hl\">RPE</span>: a escala que substitui o relógio.",
+    "LEAD": "1–2 fácil (canta)<br>3–4 leve (conversa)<br>5–6 moderado (frase curta)<br>7–8 forte (palavra solta)<br>9–10 máximo (sem fôlego)<br><br>Quando o monitor falha, é ela que sustenta.",
+    "BG_IMAGE": "villarinho_track.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "RPE",
+    "HEADLINE": "qual <span class=\"hl\">RPE</span> hoje?",
+    "LEAD": "Vota na enquete. 1–4 fácil · 5–7 médio · 8–10 forte. Esforço sem aparelho continua sendo esforço."
+  }
+}

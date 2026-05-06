@@ -1,0 +1,19 @@
+{
+  "id": "40_long_run",
+  "template": "feature",
+  "pillar": "educacional-corrida",
+  "title": "Long run · pra que serve",
+  "vars": {
+    "BG_IMAGE": "villarinho_woman_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "PILL": "LONG RUN",
+    "HEADLINE": "<span class=\"hl\">long run</span>: o tijolo que sustenta tudo.",
+    "LEAD": "1h30 a 2h30 em Z2 constrói capilaridade, resistência mental e enzimas oxidativas. Não é pra correr forte — é pra correr por muito tempo. O resto do plano só funciona porque ele existe."
+  },
+  "story_vars": {
+    "PILL": "LONG RUN",
+    "HEADLINE": "<span class=\"hl\">quanto tempo</span> seu long run?",
+    "LEAD": "Vota: até 60min · 60-90min · 90-120min · 120min+. Cada faixa conta uma história diferente."
+  }
+}

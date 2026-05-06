@@ -1,0 +1,18 @@
+{
+  "id": "58_2_pegasus41",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Daily trainer · Nike Pegasus 41",
+  "vars": {
+    "STAT_NUM": "10",
+    "STAT_UNIT": "mm",
+    "STAT_KICKER": "DROP",
+    "STAT_CAPTION": "NIKE PEGASUS 41",
+    "HEADLINE": "<span class=\"hl\">pegasus 41</span>: o pneu de cidade.",
+    "LEAD": "ReactX + Air Zoom · 285g · drop 10mm · ~600km de vida. Aceita tudo: rodagem, tiro, longão. Não brilha, não decepciona.",
+    "PRICE": "R$ 999",
+    "BG_IMAGE": "pegasus41.webp",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%"
+  }
+}

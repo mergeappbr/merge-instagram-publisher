@@ -1,0 +1,17 @@
+{
+  "id": "27_mockup_activities",
+  "template": "mockup",
+  "pillar": "produto-activities",
+  "title": "Mockup · activities discover",
+  "vars": {
+    "SCREEN_IMAGE": "app_activities.png",
+    "PILL": "ENCONTRA TREINO",
+    "HEADLINE": "<span class=\"hl\">qualquer</span> esporte. perto.",
+    "LEAD": "Atividades abertas perto de você, com vagas, horário e quem já garantiu. Run, bike, vôlei, natação, força. Marca em dois toques."
+  },
+  "story_vars": {
+    "PILL": "ATIVIDADES",
+    "HEADLINE": "<span class=\"hl\">marca</span> em 2 toques.",
+    "LEAD": "Atividade perto de você, com vagas e horário. Pública ou privada — entra se topa."
+  }
+}

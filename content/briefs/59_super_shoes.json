@@ -1,0 +1,19 @@
+{
+  "id": "59_super_shoes",
+  "template": "quote",
+  "pillar": "comparativo-tenis",
+  "title": "Carrossel · super shoes prova — capa",
+  "vars": {
+    "PILL": "COMPARATIVO · SUPER SHOES",
+    "HEADLINE": "<span class=\"hl\">4 super shoes</span> de prova.",
+    "LEAD": "Placa de carbono, espuma PEBA, geometria rocker. Diferença real entre eles está em peso, durabilidade e como cada um responde sob fadiga. Não compre pelo logo.",
+    "BG_IMAGE": "villarinho_race.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  },
+  "story_vars": {
+    "PILL": "SUPER SHOES",
+    "HEADLINE": "<span class=\"hl\">qual</span> é seu de prova?",
+    "LEAD": "Vota: Vaporfly · Adios Pro · Endorphin Pro · Cielo."
+  }
+}

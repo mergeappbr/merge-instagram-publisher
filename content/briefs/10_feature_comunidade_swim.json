@@ -1,0 +1,15 @@
+{
+  "id": "10_feature_comunidade_swim",
+  "template": "feature",
+  "pillar": "comunidade",
+  "title": "Feature · Comunidade · treinar acompanhado",
+  "vars": {
+    "BG_IMAGE": "villarinho_swim.jpg",
+    "OVERLAY": "side",
+    "BG_POSITION": "center",
+    "PILL": "COMUNIDADE · TREINO ACOMPANHADO",
+    "HEADLINE": "<span class=\"hl\">3.1×</span> mais retenção com squad.",
+    "LEAD": "Atleta que treina sozinho desiste mais cedo. Atleta que treina em squad fica três vezes mais. Comunidades por modalidade, ritmo e objetivo — natação, bike road, run e triatlo.",
+    "CTA_LABEL": "entra na lista"
+  }
+}

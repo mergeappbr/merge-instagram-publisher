@@ -1,0 +1,20 @@
+{
+  "id": "66_quote_forca_seguro",
+  "template": "quote",
+  "pillar": "fortalecimento",
+  "title": "Quote · força é o seguro do corredor",
+  "vars": {
+    "BG_IMAGE": "strength_athlete_bw.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 25%",
+    "KICKER": "FORÇA · SEGURO DA TEMPORADA",
+    "PILL": "TREINO É O QUE VOCÊ NÃO POSTA",
+    "HEADLINE": "força é o <span class=\"hl-block\">seguro.</span>",
+    "LEAD": "Ninguém vai te ver agachando. Mas é isso que segura o joelho na descida, a lombar no longão, a temporada inteira sem parar. Plano de força integrado ao seu calendário Merge — programado pelo seu treinador, executado por você.",
+    "CTA_LABEL": "lançamento jul · 2026"
+  },
+  "story_vars": {
+    "HEADLINE": "força é <span class=\"hl-block\">seguro.</span>",
+    "LEAD": "Sem academia, a corrida cobra. Pré-cadastro Merge na bio."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "06_feature_londres_fem",
+  "template": "feature",
+  "pillar": "atualidade-corrida",
+  "title": "Feature · Maratona de Londres 2026 · feminino",
+  "vars": {
+    "BG_IMAGE": "marathon.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "PILL": "LONDRES · 26 ABR · 2026",
+    "HEADLINE": "assefa cravou em <span class=\"hl\">2:15:41</span>.",
+    "LEAD": "Tigst Assefa quebrou o recorde mundial só de mulheres em Londres. Calçada com Adidas Adizero Adios Pro Evo 3. Hellen Obiri veio logo atrás, em 2:15:53. O ritmo da corrida feminina mudou de patamar.",
+    "CTA_LABEL": "comenta seu pace"
+  }
+}

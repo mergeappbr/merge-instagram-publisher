@@ -1,0 +1,19 @@
+{
+  "id": "23_feature_swim_face",
+  "template": "feature",
+  "pillar": "modalidade-natacao",
+  "title": "Feature · natação foco",
+  "vars": {
+    "BG_IMAGE": "villarinho_swim_face.jpg",
+    "OVERLAY": "side",
+    "BG_POSITION": "center center",
+    "PILL": "NATAÇÃO",
+    "HEADLINE": "<span class=\"hl\">técnica</span> antes de volume.",
+    "LEAD": "Nadar mal por mais tempo só consolida o erro. A diferença de quem evolui na água é uma série semanal de drill com cabeça presente, sem relógio."
+  },
+  "story_vars": {
+    "PILL": "NATAÇÃO",
+    "HEADLINE": "<span class=\"hl\">técnica</span> ou volume?",
+    "LEAD": "Enquete aqui. Quem aposta em qual lado primeiro?"
+  }
+}

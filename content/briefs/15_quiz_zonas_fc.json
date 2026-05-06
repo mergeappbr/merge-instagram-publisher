@@ -1,0 +1,22 @@
+{
+  "id": "15_quiz_zonas_fc",
+  "template": "quiz",
+  "pillar": "performance-treino",
+  "title": "Quiz · zona 2 de frequência cardíaca",
+  "vars": {
+    "HEADLINE": "treino de <span class=\"hl\">base</span> acontece em qual zona?",
+    "LEAD": "A zona que constrói motor aeróbico, queima gordura como combustível e segura o pace por horas.",
+    "OPT_A": "zona 1 · recuperação",
+    "OPT_B": "zona 2 · aeróbico leve",
+    "OPT_C": "zona 4 · limiar",
+    "OPT_D": "zona 5 · vo2 max"
+  },
+  "story_vars": {
+    "HEADLINE": "qual sua <span class=\"hl\">zona</span>?",
+    "LEAD": "Vota na enquete. 80 por cento do volume da elite mora em uma só.",
+    "OPT_A": "zona 1",
+    "OPT_B": "zona 2",
+    "OPT_C": "zona 4",
+    "OPT_D": "zona 5"
+  }
+}

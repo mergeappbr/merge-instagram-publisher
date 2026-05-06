@@ -1,0 +1,17 @@
+{
+  "id": "30_mockup_metrics",
+  "template": "mockup",
+  "pillar": "produto-perfil",
+  "title": "Mockup · métricas e PRs",
+  "vars": {
+    "SCREEN_IMAGE": "app_metrics.png",
+    "PILL": "PERFIL · MÉTRICAS",
+    "HEADLINE": "histórico que vira <span class=\"hl\">história</span>.",
+    "LEAD": "Streak, PRs, performance semanal e sono no mesmo lugar. A trajetória completa, não a última corrida."
+  },
+  "story_vars": {
+    "PILL": "MÉTRICAS",
+    "HEADLINE": "<span class=\"hl\">12</span> dias de streak.",
+    "LEAD": "PRs, performance da semana, sono. Tudo no mesmo lugar."
+  }
+}

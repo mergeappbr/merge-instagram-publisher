@@ -1,0 +1,15 @@
+{
+  "id": "01_stat_mercado",
+  "template": "stat",
+  "pillar": "mercado",
+  "title": "Stat · 73M brasileiros ativos",
+  "vars": {
+    "KICKER": "01 · MERCADO",
+    "STAT_NUM": "73",
+    "STAT_UNIT": "M",
+    "STAT_CAPTION": "brasileiros praticam esporte regularmente.",
+    "HEADLINE": "<span class=\"hl\">um país inteiro</span> em movimento.",
+    "LEAD": "O Brasil é o 4º maior mercado de wellness do mundo. Mas ainda não tem um lugar onde performance, comunidade e dinheiro conversem.",
+    "META": "fonte · ibge pnad-c 2023"
+  }
+}

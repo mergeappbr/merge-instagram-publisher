@@ -1,0 +1,16 @@
+{
+  "id": "60_5_roam_v2",
+  "template": "stat",
+  "pillar": "comparativo-bike",
+  "title": "GPS bike · Wahoo Elemnt Roam V2",
+  "vars": {
+    "STAT_NUM": "17",
+    "STAT_UNIT": "h",
+    "STAT_CAPTION": "WAHOO ROAM V2 · BATERIA",
+    "HEADLINE": "<span class=\"hl\">roam v2</span>: gravel-ready.",
+    "LEAD": "Tela 2,7'' · mapas mundo pré-carregados · turn-by-turn · 17h.<br><br>Mais robusto que o Bolt. Feito pra gravel, trilha e ultra. R$ 3.999.",
+    "BG_IMAGE": "villarinho_mtb_trail.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

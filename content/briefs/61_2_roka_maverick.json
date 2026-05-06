@@ -1,0 +1,16 @@
+{
+  "id": "61_2_roka_maverick",
+  "template": "stat",
+  "pillar": "comparativo-natacao",
+  "title": "Wetsuit · Roka Maverick X",
+  "vars": {
+    "STAT_NUM": "1.5",
+    "STAT_UNIT": "mm",
+    "STAT_CAPTION": "ROKA MAVERICK X · OMBRO",
+    "HEADLINE": "<span class=\"hl\">roka maverick x</span>: liberdade no ombro.",
+    "LEAD": "Arms-Up 1.5mm braço · Yamamoto 39 SCS 5mm torso · costura RS2.<br><br>Mobilidade-referência. Flutua peito. Dura 3+ temporadas. US$ 1.150.",
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

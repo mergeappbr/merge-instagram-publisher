@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Reel · Wearables (Garmin × Coros × Polar)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../brand/tokens.css">
+<style>
+  /* SAFE ZONES Reels 1080×1920
+     Timeline: capa 0-5.5 · garmin 5-10.5 · coros 10-15.5 · polar 15-20.5 · veredito 20-25.5
+     Render duration: 25.5s */
+  :root {
+    --safe-top: 320px; --safe-bottom: 1480px;
+    --safe-left: 100px; --safe-right: 100px;
+    --content-w: 880px;
+    --garmin: #007CC3;
+    --coros: #FF6B00;
+    --polar: #E10A1A;
+  }
+  body { margin: 0; overflow: hidden; background: #0A0A0A; }
+
+  .reel {
+    position: relative;
+    width: 1080px; height: 1920px;
+    background: #0A0A0A;
+    overflow: hidden;
+    font-family: var(--font-display);
+    color: var(--ink);
+  }
+
+  .bg {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0; transform: scale(1.06);
+    z-index: 0;
+  }
+  .bg--capa { background-image: url('file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/images/villarinho_watch.jpg');                                  background-position: center 50%; }
+  .bg--g    { background-image: url('file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/images/_bank/smartwatch_running_watch/unsplash/N2SL3YWInWY.jpg'); background-position: center 40%; }
+  .bg--c    { background-image: url('file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/images/_bank/smartwatch_running_watch/unsplash/ZCbrP7-5rJg.jpg'); background-position: center 40%; }
+  .bg--p    { background-image: url('file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/images/_bank/smartwatch_running_watch/pexels/19624350.jpg');     background-position: center 35%; }
+  .bg--v    { background-image: url('file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/images/villarinho_smile.jpg');                                  background-position: center 30%; }
+
+  .bg--capa { animation: bg-show 1.4s ease-out 0.0s forwards, bg-hide 0.5s ease-in 5.0s forwards, bg-zoom 25.5s linear 0s forwards; }
+  .bg--g    { animation: bg-show 0.6s ease-out 5.0s forwards, bg-hide 0.5s ease-in 10.0s forwards, bg-zoom 25.5s linear 0s forwards; }
+  .bg--c    { animation: bg-show 0.6s ease-out 10.0s forwards, bg-hide 0.5s ease-in 15.0s forwards, bg-zoom 25.5s linear 0s forwards; }
+  .bg--p    { animation: bg-show 0.6s ease-out 15.0s forwards, bg-hide 0.5s ease-in 20.0s forwards, bg-zoom 25.5s linear 0s forwards; }
+  .bg--v    { animation: bg-show 0.6s ease-out 20.0s forwards; }
+  @keyframes bg-show { to { opacity: 1; } }
+  @keyframes bg-hide { to { opacity: 0; } }
+  @keyframes bg-zoom { to { transform: scale(1.16); } }
+
+  .overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(
+      180deg,
+      rgba(10,10,10,0.88) 0%,
+      rgba(10,10,10,0.50) 18%,
+      rgba(10,10,10,0.62) 30%,
+      rgba(10,10,10,0.55) 50%,
+      rgba(10,10,10,0.78) 72%,
+      rgba(10,10,10,0.95) 100%
+    );
+  }
+
+  .pill-stack { position: absolute; top: var(--safe-top); left: var(--safe-left); z-index: 4; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 14px 24px; border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink);
+    background: rgba(10,10,10,0.72);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    position: absolute; top: 0; left: 0;
+    opacity: 0; transform: translateY(-12px);
+    white-space: nowrap;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(.34,1.56,.64,1);
+  }
+  .pill .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--orange); }
+  .pill .dot--scene { background: currentColor; }
+  .pill[data-scene="capa"]{ animation: pill-cycle 5.3s 0.0s forwards; }
+  .pill[data-scene="g"]   { animation: pill-cycle 5.3s 5.0s forwards; color: var(--garmin); }
+  .pill[data-scene="c"]   { animation: pill-cycle 5.3s 10.0s forwards; color: var(--coros); }
+  .pill[data-scene="p"]   { animation: pill-cycle 5.3s 15.0s forwards; color: var(--polar); }
+  .pill[data-scene="v"]   { animation: pill-cycle 5.3s 20.0s forwards; }
+  @keyframes pill-cycle {
+    0%   { opacity: 0; transform: translateY(-12px); }
+    10%  { opacity: 1; transform: translateY(0); }
+    90%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-12px); }
+  }
+
+  .head-stack { position: absolute; top: 440px; left: var(--safe-left); right: var(--safe-right); z-index: 4; }
+  .head {
+    position: absolute; top: 0; left: 0; right: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 92px;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    text-transform: lowercase;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.55), 0 0 40px rgba(0,0,0,0.35);
+    opacity: 0; transform: translateY(20px);
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(.22,1,.36,1);
+    margin: 0;
+  }
+  .head .hl { color: currentColor; }
+  .head[data-scene="capa"]{ animation: head-cycle 5.3s 0.25s forwards; }
+  .head[data-scene="g"]   { animation: head-cycle 5.3s 5.25s forwards; color: var(--garmin); }
+  .head[data-scene="c"]   { animation: head-cycle 5.3s 10.25s forwards; color: var(--coros); }
+  .head[data-scene="p"]   { animation: head-cycle 5.3s 15.25s forwards; color: var(--polar); }
+  .head[data-scene="v"]   { animation: head-cycle 5.3s 20.25s forwards; color: var(--orange); }
+  @keyframes head-cycle {
+    0%   { opacity: 0; transform: translateY(20px); }
+    10%  { opacity: 1; transform: translateY(0); }
+    90%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-12px); }
+  }
+
+  .stat-stack { position: absolute; top: 720px; left: var(--safe-left); right: var(--safe-right); z-index: 4; text-align: left; }
+  .stat-num {
+    position: absolute; top: 0; left: 0; right: 0;
+    color: var(--ink); opacity: 0;
+    transform: scale(0.92);
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(.34,1.56,.64,1);
+  }
+  .stat-num__big {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 240px;
+    line-height: 0.94;
+    letter-spacing: -0.05em;
+    color: currentColor;
+    white-space: nowrap;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 50px rgba(0,0,0,0.35);
+  }
+  .stat-num__big--sm { font-size: 200px; }
+  .stat-num__unit {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 18px;
+  }
+  .stat-num[data-scene="g"]{ animation: stat-cycle 5.3s 5.45s forwards; color: var(--garmin); }
+  .stat-num[data-scene="c"]{ animation: stat-cycle 5.3s 10.45s forwards; color: var(--coros); }
+  .stat-num[data-scene="p"]{ animation: stat-cycle 5.3s 15.45s forwards; color: var(--polar); }
+  .stat-num[data-scene="v"]{ animation: stat-cycle 5.3s 20.45s forwards; color: var(--orange); }
+  @keyframes stat-cycle {
+    0%   { opacity: 0; transform: scale(0.92); }
+    12%  { opacity: 1; transform: scale(1); }
+    88%  { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.96); }
+  }
+
+  .capa-stat {
+    position: absolute; top: 0; left: 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 280px;
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    color: var(--ink);
+    text-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    opacity: 0; transform: scale(0.92);
+    animation: stat-cycle 5.3s 0.45s forwards;
+    animation-timing-function: cubic-bezier(.34,1.56,.64,1);
+    white-space: nowrap;
+  }
+  .capa-stat .accent { color: var(--orange); }
+  .capa-stat .small {
+    font-size: 56px; font-weight: 700; letter-spacing: 0.02em;
+    color: var(--ink-soft); display: block; margin-top: 24px;
+    text-transform: lowercase;
+    white-space: normal;
+    max-width: 820px;
+  }
+
+  .lead-stack { position: absolute; top: 1110px; left: var(--safe-left); right: var(--safe-right); z-index: 4; }
+  .lead {
+    position: absolute; top: 0; left: 0; right: 0;
+    font-family: var(--font-display);
+    font-size: 28px; font-weight: 500;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 820px;
+    opacity: 0; transform: translateY(16px);
+    animation-fill-mode: forwards;
+    margin: 0;
+  }
+  .lead[data-scene="g"]{ animation: lead-cycle 5.0s 5.7s forwards; }
+  .lead[data-scene="c"]{ animation: lead-cycle 5.0s 10.7s forwards; }
+  .lead[data-scene="p"]{ animation: lead-cycle 5.0s 15.7s forwards; }
+  .lead[data-scene="v"]{ animation: lead-cycle 5.0s 20.7s forwards; }
+  @keyframes lead-cycle {
+    0%   { opacity: 0; transform: translateY(16px); }
+    14%  { opacity: 1; transform: translateY(0); }
+    88%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-8px); }
+  }
+
+  /* Gauge: 4 ticks, fill ao longo de 20s (5-25) */
+  .gauge-wrap {
+    position: absolute;
+    bottom: 540px;
+    left: var(--safe-left); right: var(--safe-right);
+    z-index: 4;
+    opacity: 0;
+    animation: gauge-in 0.6s ease-out 4.6s forwards;
+  }
+  @keyframes gauge-in { to { opacity: 1; } }
+  .gauge-label {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 18px; font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .gauge {
+    position: relative;
+    width: 100%; height: 36px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 999px; overflow: hidden;
+    border: 1.5px solid rgba(255,255,255,0.14);
+  }
+  .gauge__fill {
+    position: absolute; inset: 0;
+    width: 0%;
+    background: linear-gradient(90deg,
+      var(--garmin) 0%, var(--garmin) 25%,
+      var(--coros) 25%, var(--coros) 50%,
+      var(--polar) 50%, var(--polar) 75%,
+      var(--orange) 75%, var(--orange) 100%);
+    border-radius: 999px;
+    animation: gauge-fill 20s 5.0s linear forwards;
+  }
+  @keyframes gauge-fill {
+    0%   { width: 0%; }
+    1%, 24%  { width: 25%; }
+    26%, 49% { width: 50%; }
+    51%, 74% { width: 75%; }
+    76%, 100%{ width: 100%; }
+  }
+  .gauge-ticks {
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin-top: 14px; opacity: 0.7;
+  }
+  .gauge-ticks span { width: 25%; text-align: center; }
+  .gauge-ticks .active { color: var(--ink); opacity: 1; font-weight: 700; }
+
+  .reel-logo {
+    position: absolute;
+    bottom: 380px; left: var(--safe-left);
+    z-index: 5;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 44px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    opacity: 0;
+    animation: logo-in 0.5s ease-out 1.4s forwards;
+  }
+  .reel-logo .dot { color: var(--orange); }
+  @keyframes logo-in { to { opacity: 1; } }
+
+  .cta-swipe {
+    position: absolute;
+    bottom: 380px; right: var(--safe-right);
+    z-index: 5;
+    font-family: var(--font-mono);
+    font-size: 18px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-soft);
+    opacity: 0;
+    animation: cta-in 0.6s ease-out 20.5s forwards;
+  }
+  .cta-swipe::before { content: "→"; margin-right: 10px; color: var(--orange); }
+  @keyframes cta-in { to { opacity: 1; } }
+
+  .flash {
+    position: absolute; inset: 0; z-index: 6;
+    opacity: 0; pointer-events: none;
+    mix-blend-mode: screen;
+  }
+  .flash--1 { background: var(--garmin); animation: micro-flash 0.4s ease-out 5.0s forwards; }
+  .flash--2 { background: var(--coros);  animation: micro-flash 0.4s ease-out 10.0s forwards; }
+  .flash--3 { background: var(--polar);  animation: micro-flash 0.4s ease-out 15.0s forwards; }
+  .flash--4 { background: var(--orange); animation: micro-flash 0.4s ease-out 20.0s forwards; }
+  @keyframes micro-flash {
+    0%   { opacity: 0; }
+    40%  { opacity: 0.20; }
+    100% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="reel">
+  <div class="bg bg--capa"></div>
+  <div class="bg bg--g"></div>
+  <div class="bg bg--c"></div>
+  <div class="bg bg--p"></div>
+  <div class="bg bg--v"></div>
+  <div class="overlay"></div>
+
+  <div class="reel-logo">merge<span class="dot">.</span></div>
+
+  <div class="pill-stack">
+    <div class="pill" data-scene="capa"><span class="dot"></span>COMPARATIVO · WEARABLES</div>
+    <div class="pill" data-scene="g"><span class="dot dot--scene"></span>GARMIN · FORERUNNER 965</div>
+    <div class="pill" data-scene="c"><span class="dot dot--scene"></span>COROS · PACE 3</div>
+    <div class="pill" data-scene="p"><span class="dot dot--scene"></span>POLAR · VANTAGE V3</div>
+    <div class="pill" data-scene="v"><span class="dot"></span>VEREDITO</div>
+  </div>
+
+  <div class="head-stack">
+    <h1 class="head" data-scene="capa"><span class="hl">garmin · coros · polar.</span><br>qual é o seu?</h1>
+    <h1 class="head" data-scene="g"><span class="hl">forerunner 965</span>:<br>ecossistema fechado.</h1>
+    <h1 class="head" data-scene="c"><span class="hl">pace 3</span>:<br>leve. direto. barato.</h1>
+    <h1 class="head" data-scene="p"><span class="hl">vantage v3</span>:<br>cardio puro.</h1>
+    <h1 class="head" data-scene="v">não tem <span class="hl">melhor</span>.<br>tem o <span class="hl">seu</span>.</h1>
+  </div>
+
+  <div class="stat-stack">
+    <div class="capa-stat">3<span class="accent">.</span><span class="small">um relógio. três escolhas.</span></div>
+    <div class="stat-num" data-scene="g"><span class="stat-num__big">7.999</span><span class="stat-num__unit">R$ · 31h gps · amoled · multibanda</span></div>
+    <div class="stat-num" data-scene="c"><span class="stat-num__big">1.999</span><span class="stat-num__unit">R$ · 38h gps · 39g · dual frequency</span></div>
+    <div class="stat-num" data-scene="p"><span class="stat-num__big">6.499</span><span class="stat-num__unit">R$ · 61h gps · ecg · sensor elixir</span></div>
+    <div class="stat-num" data-scene="v"><span class="stat-num__big stat-num__big--sm">o seu</span><span class="stat-num__unit">treino primeiro · marca depois</span></div>
+  </div>
+
+  <div class="lead-stack">
+    <p class="lead" data-scene="g">amoled, mapa colorido, climbpro, multibanda.<br>quem quer todo dado existir.</p>
+    <p class="lead" data-scene="c">39 gramas, dual frequency, 24 dias.<br>dado e bateria sem firula.</p>
+    <p class="lead" data-scene="p">ecg no pulso, sensor elixir, mapa offline.<br>quem confia em frequência cardíaca.</p>
+    <p class="lead" data-scene="v">ecossistema → garmin.<br>custo-benefício → coros.<br>fc e recovery → polar.</p>
+  </div>
+
+  <div class="gauge-wrap">
+    <div class="gauge-label"><span>COMPARATIVO</span><span id="gauge-pct">—</span></div>
+    <div class="gauge"><div class="gauge__fill"></div></div>
+    <div class="gauge-ticks">
+      <span data-tick="g">GARMIN</span>
+      <span data-tick="c">COROS</span>
+      <span data-tick="p">POLAR</span>
+      <span data-tick="v">VEREDITO</span>
+    </div>
+  </div>
+
+  <div class="cta-swipe">arrasta no carrossel</div>
+
+  <div class="flash flash--1"></div>
+  <div class="flash flash--2"></div>
+  <div class="flash flash--3"></div>
+  <div class="flash flash--4"></div>
+</div>
+
+<script>
+  const ticks = document.querySelectorAll('.gauge-ticks span');
+  const pctEl = document.getElementById('gauge-pct');
+  const schedule = [
+    { t: 0.0,  zone: null, pct: '' },
+    { t: 5.3,  zone: 'g', pct: 'GARMIN · R$ 7.999' },
+    { t: 10.3, zone: 'c', pct: 'COROS · R$ 1.999' },
+    { t: 15.3, zone: 'p', pct: 'POLAR · R$ 6.499' },
+    { t: 20.3, zone: 'v', pct: 'VEREDITO · O SEU' },
+  ];
+
+  function run() {
+    const start = performance.now();
+    function tick(now) {
+      const elapsed = (now - start) / 1000;
+      let active = null, label = '';
+      for (let i = schedule.length - 1; i >= 0; i--) {
+        if (elapsed >= schedule[i].t) { active = schedule[i].zone; label = schedule[i].pct; break; }
+      }
+      ticks.forEach(el => el.classList.toggle('active', el.dataset.tick === active));
+      pctEl.textContent = label;
+      if (elapsed < 25.5) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function waitForGo() {
+    if (document.body && document.body.classList.contains('go')) { run(); return; }
+    new MutationObserver((m, obs) => {
+      if (document.body.classList.contains('go')) { obs.disconnect(); run(); }
+    }).observe(document.body || document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', waitForGo);
+  else waitForGo();
+</script>
+</body>
+</html>

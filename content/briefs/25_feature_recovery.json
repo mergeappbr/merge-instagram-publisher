@@ -1,0 +1,19 @@
+{
+  "id": "25_feature_recovery",
+  "template": "feature",
+  "pillar": "performance-recovery",
+  "title": "Feature · recovery na pista",
+  "vars": {
+    "BG_IMAGE": "villarinho_track.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%",
+    "PILL": "RECOVERY",
+    "HEADLINE": "<span class=\"hl\">descansar</span> também é treinar.",
+    "LEAD": "Adaptação acontece quando você para. Quem treina forte e descansa pouco vira lesão. Quem trata recovery como sessão fica em pé na linha de chegada."
+  },
+  "story_vars": {
+    "PILL": "RECOVERY",
+    "HEADLINE": "quanto você <span class=\"hl\">descansa</span>?",
+    "LEAD": "Vota na enquete. Quem dorme menos de 7h em três dias da semana já tá em débito."
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "18_compare_planilha",
+  "template": "compare",
+  "pillar": "produto-treino",
+  "title": "Compare · planilha estática vs plano dinâmico",
+  "vars": {
+    "BG_IMAGE": "villarinho_watch.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "HEADLINE": "treino bom <span class=\"hl\">se ajusta</span>.",
+    "LEAD": "O corpo não responde igual toda semana. Sono ruim, viagem, ciclo, lesão antiga. O plano precisa enxergar tudo isso.",
+    "LEFT_LABEL": "PLANILHA FIXA",
+    "LEFT_BODY": "mesmo treino se você dormiu 5h ou 9h. mesmo volume na semana de viagem. mesmo estímulo já há 3 meses.",
+    "RIGHT_LABEL": "PLANO DINÂMICO",
+    "RIGHT_BODY": "lê seus dados, escuta como você tá, ajusta o estímulo. evolui no seu ritmo, não no do print do whatsapp."
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">planilha</span> ou plano?",
+    "LEAD": "Vota na enquete. A gente mostra a diferença no próximo card.",
+    "LEFT_LABEL": "PLANILHA",
+    "LEFT_BODY": "fixa. mesmo treino independente de sono, viagem ou ciclo.",
+    "RIGHT_LABEL": "PLANO",
+    "RIGHT_BODY": "lê seus dados e ajusta. evolui contigo."
+  }
+}

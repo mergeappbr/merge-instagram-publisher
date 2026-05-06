@@ -1,0 +1,17 @@
+{
+  "id": "31_mockup_chat",
+  "template": "mockup",
+  "pillar": "produto-coach",
+  "title": "Mockup · chat com coach",
+  "vars": {
+    "SCREEN_IMAGE": "app_chat.png",
+    "PILL": "COACH NO BOLSO",
+    "HEADLINE": "<span class=\"hl\">treinador</span> a um toque.",
+    "LEAD": "Sem grupo de whats sumindo treino. Sem áudio de 8 minutos. Conversa direta com seu coach, atrelada ao seu plano."
+  },
+  "story_vars": {
+    "PILL": "COACH",
+    "HEADLINE": "<span class=\"hl\">sem</span> grupo de whats.",
+    "LEAD": "Conversa direta com seu treinador, atrelada ao plano."
+  }
+}

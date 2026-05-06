@@ -1,0 +1,16 @@
+{
+  "id": "47_4_drill_sculling",
+  "template": "stat",
+  "pillar": "educacional-natacao",
+  "title": "Drill 3 · sculling",
+  "vars": {
+    "STAT_NUM": "03",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "DRILL · SCULLING",
+    "HEADLINE": "<span class=\"hl\">sculling</span>: a mão sente água.",
+    "LEAD": "Movimento de varredura horizontal só com antebraço, com pull buoy. Ensina a sentir pressão na mão, fundamento que separa nadador eficiente do que braceja. 6×25m.",
+    "BG_IMAGE": "villarinho_swim.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

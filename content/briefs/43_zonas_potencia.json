@@ -1,0 +1,19 @@
+{
+  "id": "43_zonas_potencia",
+  "template": "quote",
+  "pillar": "educacional-bike",
+  "title": "Zonas de potência ciclismo",
+  "vars": {
+    "PILL": "ZONAS DE POTÊNCIA · BIKE",
+    "HEADLINE": "<span class=\"hl\">7 zonas</span> de Coggan, 1 ferramenta.",
+    "LEAD": "Z1 recovery — &lt;55% FTP<br>Z2 endurance — 56–75%<br>Z3 tempo — 76–90%<br>Z4 limiar — 91–105%<br>Z5 vo2max — 106–120%<br>Z6 anaeróbico — 121–150%<br>Z7 neuromuscular — &gt;150%",
+    "BG_IMAGE": "villarinho_bike_motion.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "ZONAS · BIKE",
+    "HEADLINE": "<span class=\"hl\">7 zonas</span>, 1 ferramenta.",
+    "LEAD": "Z1 a Z7 do método Coggan. No feed tem o detalhamento."
+  }
+}

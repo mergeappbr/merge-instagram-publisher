@@ -1,0 +1,19 @@
+{
+  "id": "41_calendario_corrida",
+  "template": "feature",
+  "pillar": "educacional-corrida",
+  "title": "Calendário corrida BR 2026",
+  "vars": {
+    "BG_IMAGE": "villarinho_race.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "CALENDÁRIO 2026",
+    "HEADLINE": "<span class=\"hl\">8 corridas</span> que valem a inscrição.",
+    "LEAD": "Maratona do Rio — jun<br>SP City Marathon — abr<br>Asics Half SP — set<br>Maratona Pampulha (BH) — dez<br>Maratona POA — mai<br>Meia do RJ — ago<br>Volta da Pampulha (BH) — set<br>Maratona Floripa — out"
+  },
+  "story_vars": {
+    "PILL": "CALENDÁRIO",
+    "HEADLINE": "<span class=\"hl\">qual</span> tá no seu radar?",
+    "LEAD": "Caixinha pra contar qual prova de 2026 você tá pré-inscrito. A gente repassa as datas no story."
+  }
+}

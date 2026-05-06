@@ -1,0 +1,16 @@
+{
+  "id": "36_intro_spoilers",
+  "template": "quote",
+  "pillar": "produto-reveal",
+  "title": "Story · intro spoilers",
+  "vars": {
+    "PILL": "VEM AÍ",
+    "HEADLINE": "vamos aos primeiros <span class=\"hl\">spoilers</span> da Merge?",
+    "LEAD": "Nos próximos cards, recortes do app que tá pra chegar. Sem ruído. Só o que muda o jogo de quem treina."
+  },
+  "story_vars": {
+    "PILL": "VEM AÍ",
+    "HEADLINE": "vamos aos primeiros <span class=\"hl\">spoilers</span> da Merge?",
+    "LEAD": "Nos próximos stories, recortes do app que tá pra chegar. Arrasta pra ver."
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "56_recovery",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Recovery · 3 pilares",
+  "vars": {
+    "STAT_NUM": "3",
+    "STAT_UNIT": "pilares",
+    "STAT_CAPTION": "RECOVERY ATIVO",
+    "HEADLINE": "recovery não é <span class=\"hl\">descanso</span>.",
+    "LEAD": "Sono — 7-9h, REM importa<br>Força — 2× semana, mantém estrutura<br>Mobilidade — 10min/dia, ganha amplitude<br><br>Massagem sem os 3 pilares é spa.",
+    "BG_IMAGE": "villarinho_smile.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  },
+  "story_vars": {
+    "STAT_NUM": "3",
+    "STAT_UNIT": "pilares",
+    "STAT_CAPTION": "RECOVERY",
+    "HEADLINE": "<span class=\"hl\">qual</span> você ignora?",
+    "LEAD": "Vota: sono · força · mobilidade · todos. Honestidade aqui vale mais que likes."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "35_feature_mtb",
+  "template": "feature",
+  "pillar": "modalidade-mtb",
+  "title": "Feature · trilha como escola",
+  "vars": {
+    "BG_IMAGE": "villarinho_mtb_trail.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "TRILHA",
+    "HEADLINE": "<span class=\"hl\">trilha</span> ensina o resto.",
+    "LEAD": "Linha boa, transferência de peso, leitura de chão. Quem pedala terra fica mais inteligente no asfalto. Não vira mtbista — vira ciclista mais completo."
+  },
+  "story_vars": {
+    "PILL": "TRILHA",
+    "HEADLINE": "<span class=\"hl\">terra</span> ou asfalto?",
+    "LEAD": "Vota na enquete. Quem fica nos dois sabe que um ensina o outro."
+  }
+}

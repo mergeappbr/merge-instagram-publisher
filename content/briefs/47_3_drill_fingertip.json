@@ -1,0 +1,16 @@
+{
+  "id": "47_3_drill_fingertip",
+  "template": "stat",
+  "pillar": "educacional-natacao",
+  "title": "Drill 2 · fingertip drag",
+  "vars": {
+    "STAT_NUM": "02",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "DRILL · FINGERTIP DRAG",
+    "HEADLINE": "<span class=\"hl\">fingertip drag</span>: a ponta arrasta.",
+    "LEAD": "Recuperação com os dedos roçando a água. Força cotovelo alto, evita braço pendurado. Fundamental pra nadador adulto que aprendeu errado. 4×50m no aquecimento.",
+    "BG_IMAGE": "villarinho_swim_face.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

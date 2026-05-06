@@ -1,0 +1,17 @@
+{
+  "id": "57_4_polar_vantage",
+  "template": "product",
+  "pillar": "comparativo-wearables",
+  "title": "Wearable · Polar Vantage V3",
+  "vars": {
+    "PILL": "WEARABLE · POLAR",
+    "PRODUCT_IMAGE": "comparativos/polar_vantage_v3.png",
+    "STAT_NUM": "8",
+    "STAT_UNIT": "dias",
+    "HEADLINE": "<span class=\"hl\">vantage v3</span>: cardio puro.",
+    "LEAD": "ECG no pulso, sensor Elixir 4ª geração, mapa offline. 61h GPS modo eco. R$ 6.499. Pra quem confia em FC."
+  },
+  "story_vars": {
+    "PILL": "POLAR V3"
+  }
+}

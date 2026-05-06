@@ -1,0 +1,13 @@
+{
+  "id": "52_6_lesoes_it_band",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Lesão 5 · síndrome da banda IT",
+  "vars": {
+    "STAT_NUM": "05",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "LESÃO · SÍNDROME DA BANDA IT",
+    "HEADLINE": "<span class=\"hl\">banda IT</span>: dor lateral no joelho.",
+    "LEAD": "Trato iliotibial inflamado por atrito. Causa: glúteo médio fraco, pisada cruzada, declives longos. Prevenção: força lateral de quadril, ajuste de cadência (pisada mais larga), liberação miofascial não cura — mas alivia."
+  }
+}

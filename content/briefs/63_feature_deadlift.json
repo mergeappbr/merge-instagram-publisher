@@ -1,0 +1,15 @@
+{
+  "id": "63_feature_deadlift",
+  "template": "feature",
+  "pillar": "fortalecimento",
+  "title": "Feature · deadlift para corredor",
+  "vars": {
+    "BG_IMAGE": "strength_deadlift_pull.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "FORÇA · O EXERCÍCIO REI",
+    "HEADLINE": "deadlift <span class=\"hl\">é treino de corrida.</span>",
+    "LEAD": "Cadeia posterior forte = passada mais longa, mais econômica, menos compensação no joelho. 3 séries de 5, peso pesado, descanso longo. Não é hipertrofia — é potência aplicada na prova. Em breve, planos de força integrados ao Merge.",
+    "CTA_LABEL": "salva esse post"
+  }
+}

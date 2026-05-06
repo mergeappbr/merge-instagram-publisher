@@ -1,0 +1,16 @@
+{
+  "id": "47_2_drill_catchup",
+  "template": "stat",
+  "pillar": "educacional-natacao",
+  "title": "Drill 1 · catch-up",
+  "vars": {
+    "STAT_NUM": "01",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "DRILL · CATCH-UP",
+    "HEADLINE": "<span class=\"hl\">catch-up</span>: a mão espera.",
+    "LEAD": "Uma mão fica estendida na frente até a outra encostar. Treina alongamento da fase anterior, melhora deslize e atrasa a fase de pull. 4×50m no aquecimento.",
+    "BG_IMAGE": "villarinho_swim.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

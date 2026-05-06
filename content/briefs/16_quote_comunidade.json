@@ -1,0 +1,19 @@
+{
+  "id": "16_quote_comunidade",
+  "template": "quote",
+  "pillar": "marca",
+  "title": "Quote · comunidade segura quando o corpo cansa",
+  "vars": {
+    "BG_IMAGE": "villarinho_friends.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "MANIFESTO · COMUNIDADE",
+    "HEADLINE": "ninguém aguenta <span class=\"hl-block\">sozinho</span>.",
+    "LEAD": "O treino que vira hábito não é o mais difícil. É o que tem alguém te esperando no ponto de encontro."
+  },
+  "story_vars": {
+    "PILL": "MANIFESTO",
+    "HEADLINE": "ninguém aguenta <span class=\"hl-block\">sozinho</span>.",
+    "LEAD": "Marca quem treina contigo. A gente quer ver."
+  }
+}

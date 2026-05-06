@@ -1,0 +1,16 @@
+{
+  "id": "37_4_zonas_z3",
+  "template": "stat",
+  "pillar": "educacional-corrida",
+  "title": "Carrossel · Z3 ritmo",
+  "vars": {
+    "STAT_NUM": "70–80",
+    "STAT_UNIT": "% FCmax",
+    "STAT_CAPTION": "ZONA 3 · RITMO",
+    "HEADLINE": "<span class=\"hl\">Z3</span> · frase curta, fôlego médio.",
+    "LEAD": "Aqui mora o tempo run. Esforço sustentável por 30 a 60 minutos. Se você corre Z3 todo treino achando que tá em Z2, é por isso que não evolui.",
+    "BG_IMAGE": "villarinho_rain.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "26_mockup_feed",
+  "template": "mockup",
+  "pillar": "produto-feed",
+  "title": "Mockup · feed social",
+  "vars": {
+    "SCREEN_IMAGE": "app_feed.png",
+    "PILL": "PRIMEIRA OLHADA · FEED",
+    "HEADLINE": "veja quem <span class=\"hl\">treinou</span> hoje.",
+    "LEAD": "Feed social com treino real, foto, rota, ritmo. Sem ostentação. Sem feed de pose. Só quem saiu pra rua de verdade."
+  },
+  "story_vars": {
+    "PILL": "FEED",
+    "HEADLINE": "<span class=\"hl\">primeiro</span> spoiler.",
+    "LEAD": "Feed social com treino real. Quem saiu, qual rota, qual ritmo. Comenta se topa."
+  }
+}

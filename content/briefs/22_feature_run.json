@@ -1,0 +1,19 @@
+{
+  "id": "22_feature_run",
+  "template": "feature",
+  "pillar": "modalidade-corrida",
+  "title": "Feature · corrida longa",
+  "vars": {
+    "BG_IMAGE": "villarinho_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "PILL": "CORRIDA",
+    "HEADLINE": "o longão é onde <span class=\"hl\">a cabeça</span> ganha massa.",
+    "LEAD": "Pernas adaptam em meses. Cabeça adapta em anos. Treino longo não é só musculatura, é tolerância ao desconforto. A diferença de quem termina é mental."
+  },
+  "story_vars": {
+    "PILL": "CORRIDA",
+    "HEADLINE": "<span class=\"hl\">qual seu</span> longão?",
+    "LEAD": "Manda o km na caixinha. A gente reposta os mais inspiradores."
+  }
+}

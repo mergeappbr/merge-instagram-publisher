@@ -1,0 +1,19 @@
+{
+  "id": "65_compare_so_corrida_vs_forca",
+  "template": "compare",
+  "pillar": "fortalecimento",
+  "title": "Compare · só corrida × corrida + força",
+  "vars": {
+    "BG_IMAGE": "strength_deadlift_setup.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%",
+    "KICKER": "FORÇA · O QUE MUDA",
+    "HEADLINE": "correr mais <span class=\"hl\">não é correr melhor.</span>",
+    "LEAD": "Volume sem base de força é teto baixo. A diferença entre platô e progresso mora aqui.",
+    "LEFT_LABEL": "SÓ CORRIDA",
+    "LEFT_BODY": "passada encurta no fim. dor lombar nos longões. joelho doendo na descida. plano sempre interrompido por lesão.",
+    "RIGHT_LABEL": "CORRIDA + FORÇA",
+    "RIGHT_BODY": "passada constante até o km final. lombar firme. joelho protegido. economia de corrida sobe — mesmo pace, FC menor.",
+    "CTA_LABEL": "salva esse post"
+  }
+}

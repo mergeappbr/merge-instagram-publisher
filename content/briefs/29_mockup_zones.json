@@ -1,0 +1,17 @@
+{
+  "id": "29_mockup_zones",
+  "template": "mockup",
+  "pillar": "produto-treino",
+  "title": "Mockup · zonas prescritas",
+  "vars": {
+    "SCREEN_IMAGE": "app_zones.png",
+    "PILL": "ZONAS PRESCRITAS · Z1 → Z5B",
+    "HEADLINE": "z2 com <span class=\"hl\">nome e número</span>.",
+    "LEAD": "Cada zona com bpm e pace prescritos pelo seu treinador, prontos pro relógio. Sem chute. Sem 'mais ou menos'."
+  },
+  "story_vars": {
+    "PILL": "ZONAS",
+    "HEADLINE": "z2 com <span class=\"hl\">bpm e pace</span>.",
+    "LEAD": "Sem chute. Sem 'mais ou menos'. Direto pro relógio."
+  }
+}

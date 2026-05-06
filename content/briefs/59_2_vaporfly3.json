@@ -1,0 +1,16 @@
+{
+  "id": "59_2_vaporfly3",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Super shoe · Nike Vaporfly 3",
+  "vars": {
+    "STAT_NUM": "196",
+    "STAT_UNIT": "g",
+    "STAT_CAPTION": "NIKE VAPORFLY 3 · PESO",
+    "HEADLINE": "<span class=\"hl\">vaporfly 3</span>: o original.",
+    "LEAD": "ZoomX + carbono · 196g · drop 8mm · ~250km.<br><br>Instável de propósito — força recrutamento fino. 5k → meia. R$ 2.299.",
+    "BG_IMAGE": "marathon.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

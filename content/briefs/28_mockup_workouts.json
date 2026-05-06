@@ -1,0 +1,17 @@
+{
+  "id": "28_mockup_workouts",
+  "template": "mockup",
+  "pillar": "produto-treino",
+  "title": "Mockup · plano semanal",
+  "vars": {
+    "SCREEN_IMAGE": "app_workouts.png",
+    "PILL": "PLANO VIVO · SEMANA REAL",
+    "HEADLINE": "seu plano <span class=\"hl\">respira</span>.",
+    "LEAD": "Distância, duração e TSS no mesmo lugar. A semana se ajusta ao que você cumpriu, não ao que estava no PDF de janeiro."
+  },
+  "story_vars": {
+    "PILL": "PLANO",
+    "HEADLINE": "ele <span class=\"hl\">se ajusta</span> a você.",
+    "LEAD": "TSS, distância, duração. O plano que escuta sua semana."
+  }
+}

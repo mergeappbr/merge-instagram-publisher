@@ -1,0 +1,23 @@
+{
+  "id": "55_periodizacao",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Periodização básica",
+  "vars": {
+    "STAT_NUM": "4–6",
+    "STAT_UNIT": "semanas",
+    "STAT_CAPTION": "BLOCO DE TREINO",
+    "HEADLINE": "<span class=\"hl\">periodização</span>: 3 semanas progride, 1 desce.",
+    "LEAD": "Bloco de 4 semanas: 3 de carga progressiva + 1 de descarga (60% do volume). Sem essa quarta, fadiga acumula e o corpo cobra. Com ela, supercompensa e te entrega ganho real. Não é descanso — é gatilho.",
+    "BG_IMAGE": "villarinho_track.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  },
+  "story_vars": {
+    "STAT_NUM": "3+1",
+    "STAT_UNIT": "semanas",
+    "STAT_CAPTION": "BLOCO PADRÃO",
+    "HEADLINE": "<span class=\"hl\">você</span> faz descarga?",
+    "LEAD": "Vota: sempre · às vezes · nunca · não sabia. A 4ª semana é onde o ganho acontece."
+  }
+}

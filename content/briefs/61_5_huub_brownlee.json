@@ -1,0 +1,16 @@
+{
+  "id": "61_5_huub_brownlee",
+  "template": "stat",
+  "pillar": "comparativo-natacao",
+  "title": "Wetsuit · HUUB Alistair Brownlee",
+  "vars": {
+    "STAT_NUM": "3:5",
+    "STAT_UNIT": "mm",
+    "STAT_CAPTION": "HUUB BROWNLEE · QUADRIL : OMBRO",
+    "HEADLINE": "<span class=\"hl\">huub brownlee</span>: 3:5 magic.",
+    "LEAD": "Painel Rotational 3:5 (3mm frente, 5mm atrás) · Yamamoto 40.<br><br>Cria rotação natural no eixo. Corrige posição de quem nada travado. US$ 600.",
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

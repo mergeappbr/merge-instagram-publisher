@@ -1,0 +1,19 @@
+{
+  "id": "62_stat_forca_lesao",
+  "template": "stat",
+  "pillar": "fortalecimento",
+  "title": "Stat · força reduz lesão no corredor",
+  "vars": {
+    "BG_IMAGE": "strength_legs_barbell.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%",
+    "STAT_NUM": "50",
+    "STAT_UNIT": "%",
+    "HEADLINE": "musculação <span class=\"hl\">não é opcional.</span>",
+    "LEAD": "Corredores que fazem força 2x na semana têm metade do risco de lesão por sobreuso.<br>Sem academia, a corrida cobra o preço — em canelite, dor lombar, joelho quebrando no longão."
+  },
+  "story_vars": {
+    "HEADLINE": "metade das <span class=\"hl\">lesões</span> some.",
+    "LEAD": "Quando você adiciona força ao plano. Resposta na sequência."
+  }
+}

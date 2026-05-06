@@ -1,0 +1,18 @@
+{
+  "id": "58_5_rebel_v5",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Daily trainer · New Balance Rebel v5",
+  "vars": {
+    "STAT_NUM": "6",
+    "STAT_UNIT": "mm",
+    "STAT_KICKER": "DROP",
+    "STAT_CAPTION": "NB REBEL V5",
+    "HEADLINE": "<span class=\"hl\">rebel v5</span>: o leve dos leves.",
+    "LEAD": "FuelCell PEBA, sem placa · 211g · drop 6mm · pilha 30mm. Peso de tênis de prova com cushion de daily. Rocker que empurra sozinho. Pra quem pisa firme e quer leveza.",
+    "PRICE": "R$ 1.199",
+    "BG_IMAGE": "rebel_v5.webp",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%"
+  }
+}

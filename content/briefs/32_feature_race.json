@@ -1,0 +1,19 @@
+{
+  "id": "32_feature_race",
+  "template": "feature",
+  "pillar": "atualidade-triatlo",
+  "title": "Feature · cara de prova",
+  "vars": {
+    "BG_IMAGE": "villarinho_race.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 25%",
+    "PILL": "DIA DE PROVA",
+    "HEADLINE": "no dia, <span class=\"hl\">conta</span> os meses.",
+    "LEAD": "Largada não inventa nada. Só revela o que já tava lá. Quem rodou em Z2 no inverno, descobre na hora H. Quem fugiu do longo, também."
+  },
+  "story_vars": {
+    "PILL": "DIA DE PROVA",
+    "HEADLINE": "qual <span class=\"hl\">próxima</span>?",
+    "LEAD": "Conta na caixinha qual sua próxima largada."
+  }
+}

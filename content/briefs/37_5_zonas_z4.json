@@ -1,0 +1,16 @@
+{
+  "id": "37_5_zonas_z4",
+  "template": "stat",
+  "pillar": "educacional-corrida",
+  "title": "Carrossel · Z4 limiar",
+  "vars": {
+    "STAT_NUM": "80–90",
+    "STAT_UNIT": "% FCmax",
+    "STAT_CAPTION": "ZONA 4 · LIMIAR ANAERÓBICO",
+    "HEADLINE": "<span class=\"hl\">Z4</span> · respira só, palavra solta.",
+    "LEAD": "Threshold runs e tempo intervalados longos vivem aqui. É a zona que empurra seu limiar pra cima — a partir dela você corre mais rápido com a mesma frequência cardíaca.",
+    "BG_IMAGE": "villarinho_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

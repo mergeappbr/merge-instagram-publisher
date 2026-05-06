@@ -1,0 +1,23 @@
+{
+  "id": "42_ftp",
+  "template": "stat",
+  "pillar": "educacional-bike",
+  "title": "FTP · o que é",
+  "vars": {
+    "STAT_NUM": "20",
+    "STAT_UNIT": "min",
+    "STAT_CAPTION": "TESTE DE FTP",
+    "HEADLINE": "<span class=\"hl\">FTP</span> é o número que define seu treino.",
+    "LEAD": "Functional Threshold Power: a potência média máxima que você sustenta por uma hora. Testa em 20min all-out e tira 95%. Sem FTP, suas zonas de potência são chute.",
+    "BG_IMAGE": "villarinho_bike.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "STAT_NUM": "20",
+    "STAT_UNIT": "min",
+    "STAT_CAPTION": "TESTE FTP",
+    "HEADLINE": "<span class=\"hl\">qual</span> seu FTP?",
+    "LEAD": "Caixinha pra dividir. <2 W/kg começa · 2-3 intermediário · 3-4 avançado · 4+ classe A. Sem julgamento, só dado."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "37_zonas_corrida",
+  "template": "quote",
+  "pillar": "educacional-corrida",
+  "title": "Carrossel · zonas de treino corrida — capa",
+  "vars": {
+    "PILL": "ZONAS DE TREINO · CORRIDA",
+    "HEADLINE": "as <span class=\"hl\">5 zonas</span> que todo corredor precisa conhecer.",
+    "LEAD": "Z1 recuperação · Z2 base · Z3 ritmo · Z4 limiar · Z5 vo2max.<br><br>Não é firula de relógio — é o mapa do seu treino. Arrasta pra ver cada uma.",
+    "BG_IMAGE": "marathon.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 60%"
+  },
+  "story_vars": {
+    "PILL": "ZONAS · CORRIDA",
+    "HEADLINE": "<span class=\"hl\">5 zonas.</span> 1 mapa.",
+    "LEAD": "Z1 a Z5 — entende qual estímulo cada uma dá. No feed, abre o carrossel."
+  }
+}

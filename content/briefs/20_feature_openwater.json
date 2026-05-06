@@ -1,0 +1,19 @@
+{
+  "id": "20_feature_openwater",
+  "template": "feature",
+  "pillar": "modalidade-natacao",
+  "title": "Feature · águas abertas",
+  "vars": {
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%",
+    "PILL": "ÁGUAS ABERTAS",
+    "HEADLINE": "<span class=\"hl\">a primeira braçada</span> é a mais difícil.",
+    "LEAD": "Sem linha, sem azulejo, sem bordas. Águas abertas testa cabeça antes de testar pulmão. Quem volta nunca mais é o mesmo nadador de piscina."
+  },
+  "story_vars": {
+    "PILL": "ÁGUAS ABERTAS",
+    "HEADLINE": "<span class=\"hl\">já encarou</span>?",
+    "LEAD": "Vota na enquete. Quem nunca foi descobre uma versão nova de si na primeira boia."
+  }
+}

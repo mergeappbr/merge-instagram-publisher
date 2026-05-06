@@ -1,0 +1,13 @@
+{
+  "id": "52_5_lesoes_joelho",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Lesão 4 · joelho de corredor",
+  "vars": {
+    "STAT_NUM": "04",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "LESÃO · SÍNDROME PATELOFEMORAL",
+    "HEADLINE": "<span class=\"hl\">joelho</span> de corredor: dor atrás da rótula.",
+    "LEAD": "Causa: glúteo fraco, valgo dinâmico, descida sem controle. Prevenção: força de glúteo médio (banda lateral, single leg), trabalho de cadência, descida em volume controlado."
+  }
+}

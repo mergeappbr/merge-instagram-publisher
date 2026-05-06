@@ -1,0 +1,22 @@
+{
+  "id": "19_compare_squad",
+  "template": "compare",
+  "pillar": "comunidade",
+  "title": "Compare · sozinho vs squad",
+  "vars": {
+    "HEADLINE": "<span class=\"hl\">sozinho</span> ou squad?",
+    "LEAD": "Os dois funcionam. Mas a aderência ao treino dobra quando alguém te espera no ponto de encontro.",
+    "LEFT_LABEL": "SOZINHO",
+    "LEFT_BODY": "saiu mais cedo? ninguém percebe. faltou? ninguém cobra. dia ruim? ninguém ri junto depois.",
+    "RIGHT_LABEL": "SQUAD",
+    "RIGHT_BODY": "alguém te espera. alguém puxa o pace. alguém tira a foto. alguém comemora a marca nova."
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">sozinho</span> ou squad?",
+    "LEAD": "Vota na enquete. Sem julgamento.",
+    "LEFT_LABEL": "SOZINHO",
+    "LEFT_BODY": "fone, pace livre, tempo pra cabeça.",
+    "RIGHT_LABEL": "SQUAD",
+    "RIGHT_BODY": "alguém te espera. ninguém volta sem foto."
+  }
+}

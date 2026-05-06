@@ -1,0 +1,25 @@
+{
+  "id": "53_bike_fit",
+  "template": "compare",
+  "pillar": "educacional-prevencao",
+  "title": "Bike fit básico",
+  "vars": {
+    "HEADLINE": "<span class=\"hl\">altura da sela</span>: o ajuste que resolve metade das dores.",
+    "LEAD": "Sela errada estraga joelho, lombar e mão. Dois sintomas, dois ajustes.",
+    "LEFT_LABEL": "ALTA DEMAIS",
+    "LEFT_BODY": "Quadril balança, joelho hiperestende, lombar dói. Ajuste: desce 5mm.",
+    "RIGHT_LABEL": "BAIXA DEMAIS",
+    "RIGHT_BODY": "Joelho dobra muito, força do quadríceps perdida, anterior do joelho dói. Ajuste: sobe 5mm.",
+    "BG_IMAGE": "villarinho_bike.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">qual</span> sua dor?",
+    "LEAD": "Vota: joelho · lombar · mão · pescoço. Cada uma é um ajuste diferente.",
+    "LEFT_LABEL": "JOELHO",
+    "LEFT_BODY": "Sela em altura errada.",
+    "RIGHT_LABEL": "LOMBAR",
+    "RIGHT_BODY": "Reach (recuo) errado."
+  }
+}

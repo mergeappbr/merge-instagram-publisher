@@ -1,0 +1,254 @@
+/* ============== MERGE POST · Janeiro/26 modernizado ==============
+   Format: 1080×1350 (Instagram 4:5)
+   Theme: dark base · orange accent · monospace caption rhythm
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-dark: #0A0A0A;
+  --bg-light: #F5F2EC;
+  --ink-light: #F2F2F2;
+  --ink-light-soft: #C9C9C9;
+  --ink-dark: #0A0A0A;
+  --ink-dark-soft: #4A4A4A;
+  --orange: #FF6900;
+  --orange-deep: #E55D00;
+  --hairline-dark: rgba(255,255,255,0.10);
+  --hairline-light: rgba(10,10,10,0.10);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #555;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  font-feature-settings: "ss01", "cv11";
+}
+
+.post {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.post--dark  { background: var(--bg-dark);  color: var(--ink-light); }
+.post--light { background: var(--bg-light); color: var(--ink-dark); }
+
+/* ===== background photo + overlay ===== */
+.post__bg {
+  position: absolute; inset: 0;
+  background-position: center;
+  background-size: cover;
+  z-index: 0;
+}
+.post--dark .post__bg-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg,
+    rgba(10,10,10,0.50) 0%,
+    rgba(10,10,10,0.30) 30%,
+    rgba(10,10,10,0.55) 65%,
+    rgba(10,10,10,0.92) 100%);
+}
+
+/* ===== content layer ===== */
+.post__content {
+  position: relative; z-index: 2;
+  padding: 80px 80px 100px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== KICKER PILL ===== */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+.post--dark .kicker {
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.16);
+  color: var(--ink-light);
+}
+.post--light .kicker {
+  background: rgba(10,10,10,0.04);
+  border: 1.5px solid rgba(10,10,10,0.10);
+  color: var(--ink-dark);
+}
+.kicker .dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+.kicker--orange {
+  background: var(--orange) !important;
+  border-color: var(--orange) !important;
+  color: var(--ink-dark) !important;
+}
+.kicker--orange .dot { background: var(--ink-dark); }
+
+/* ===== HEADLINES ===== */
+.headline {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 96px;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  margin: 0;
+  text-transform: lowercase;
+}
+.headline--xl { font-size: 132px; line-height: 0.94; letter-spacing: -0.045em; }
+.headline--md { font-size: 72px; line-height: 1.02; letter-spacing: -0.025em; }
+.headline .hl { color: var(--orange); }
+
+/* small body text mono */
+.body-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 26px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+.body-mono b, .body-mono strong { font-weight: 700; }
+.post--dark .body-mono { color: var(--ink-light-soft); }
+.post--light .body-mono { color: var(--ink-dark); }
+
+/* display body */
+.body-display {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.post--dark .body-display { color: var(--ink-light-soft); }
+.post--light .body-display { color: var(--ink-dark-soft); }
+
+/* arrow bullet list */
+.arrow-list { padding: 0; margin: 0; list-style: none; font-family: 'JetBrains Mono', monospace; font-size: 26px; line-height: 1.5; }
+.arrow-list li { position: relative; padding-left: 38px; margin-bottom: 14px; }
+.arrow-list li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--orange); font-weight: 700; }
+
+/* slide number */
+.slide-no {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+}
+.slide-no .num { color: var(--orange); }
+
+/* ===== HERO IMAGE ===== */
+.hero-img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* ===== TIER BADGE (Food carousel) ===== */
+.tier {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px; height: 120px;
+  border-radius: 24px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 76px;
+  letter-spacing: -0.04em;
+  color: var(--ink-dark);
+  text-transform: uppercase;
+}
+.tier--s { background: #FF4D4F; color: #fff; }
+.tier--a { background: #FF8A4D; }
+.tier--b { background: #FFE066; }
+.tier--c { background: #6BCF7F; color: #fff; }
+.tier--d { background: #6BB8FF; color: #fff; }
+
+.tier-row {
+  display: flex; gap: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 24px 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+}
+.tier-row > span {
+  flex: 1;
+  text-align: center;
+  padding: 22px 0;
+  font-size: 44px;
+  letter-spacing: -0.02em;
+  color: var(--ink-dark);
+}
+.tier-row .t-d { background: #6BB8FF; }
+.tier-row .t-c { background: #6BCF7F; }
+.tier-row .t-b { background: #FFE066; }
+.tier-row .t-a { background: #FF8A4D; }
+.tier-row .t-s { background: #FF4D4F; color: #fff; }
+
+/* ===== FOOTER ===== */
+.post__footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+}
+.brand-mark {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 32px;
+  letter-spacing: -0.025em;
+  text-transform: lowercase;
+}
+.brand-mark .dot { color: var(--orange); }
+.handle {
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+.cta-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cta-arrow .arrow {
+  color: var(--orange);
+  font-size: 22px;
+  font-weight: 700;
+}
+.cta-arrow .label { opacity: 0.7; }
+
+/* ===== Logo Z mark ===== */
+.zlogo {
+  position: absolute;
+  width: 92px; height: auto;
+  z-index: 3;
+}
+.zlogo path { fill: var(--orange); }
+
+/* ===== Final slide hero ===== */
+.final-zlogo {
+  position: absolute;
+  bottom: -60px; right: -60px;
+  width: 700px;
+  z-index: 1;
+  opacity: 1;
+}

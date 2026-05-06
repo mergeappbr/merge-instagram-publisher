@@ -1,0 +1,19 @@
+{
+  "id": "51_aguas_abertas",
+  "template": "feature",
+  "pillar": "educacional-natacao",
+  "title": "Provas águas abertas BR 2026",
+  "vars": {
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "ÁGUAS ABERTAS",
+    "HEADLINE": "<span class=\"hl\">5 provas</span> de águas abertas em 2026.",
+    "LEAD": "Rio-Niterói — jan, 4km<br>Itacaré — set, 1,6 e 5km<br>Ilhabela — jan, 3,6km<br>Brasil Open Aquatics — out, SC<br>Aberto CBDA — várias datas"
+  },
+  "story_vars": {
+    "PILL": "ÁGUAS ABERTAS",
+    "HEADLINE": "<span class=\"hl\">qual</span> sua próxima?",
+    "LEAD": "Caixinha pra contar. Quem nada em mar bravo conhece outro nível de respiração."
+  }
+}

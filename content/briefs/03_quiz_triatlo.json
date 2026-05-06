@@ -1,0 +1,18 @@
+{
+  "id": "03_quiz_triatlo",
+  "template": "quiz",
+  "pillar": "modalidade-triatlo",
+  "title": "Quiz · distância de um Ironman",
+  "vars": {
+    "BG_IMAGE": "villarinho_race.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "KICKER": "QUIZ · TRIATLO",
+    "HEADLINE": "quanto tem um <span class=\"hl\">ironman</span> completo?",
+    "LEAD": "Um teste rápido pra esquentar a comunidade. Comenta aí embaixo qual sua aposta.",
+    "OPT_A": "3.8 km swim · 90 km bike · 21 km run",
+    "OPT_B": "1.5 km swim · 40 km bike · 10 km run",
+    "OPT_C": "3.8 km swim · 180 km bike · 42 km run",
+    "OPT_D": "2.0 km swim · 100 km bike · 30 km run"
+  }
+}

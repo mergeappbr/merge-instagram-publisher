@@ -1,0 +1,16 @@
+{
+  "id": "59_4_endorphin_pro4",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Super shoe · Saucony Endorphin Pro 4",
+  "vars": {
+    "STAT_NUM": "204",
+    "STAT_UNIT": "g",
+    "STAT_CAPTION": "ENDORPHIN PRO 4 · PESO",
+    "HEADLINE": "<span class=\"hl\">endorphin pro 4</span>: equilíbrio.",
+    "LEAD": "PWRRUN HG (PEBA) + carbono · 204g · drop 8mm.<br><br>SpeedRoll empurra forte, segue confortável. Custo-benefício do pelotão. R$ 2.099.",
+    "BG_IMAGE": "marathon.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

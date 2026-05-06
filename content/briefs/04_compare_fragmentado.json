@@ -1,0 +1,16 @@
+{
+  "id": "04_compare_fragmentado",
+  "template": "compare",
+  "pillar": "marca",
+  "title": "Compare · 5 apps vs 1 ecossistema",
+  "vars": {
+    "KICKER": "02 · O PROBLEMA",
+    "HEADLINE": "<span class=\"hl\">cinco apps,</span> três planilhas, zero conexão.",
+    "LEAD": "O atleta amador brasileiro vive entre ferramentas que não conversam. A gente uniu tudo num lugar só.",
+    "LEFT_LABEL": "ANTES · O CAOS",
+    "LEFT_BODY": "tracking num app. assessoria no whatsapp. cobrança no pix manual. comunidade em lugar nenhum.",
+    "RIGHT_LABEL": "AGORA · MERGE",
+    "RIGHT_BODY": "treino, comunidade, assessoria e pagamento em um só ecossistema. 360º.",
+    "CTA_LABEL": "lançamento jul · 2026"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "57_5_wearables_veredito",
+  "template": "quote",
+  "pillar": "comparativo-wearables",
+  "title": "Wearables · veredito",
+  "vars": {
+    "PILL": "VEREDITO",
+    "HEADLINE": "<span class=\"hl\">não tem melhor.</span> tem o seu.",
+    "LEAD": "Quer ecossistema completo e mapa fácil → Garmin. Quer o melhor custo-benefício do triathlon → Coros. Quer FC e recuperação como protagonista → Polar. O resto é gosto.",
+    "BG_IMAGE": "gadget.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

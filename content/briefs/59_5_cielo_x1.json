@@ -1,0 +1,16 @@
+{
+  "id": "59_5_cielo_x1",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Super shoe · Asics Metaspeed Sky Paris (Cielo)",
+  "vars": {
+    "STAT_NUM": "186",
+    "STAT_UNIT": "g",
+    "STAT_CAPTION": "ASICS METASPEED SKY PARIS · PESO",
+    "HEADLINE": "<span class=\"hl\">metaspeed sky</span>: o mais leve.",
+    "LEAD": "FF Turbo+ + carbono · 186g · drop 5mm · ~200km.<br><br>Top do segmento em peso. Sky (passada longa) ou Edge (cadência alta). Pra PR. R$ 2.499.",
+    "BG_IMAGE": "villarinho_race.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

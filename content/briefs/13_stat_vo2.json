@@ -1,0 +1,20 @@
+{
+  "id": "13_stat_vo2",
+  "template": "stat",
+  "pillar": "performance-longevidade",
+  "title": "Stat · VO2 max e longevidade",
+  "vars": {
+    "STAT_NUM": "5x",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "menor risco de morte precoce em quem tem VO2 alto.",
+    "HEADLINE": "<span class=\"hl\">VO2 max</span> é o novo colesterol.",
+    "LEAD": "Estudo do JAMA com 122 mil pessoas: capacidade cardiorrespiratória prediz mortalidade melhor que tabagismo, diabetes ou hipertensão. Treinar é remédio com bula longa.",
+    "BG_IMAGE": "villarinho_track.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">VO2 max</span>.",
+    "LEAD": "Sabe o seu? Manda na caixinha. A gente devolve o que faz subir."
+  }
+}

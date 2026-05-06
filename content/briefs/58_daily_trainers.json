@@ -1,0 +1,19 @@
+{
+  "id": "58_daily_trainers",
+  "template": "quote",
+  "pillar": "comparativo-tenis",
+  "title": "Carrossel · daily trainers — capa",
+  "vars": {
+    "PILL": "COMPARATIVO · DAILY TRAINERS",
+    "HEADLINE": "<span class=\"hl\">4 tênis</span> pra rodar km de verdade.",
+    "LEAD": "Daily trainer é o cavalo do volume — não é o de corrida fácil, não é o de prova. Quatro opções, quatro filosofias de mid-sole. Arrasta e acha o seu.",
+    "BG_IMAGE": "villarinho_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "DAILY TRAINERS",
+    "HEADLINE": "<span class=\"hl\">qual</span> aguenta seu volume?",
+    "LEAD": "Vota: Pegasus · Novablast · Endorphin · Rebel."
+  }
+}

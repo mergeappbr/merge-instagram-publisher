@@ -1,0 +1,16 @@
+{
+  "id": "61_3_orca_apex",
+  "template": "stat",
+  "pillar": "comparativo-natacao",
+  "title": "Wetsuit · Orca Apex Flex",
+  "vars": {
+    "STAT_NUM": "5",
+    "STAT_UNIT": "mm",
+    "STAT_CAPTION": "ORCA APEX FLEX · TORSO",
+    "HEADLINE": "<span class=\"hl\">orca apex flex</span>: equilíbrio top.",
+    "LEAD": "Yamamoto 44 (mais leve) · Hydrolift no quadril · 5mm torso · 1.5mm braço.<br><br>Faz nadador médio flutuar como avançado. US$ 950.",
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "57_2_garmin_fr965",
+  "template": "product",
+  "pillar": "comparativo-wearables",
+  "title": "Wearable · Garmin Forerunner 965",
+  "vars": {
+    "PILL": "WEARABLE · GARMIN",
+    "PRODUCT_IMAGE": "comparativos/garmin_fr965.png",
+    "STAT_NUM": "23",
+    "STAT_UNIT": "dias",
+    "HEADLINE": "<span class=\"hl\">forerunner 965</span>: ecossistema fechado.",
+    "LEAD": "AMOLED, mapa colorido, ClimbPro, multibanda GPS. 31h GPS contínuo. R$ 7.999. Pra quem quer todo dado existir."
+  },
+  "story_vars": {
+    "PILL": "GARMIN 965"
+  }
+}

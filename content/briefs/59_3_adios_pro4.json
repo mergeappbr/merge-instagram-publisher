@@ -1,0 +1,16 @@
+{
+  "id": "59_3_adios_pro4",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Super shoe · Adidas Adios Pro 4",
+  "vars": {
+    "STAT_NUM": "210",
+    "STAT_UNIT": "g",
+    "STAT_CAPTION": "ADIOS PRO 4 · PESO",
+    "HEADLINE": "<span class=\"hl\">adios pro 4</span>: maratona pura.",
+    "LEAD": "Lightstrike Pro + EnergyRods 2.0 · 210g · drop 6mm · ~500km.<br><br>Estável, devolutivo. Pra correr maratona inteira sem perder forma. R$ 2.499.",
+    "BG_IMAGE": "villarinho_race.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

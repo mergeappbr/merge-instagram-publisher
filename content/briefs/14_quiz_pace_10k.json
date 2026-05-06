@@ -1,0 +1,25 @@
+{
+  "id": "14_quiz_pace_10k",
+  "template": "quiz",
+  "pillar": "modalidade-corrida",
+  "title": "Quiz · pace médio amador 10k",
+  "vars": {
+    "BG_IMAGE": "villarinho_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "HEADLINE": "qual o <span class=\"hl\">pace médio</span> de quem termina 10k?",
+    "LEAD": "Dados de mais de 200 mil provas pelo mundo. Comenta sua aposta antes de ver a resposta no próximo post.",
+    "OPT_A": "4:30 / km",
+    "OPT_B": "5:30 / km",
+    "OPT_C": "6:30 / km",
+    "OPT_D": "7:30 / km"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">qual</span> seu pace de 10k?",
+    "LEAD": "Vota na enquete. A média global tá mais perto do que você imagina.",
+    "OPT_A": "sub 5:00",
+    "OPT_B": "5:00 a 6:00",
+    "OPT_C": "6:00 a 7:00",
+    "OPT_D": "acima de 7:00"
+  }
+}

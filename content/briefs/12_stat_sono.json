@@ -1,0 +1,20 @@
+{
+  "id": "12_stat_sono",
+  "template": "stat",
+  "pillar": "performance-recovery",
+  "title": "Stat · sono e performance",
+  "vars": {
+    "STAT_NUM": "65",
+    "STAT_UNIT": "%",
+    "STAT_CAPTION": "dos atletas amadores dormem menos de 7 horas.",
+    "HEADLINE": "treino é o que <span class=\"hl\">não</span> aparece no relógio.",
+    "LEAD": "Sono é o ciclo que destrava adaptação, hormônio e cabeça. Quem dorme mal corre mal. Quem corre bem cuida do que vem antes do despertador.",
+    "BG_IMAGE": "villarinho_rain_bw.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "HEADLINE": "dorme <span class=\"hl\">quanto</span>?",
+    "LEAD": "Responde na enquete. Quem dorme menos de 7h sabe o preço que paga no longão."
+  }
+}

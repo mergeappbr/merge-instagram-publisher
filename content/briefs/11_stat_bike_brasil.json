@@ -1,0 +1,20 @@
+{
+  "id": "11_stat_bike_brasil",
+  "template": "stat",
+  "pillar": "modalidade-bike",
+  "title": "Stat · 50 milhões pedalam no Brasil",
+  "vars": {
+    "STAT_NUM": "50",
+    "STAT_UNIT": "M",
+    "STAT_CAPTION": "brasileiros pedalam ao menos uma vez por semana.",
+    "HEADLINE": "o país que <span class=\"hl\">pedala</span> em silêncio.",
+    "LEAD": "A bike é a segunda modalidade mais praticada do Brasil. Tem gente saindo às 5h da manhã em todo canto. Falta só um lugar onde isso vire comunidade de verdade.",
+    "BG_IMAGE": "villarinho_bike_motion.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">50 milhões</span>.",
+    "LEAD": "É quanta gente pedala no Brasil. Quem sai antes das 6h, levanta a mão na enquete."
+  }
+}

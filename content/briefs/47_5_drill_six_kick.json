@@ -1,0 +1,16 @@
+{
+  "id": "47_5_drill_six_kick",
+  "template": "stat",
+  "pillar": "educacional-natacao",
+  "title": "Drill 4 · six-kick switch",
+  "vars": {
+    "STAT_NUM": "04",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "DRILL · SIX-KICK SWITCH",
+    "HEADLINE": "<span class=\"hl\">6 kicks</span> · 1 braçada.",
+    "LEAD": "Lateral, seis batidas de perna, alterna. Treina rotação, equilíbrio e a posição de respiração com a cabeça baixa. Mata duas pernas: respira melhor e nada mais reto. 4×50m.",
+    "BG_IMAGE": "villarinho_swim_face.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

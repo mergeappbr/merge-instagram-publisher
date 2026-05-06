@@ -1,0 +1,19 @@
+{
+  "id": "70_compare_pre_intra_pos",
+  "template": "compare",
+  "pillar": "nutricao",
+  "title": "Compare · pré × intra × pós",
+  "vars": {
+    "BG_IMAGE": "nutrition.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "KICKER": "NUTRIÇÃO · 3 MOMENTOS",
+    "HEADLINE": "três janelas. <span class=\"hl\">três funções.</span>",
+    "LEAD": "Comer certo é saber o que cada momento pede. A maioria foca só no pré e perde os outros dois.",
+    "LEFT_LABEL": "ANTES · O CAOS",
+    "LEFT_BODY": "café duplo no susto. banana minutos antes da largada. fibra a mais. nada durante. cerveja no pós.",
+    "RIGHT_LABEL": "AGORA · COM PLANO",
+    "RIGHT_BODY": "pré (90 min): carbo limpo + hidratação fracionada. intra (a cada 25min): 60–90g/h + sal. pós (até 30min): carbo + proteína 3:1.",
+    "CTA_LABEL": "salva esse post"
+  }
+}

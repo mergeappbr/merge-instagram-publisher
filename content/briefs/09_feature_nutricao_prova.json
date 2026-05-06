@@ -1,0 +1,15 @@
+{
+  "id": "09_feature_nutricao_prova",
+  "template": "feature",
+  "pillar": "nutricao",
+  "title": "Feature · Nutrição pré-prova",
+  "vars": {
+    "BG_IMAGE": "villarinho_food.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 60%",
+    "PILL": "NUTRIÇÃO · 90 MIN ANTES DA LARGADA",
+    "HEADLINE": "comeu certo, <span class=\"hl\">correu mais.</span>",
+    "LEAD": "Carbo limpo, fibra baixa, hidratação fracionada. A janela das últimas duas horas decide as últimas zonas da prova. Em breve, nutricionistas dentro da Merge — plano amarrado ao seu calendário e ao seu corpo.",
+    "CTA_LABEL": "salva esse post"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "69_quiz_carbo_hora",
+  "template": "quiz",
+  "pillar": "nutricao",
+  "title": "Quiz · carbo por hora no longão",
+  "vars": {
+    "BG_IMAGE": "nutrition.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "HEADLINE": "<span class=\"hl\">quanto carbo</span> por hora?",
+    "LEAD": "Num longão acima de 2h. Comenta sua aposta antes da resposta no próximo post.",
+    "OPT_A": "20 a 30g",
+    "OPT_B": "40 a 50g",
+    "OPT_C": "60 a 90g",
+    "OPT_D": "100 a 120g"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">quanto</span> carbo você toma?",
+    "LEAD": "Vota na enquete. A diferença entre acertar e errar a dose define o último terço da prova."
+  }
+}

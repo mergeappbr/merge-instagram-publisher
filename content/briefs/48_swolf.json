@@ -1,0 +1,23 @@
+{
+  "id": "48_swolf",
+  "template": "stat",
+  "pillar": "educacional-natacao",
+  "title": "SWOLF · métrica de técnica",
+  "vars": {
+    "STAT_NUM": "36",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "SWOLF EXEMPLO · 25m PISCINA",
+    "HEADLINE": "<span class=\"hl\">SWOLF</span>: um número que mede técnica.",
+    "LEAD": "Soma do tempo do volta com o número de braçadas. 36 = 18 segundos + 18 braçadas. Quanto menor, mais eficiente. Cair 2-3 pontos em um mês é progresso real — não foi a perna que melhorou, foi a braçada.",
+    "BG_IMAGE": "villarinho_swim.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "STAT_NUM": "36",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "SWOLF",
+    "HEADLINE": "<span class=\"hl\">qual</span> seu SWOLF?",
+    "LEAD": "Caixinha pra dividir. <30 elite · 30-40 avançado · 40-50 intermediário · 50+ tem o que melhorar."
+  }
+}

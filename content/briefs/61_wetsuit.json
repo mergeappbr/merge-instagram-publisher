@@ -1,0 +1,19 @@
+{
+  "id": "61_wetsuit",
+  "template": "quote",
+  "pillar": "comparativo-natacao",
+  "title": "Carrossel · wetsuit triathlon — capa",
+  "vars": {
+    "PILL": "COMPARATIVO · WETSUIT",
+    "HEADLINE": "<span class=\"hl\">4 wetsuits</span> de triathlon.",
+    "LEAD": "Espessura, flutuação, mobilidade no ombro. Diferença é real e o errado te tira do páreo. Arrasta — sem promessa de marca, só o que importa.",
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "WETSUIT",
+    "HEADLINE": "<span class=\"hl\">qual</span> tá no seu kit?",
+    "LEAD": "Vota: Roka · Orca · Zone3 · HUUB."
+  }
+}

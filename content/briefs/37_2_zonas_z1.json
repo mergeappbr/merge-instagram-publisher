@@ -1,0 +1,16 @@
+{
+  "id": "37_2_zonas_z1",
+  "template": "stat",
+  "pillar": "educacional-corrida",
+  "title": "Carrossel · Z1 recuperação ativa",
+  "vars": {
+    "STAT_NUM": "50–60",
+    "STAT_UNIT": "% FCmax",
+    "STAT_CAPTION": "ZONA 1 · RECUPERAÇÃO ATIVA",
+    "HEADLINE": "<span class=\"hl\">Z1</span> · você consegue cantar.",
+    "LEAD": "Esforço mínimo, corpo trabalhando pra eliminar fadiga. Trote frouxo, recovery run pós-intervalado, retorno de lesão. Se cansa, saiu da zona.",
+    "BG_IMAGE": "villarinho_smile.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "60_gps_bike",
+  "template": "quote",
+  "pillar": "comparativo-bike",
+  "title": "Carrossel · GPS bike — capa",
+  "vars": {
+    "PILL": "COMPARATIVO · GPS BIKE",
+    "HEADLINE": "<span class=\"hl\">4 ciclocomputadores</span> sérios.",
+    "LEAD": "Mapa, navegação, treino, integração. Diferença real está em UI e ecossistema. Arrasta e veja qual combina com o seu modelo de pedal.",
+    "BG_IMAGE": "villarinho_bike_motion.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "GPS BIKE",
+    "HEADLINE": "<span class=\"hl\">qual</span> tá no seu guidão?",
+    "LEAD": "Vota: Karoo · Edge · Bolt · Roam."
+  }
+}

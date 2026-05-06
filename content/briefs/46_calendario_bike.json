@@ -1,0 +1,19 @@
+{
+  "id": "46_calendario_bike",
+  "template": "feature",
+  "pillar": "educacional-bike",
+  "title": "Calendário bike BR 2026",
+  "vars": {
+    "BG_IMAGE": "villarinho_bike_motion.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "CALENDÁRIO 2026",
+    "HEADLINE": "<span class=\"hl\">5 provas</span> que vale o ano de treino.",
+    "LEAD": "L'Étape Brasil — set, road, RJ<br>Brasil Ride — out, MTB, BA<br>Granfondo SP — mar, road<br>Iron Biker — jul, MTB, MG<br>GP Brasília — mai, road"
+  },
+  "story_vars": {
+    "PILL": "CALENDÁRIO",
+    "HEADLINE": "<span class=\"hl\">qual</span> prova de bike em 2026?",
+    "LEAD": "Caixinha pra contar. A gente repassa datas e inscrições no story."
+  }
+}

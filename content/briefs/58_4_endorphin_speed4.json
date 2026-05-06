@@ -1,0 +1,18 @@
+{
+  "id": "58_4_endorphin_speed4",
+  "template": "stat",
+  "pillar": "comparativo-tenis",
+  "title": "Daily trainer · Saucony Endorphin Speed 4",
+  "vars": {
+    "STAT_NUM": "8",
+    "STAT_UNIT": "mm",
+    "STAT_KICKER": "DROP",
+    "STAT_CAPTION": "SAUCONY ENDORPHIN SPEED 4",
+    "HEADLINE": "<span class=\"hl\">endorphin speed 4</span>: o híbrido.",
+    "LEAD": "PWRRUN PB + placa de nylon · 241g · drop 8mm. Daily trainer que vira tênis de tempo. Pra quem rola 1 par só.",
+    "PRICE": "R$ 1.299",
+    "BG_IMAGE": "endorphin_speed4.webp",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%"
+  }
+}

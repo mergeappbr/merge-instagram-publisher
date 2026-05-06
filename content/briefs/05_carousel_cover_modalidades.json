@@ -1,0 +1,12 @@
+{
+  "id": "05_carousel_cover_modalidades",
+  "template": "carousel_cover",
+  "pillar": "modalidades-core",
+  "title": "Carrossel cover · triatlo no Brasil",
+  "vars": {
+    "KICKER": "PRODUTO · 06",
+    "PILL": "MODALIDADES · 1.9M DE TRIATLETAS",
+    "HEADLINE": "<span class=\"hl-block\">triatlo</span> no brasil.",
+    "LEAD": "Três esportes, uma pegada. Um país com 1.9 milhão de atletas de endurance — e nenhum app que entenda a rotina de quem treina swim, bike e run no mesmo dia."
+  }
+}

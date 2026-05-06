@@ -1,0 +1,15 @@
+{
+  "id": "68_feature_intra_prova",
+  "template": "feature",
+  "pillar": "nutricao",
+  "title": "Feature · nutrição intra-prova",
+  "vars": {
+    "BG_IMAGE": "villarinho_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "PILL": "NUTRIÇÃO · DENTRO DA PROVA",
+    "HEADLINE": "gel não é luxo, <span class=\"hl\">é combustível.</span>",
+    "LEAD": "Um gel a cada 25–30 minutos, gole de isotônico no posto, água nos quentes. Estômago treinado responde — ensaio começa nos longões, não na largada. Em breve, plano nutricional integrado ao seu calendário Merge.",
+    "CTA_LABEL": "salva esse post"
+  }
+}

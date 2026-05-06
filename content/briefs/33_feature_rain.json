@@ -1,0 +1,19 @@
+{
+  "id": "33_feature_rain",
+  "template": "feature",
+  "pillar": "comunidade",
+  "title": "Feature · treinar na chuva",
+  "vars": {
+    "BG_IMAGE": "villarinho_rain.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "PILL": "DIAS DIFÍCEIS",
+    "HEADLINE": "chuva é a <span class=\"hl\">tatuagem</span> que ninguém vê.",
+    "LEAD": "Sai do quente, calça molhado, encara o vento. Ninguém posta. Mas quem treina sob chuva sabe que tem uma camada nova de respeito por dentro depois."
+  },
+  "story_vars": {
+    "PILL": "DIAS DIFÍCEIS",
+    "HEADLINE": "<span class=\"hl\">já</span> treinou na chuva?",
+    "LEAD": "Vota na enquete. Quem encara, sabe."
+  }
+}

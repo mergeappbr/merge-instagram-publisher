@@ -1,0 +1,20 @@
+{
+  "id": "71_quote_pilar_invisivel",
+  "template": "quote",
+  "pillar": "nutricao",
+  "title": "Quote · nutrição é o pilar invisível",
+  "vars": {
+    "BG_IMAGE": "villarinho_food.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%",
+    "KICKER": "NUTRIÇÃO · PILAR INVISÍVEL",
+    "PILL": "TREINO É O QUE VOCÊ NÃO POSTA",
+    "HEADLINE": "comida também é <span class=\"hl-block\">treino.</span>",
+    "LEAD": "Ninguém vê o gel do longão, o pós-treino na cozinha, o café da manhã do dia anterior. Mas o resultado da prova passa por aí. Plano nutricional dentro da Merge — nutricionista que conversa com seu calendário.",
+    "CTA_LABEL": "lançamento jul · 2026"
+  },
+  "story_vars": {
+    "HEADLINE": "comida é <span class=\"hl-block\">treino.</span>",
+    "LEAD": "O que ninguém posta é o que mais decide a prova. Pré-cadastro Merge na bio."
+  }
+}

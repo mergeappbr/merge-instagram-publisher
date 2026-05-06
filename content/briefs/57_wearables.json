@@ -1,0 +1,19 @@
+{
+  "id": "57_wearables",
+  "template": "quote",
+  "pillar": "comparativo-wearables",
+  "title": "Carrossel · wearables triathlon — capa",
+  "vars": {
+    "PILL": "COMPARATIVO · WEARABLES",
+    "HEADLINE": "<span class=\"hl\">garmin · coros · polar.</span> qual é o seu?",
+    "LEAD": "Três relógios, três filosofias. Bateria, mapa, métricas, preço — sem esmalte de marketing. Arrasta e escolhe pelo seu treino, não pelo logo.",
+    "BG_IMAGE": "villarinho_watch.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "WEARABLES",
+    "HEADLINE": "<span class=\"hl\">garmin · coros · polar.</span>",
+    "LEAD": "No feed, comparativo completo. Aqui o teaser."
+  }
+}

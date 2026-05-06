@@ -1,0 +1,15 @@
+{
+  "id": "07_feature_londres_masc",
+  "template": "feature",
+  "pillar": "atualidade-corrida",
+  "title": "Feature · Maratona de Londres 2026 · masculino",
+  "vars": {
+    "BG_IMAGE": "sawe_sub2.webp",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "PILL": "LONDRES · 26 ABR · 2026",
+    "HEADLINE": "<span class=\"hl\">1:59:30.</span> a barreira caiu.",
+    "LEAD": "Sabastian Sawe foi o primeiro humano a fechar uma maratona oficial abaixo de 2h. Tênis nos pés: Adidas Adizero Adios Pro Evo 3 — placa de carbono, espuma Lightstrike Pro. Yomif Kejelcha cruzou em 1:59:41 — também sub-2. O que parecia teto virou linha de partida.",
+    "CTA_LABEL": "vem com a gente"
+  }
+}

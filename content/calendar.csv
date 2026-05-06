@@ -1,0 +1,62 @@
+slot,scheduled_at,format,post_id,theme,note
+1,2026-05-06 09:00,static,03,launch,quiz Ironman
+2,2026-05-06 19:00,static,38,corrida,RPE
+3,2026-05-07 09:00,static,26,mockup,feed social
+4,2026-05-07 19:00,carousel,05,launch,triatlo no Brasil (cover)
+5,2026-05-08 09:00,static,42,bike,FTP
+6,2026-05-08 19:00,static,48,natacao,SWOLF
+7,2026-05-09 09:00,static,62,forca,força reduz lesão pela metade
+8,2026-05-09 19:00,static,53,prevencao,bike fit (altura da sela)
+9,2026-05-10 09:00,reel,reel_zonas,corrida,zonas FC corrida
+10,2026-05-10 19:00,static,67,nutricao,70% subnutrem na prova
+11,2026-05-11 09:00,static,32,atletas,dia de prova
+12,2026-05-11 19:00,static,06,launch,Londres 2026 feminino
+13,2026-05-12 09:00,carousel,47,natacao,drills de natação
+14,2026-05-12 19:00,static,39,corrida,cadência de corrida
+15,2026-05-13 09:00,static,27,mockup,activities
+16,2026-05-13 19:00,static,43,bike,zonas de potência (Coggan)
+17,2026-05-14 09:00,static,49,natacao,pace de 100m
+18,2026-05-14 19:00,static,63,forca,deadlift é treino de corrida
+19,2026-05-15 09:00,static,54,prevencao,ombro do nadador
+20,2026-05-15 19:00,static,68,nutricao,gel não é luxo
+21,2026-05-16 09:00,static,33,atletas,chuva
+22,2026-05-16 19:00,carousel,52,prevencao,5 lesões de corrida
+23,2026-05-17 09:00,static,40,corrida,long run
+24,2026-05-17 19:00,static,28,mockup,plano vivo
+25,2026-05-18 09:00,static,45,bike,MTB × Road
+26,2026-05-18 19:00,reel,reel_wearables,equipamento,wearables
+27,2026-05-19 09:00,static,50,natacao,respiração bilateral
+28,2026-05-19 19:00,static,64,forca,quiz exercício corredor
+29,2026-05-20 09:00,static,55,prevencao,periodização
+30,2026-05-20 19:00,static,69,nutricao,quanto carbo por hora
+31,2026-05-21 09:00,carousel,57,equipamento,wearables Garmin × Coros × Polar
+32,2026-05-21 19:00,static,34,atletas,em dupla
+33,2026-05-22 09:00,static,08,launch,wearables o relógio mede
+34,2026-05-22 19:00,static,41,corrida,calendário de corrida BR 2026
+35,2026-05-23 09:00,static,29,mockup,zonas prescritas
+36,2026-05-23 19:00,static,46,bike,calendário de bike BR 2026
+37,2026-05-24 09:00,static,51,natacao,águas abertas BR 2026
+38,2026-05-24 19:00,static,65,forca,só corrida × corrida + força
+39,2026-05-25 09:00,static,56,prevencao,recovery
+40,2026-05-25 19:00,carousel,59,equipamento,super shoes de prova
+41,2026-05-26 09:00,static,70,nutricao,pré × intra × pós
+42,2026-05-26 19:00,static,35,atletas,trilha
+43,2026-05-27 09:00,static,09,launch,nutrição pré-prova
+44,2026-05-27 19:00,reel,reel_forca,forca,força corredor
+45,2026-05-28 09:00,static,30,mockup,histórico e PRs
+46,2026-05-28 19:00,static,66,forca,força é seguro do corredor
+47,2026-05-29 09:00,static,71,nutricao,comida também é treino
+48,2026-05-29 19:00,static,10,launch,comunidade treinar acompanhado
+49,2026-05-30 09:00,carousel,60,equipamento,GPS de bike
+50,2026-05-30 19:00,static,11,launch,50M brasileiros pedalam
+51,2026-05-31 09:00,static,12,launch,sono e performance
+52,2026-05-31 19:00,static,13,launch,VO2 max e longevidade
+53,2026-06-01 09:00,static,14,launch,pace médio amador 10k
+54,2026-06-01 19:00,static,16,launch,ninguém aguenta sozinho
+55,2026-06-02 09:00,static,17,launch,wellness é ritual
+56,2026-06-02 19:00,static,18,launch,planilha vs plano
+57,2026-06-03 09:00,carousel,61,equipamento,wetsuit triathlon
+58,2026-06-03 19:00,static,21,launch,bike road em dupla
+59,2026-06-04 09:00,static,22,launch,longão
+60,2026-06-04 19:00,static,23,launch,técnica antes de volume
+61,2026-06-05 09:00,static,24,launch,ninguém treina por métrica

@@ -1,0 +1,546 @@
+/* Merge — Brand Tokens
+   Design System extraído do Pitch Deck 2026 (fundo escuro, Inter Black, accent laranja).
+*/
+
+:root {
+  /* Cores */
+  --bg: #0A0A0A;             /* preto profundo */
+  --bg-elev: #141414;         /* elevações de card */
+  --ink: #F2F2F2;             /* texto primário (off-white) */
+  --ink-soft: #C9C9C9;
+  --muted: #6E6E6E;           /* labels, kickers, footnotes */
+  --hairline: rgba(255,255,255,0.10);
+
+  --orange-100: #FF6900;      /* gradient start (logo oficial) */
+  --orange-200: #F54900;      /* gradient mid */
+  --orange-300: #CA3500;      /* gradient end */
+  --orange: var(--orange-100);
+  --orange-ink: #0A0A0A;      /* texto sobre fundo laranja */
+  --yellow-neon: #D4FF00;     /* amarelo neon — destaques que conversam com laranja */
+
+  /* Tipografia (Inter — peso 900 aproxima Söhne Breit do deck) */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  /* Padding por formato */
+  --pad-feed: 80px;
+  --pad-story: 100px;
+}
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Canvas */
+.canvas {
+  position: relative;
+  width: 1080px;
+  background: var(--bg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.canvas--feed   { height: 1350px; padding: var(--pad-feed) var(--pad-feed) 160px; }
+.canvas--story  { height: 1920px; padding: var(--pad-story) var(--pad-story) 220px; }
+
+/* Background image (foto do tema) com overlay escurecido */
+.bg-image {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10,10,10,0.65) 0%,
+    rgba(10,10,10,0.78) 55%,
+    rgba(10,10,10,0.92) 100%
+  );
+  z-index: 1;
+}
+.bg-overlay--side {
+  background: linear-gradient(
+    100deg,
+    rgba(10,10,10,0.92) 0%,
+    rgba(10,10,10,0.78) 45%,
+    rgba(10,10,10,0.45) 100%
+  );
+}
+.bg-overlay--bottom {
+  background: linear-gradient(
+    180deg,
+    rgba(10,10,10,0.30) 0%,
+    rgba(10,10,10,0.55) 45%,
+    rgba(10,10,10,0.95) 100%
+  );
+}
+/* Eleva todo conteúdo acima do bg/overlay, sem mexer no posicionamento dos próprios bg/overlay */
+.canvas--has-bg > *:not(.bg-image):not(.bg-overlay):not(.price-tag) { position: relative; z-index: 2; }
+/* Reafirma o posicionamento absoluto pra garantir frente à cascata da regra geral */
+.canvas--has-bg > .bg-image    { position: absolute; inset: 0; z-index: 0; }
+.canvas--has-bg > .bg-overlay  { position: absolute; inset: 0; z-index: 1; }
+
+/* Logo Merge — glifo laranja, canto superior esquerdo */
+.brand-logo {
+  position: absolute;
+  top: 60px;
+  left: 60px;
+  width: 88px;
+  height: auto;
+  z-index: 5;
+}
+.brand-logo--story { top: 100px; left: 100px; width: 110px; }
+
+/* Kicker (label superior estilo "PILAR 01 · SAÚDE") */
+.kicker {
+  position: absolute;
+  top: 88px;
+  right: 60px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--muted);
+  z-index: 5;
+}
+.kicker--story { top: 122px; right: 100px; font-size: 20px; }
+
+/* Pílula com ponto (estilo capa do deck) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 26px;
+  border: 1.5px solid var(--hairline);
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.pill .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+/* Headline lowercase com ponto final + palavra de destaque */
+.headline {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 124px;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  margin: 0;
+  text-transform: lowercase;
+}
+.headline--story { font-size: 152px; }
+.headline .hl {
+  /* palavra-chave: pinta de laranja */
+  color: var(--orange);
+}
+.headline .hl-block {
+  /* palavra-chave: bloco laranja com texto escuro (estilo slide 4 e 6) */
+  background: var(--orange);
+  color: var(--orange-ink);
+  padding: 0 14px;
+  display: inline-block;
+  line-height: 0.96;
+  border-radius: 6px;
+}
+
+/* Subhead/lead (corpo curto abaixo da headline) */
+.lead {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.42;
+  color: var(--ink-soft);
+  margin: 32px 0 0;
+  max-width: 880px;
+}
+.lead--story { font-size: 36px; }
+
+/* Big stat (numeral gigante elemento gráfico) */
+.bigstat {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 380px;
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+  text-transform: lowercase;
+}
+.bigstat--story { font-size: 480px; }
+/* Compact: ranges (ex.: 50–60, 4–6) que excedem o canvas em 380px */
+.bigstat--compact { font-size: 240px; }
+.bigstat--compact.bigstat--story { font-size: 320px; }
+.bigstat .accent { color: var(--orange); }
+.bigstat .unit {
+  font-size: 0.3em;
+  vertical-align: top;
+  margin-left: 12px;
+  letter-spacing: -0.02em;
+  color: var(--ink-soft);
+}
+.bigstat-caption {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-top: 24px;
+  letter-spacing: 0.02em;
+  align-self: flex-start;
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+/* Kicker do bigstat — label curto acima do numeral (ex.: "DROP") */
+.bigstat-kicker {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  align-self: flex-start;
+  background: rgba(10, 10, 10, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+.bigstat-kicker--story { font-size: 22px; padding: 8px 18px; }
+
+/* Price tag — bloco de destaque pra preço médio em comparativos de produto */
+.price-tag {
+  position: absolute;
+  top: var(--pad-feed);
+  right: var(--pad-feed);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--yellow-neon);
+  color: var(--orange-ink);
+  padding: 16px 24px;
+  border-radius: 14px;
+  line-height: 1;
+  z-index: 3;
+  transform: rotate(-3deg);
+}
+.price-tag__label {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+.price-tag__value {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.price-tag--story {
+  top: var(--pad-story);
+  right: var(--pad-story);
+  padding: 20px 30px;
+}
+.price-tag--story .price-tag__value { font-size: 60px; }
+.price-tag--story .price-tag__label { font-size: 16px; }
+
+/* Layout helpers */
+.stack { display: flex; flex-direction: column; gap: 24px; }
+.spacer { flex: 1; }
+
+/* Quiz options (estilo cards do deck) */
+.quiz {
+  display: grid;
+  gap: 18px;
+  margin-top: 36px;
+}
+.quiz .opt {
+  background: var(--bg-elev);
+  border: 1.5px solid var(--hairline);
+  border-radius: 16px;
+  padding: 26px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.quiz .opt .key {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: var(--orange-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+}
+
+/* Compare blocks (antes vs agora) */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 36px;
+}
+.compare .col {
+  background: var(--bg-elev);
+  border: 1.5px solid var(--hairline);
+  border-radius: 18px;
+  padding: 36px 30px;
+  min-height: 260px;
+}
+.compare .col.is-orange {
+  background: var(--orange);
+  color: var(--orange-ink);
+  border-color: var(--orange);
+}
+.compare .col.is-orange .label { color: rgba(10,10,10,0.6); }
+.compare .label {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 22px;
+}
+.compare .body {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+/* Carousel cover modality pills */
+.modalities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.modality {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border: 1.5px solid var(--hairline);
+  border-radius: 999px;
+  color: var(--ink-soft);
+}
+.modality.is-active {
+  background: var(--orange);
+  color: var(--orange-ink);
+  border-color: var(--orange);
+}
+
+/* Footer — alinhado com o padding do canvas (80 feed / 100 story) */
+.footer {
+  position: absolute;
+  left: var(--pad-feed);
+  right: var(--pad-feed);
+  bottom: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.footer--story { left: var(--pad-story); right: var(--pad-story); bottom: 96px; font-size: 24px; }
+.footer .handle { color: var(--ink-soft); }
+.footer .cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--orange);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.footer .cta svg { width: 32px; height: 32px; }
+.footer .meta { color: var(--muted); }
+
+/* Slide counter (1/6, 2/6 ...) — estilo deck */
+.slide-no {
+  position: absolute;
+  bottom: 56px;
+  right: 60px;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+/* Hero block layout */
+.hero {
+  margin-top: 200px;
+  display: flex;
+  flex-direction: column;
+}
+.hero--story { margin-top: 320px; }
+
+/* Variante feature: encolhe headline e reserva espaço pro footer não colidir com lead */
+.hero--feature { margin-top: 480px; padding-bottom: 200px; max-width: 880px; }
+.hero--feature .headline { font-size: 96px; }
+.hero--feature .headline--story { font-size: 124px; }
+.hero--feature .lead { font-size: 26px; max-width: 760px; }
+.hero--feature .lead--story { font-size: 32px; max-width: 820px; }
+.hero--feature.hero--story { margin-top: 720px; padding-bottom: 280px; }
+
+/* Mockup — reveal de telas do app */
+.mockup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  height: 100%;
+}
+.mockup--story {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 80px;
+  align-items: stretch;
+  text-align: center;
+}
+.mockup .copy { display: flex; flex-direction: column; justify-content: center; }
+.mockup .copy .pill { align-self: flex-start; }
+.mockup--story .copy { align-items: center; }
+.mockup--story .copy .pill { align-self: center; }
+.mockup .copy .headline { font-size: 96px; margin-top: 36px; }
+.mockup--story .copy .headline { font-size: 128px; }
+.mockup .copy .lead { font-size: 26px; max-width: 460px; }
+.mockup--story .copy .lead { font-size: 30px; max-width: 880px; margin-left: auto; margin-right: auto; }
+.mockup .stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.mockup .phone {
+  position: relative;
+  border-radius: 56px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 8px rgba(255,255,255,0.06),
+    0 60px 140px rgba(0,0,0,0.85),
+    0 -20px 80px rgba(255,105,0,0.12);
+  background: var(--bg);
+  max-height: 100%;
+}
+.mockup .phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.mockup .phone--feed { width: 480px; }
+.mockup--story .phone { width: 640px; border-radius: 72px; }
+
+/* Product card layout (foto de produto + spec + headline + lead) */
+.product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  height: 100%;
+}
+.product--story {
+  grid-template-columns: 1fr;
+  grid-template-rows: 620px 1fr;
+  gap: 40px;
+  align-items: stretch;
+  text-align: left;
+}
+.product .copy { display: flex; flex-direction: column; justify-content: center; }
+.product .copy .pill { align-self: flex-start; }
+.product--story .copy .pill { align-self: flex-start; }
+.product .product-stat { display: flex; align-items: baseline; margin-top: 36px; line-height: 0.85; }
+.product .product-stat__num {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 196px;
+  letter-spacing: -0.04em;
+}
+.product .product-stat__unit {
+  font-size: 56px;
+  color: var(--ink-soft);
+  margin-left: 12px;
+  font-weight: 700;
+}
+.product--story .product-stat__num { font-size: 240px; }
+.product--story .product-stat__unit { font-size: 64px; }
+.product .copy .headline { font-size: 80px; margin-top: 24px; line-height: 1.0; }
+.product--story .copy .headline { font-size: 100px; }
+.product .copy .lead { font-size: 26px; max-width: 460px; margin-top: 20px; }
+.product--story .copy .lead { font-size: 32px; max-width: 880px; margin-top: 24px; }
+.product-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.product-stage::before {
+  content: "";
+  position: absolute;
+  inset: 10% 5%;
+  background: radial-gradient(closest-side, rgba(255,105,0,0.18), transparent 70%);
+  z-index: 0;
+}
+.product-image {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 30px 80px rgba(0,0,0,0.6));
+}
+.product--story .product-image { max-height: 580px; }
+
+/* Stat block layout (numeral gigante centralizado) */
+.statblock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 100px 0 160px;
+}
+.statblock--center { align-items: center; text-align: center; }

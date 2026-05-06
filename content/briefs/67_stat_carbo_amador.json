@@ -1,0 +1,19 @@
+{
+  "id": "67_stat_carbo_amador",
+  "template": "stat",
+  "pillar": "nutricao",
+  "title": "Stat · subnutrição intra-prova do amador",
+  "vars": {
+    "BG_IMAGE": "marathon.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%",
+    "STAT_NUM": "70",
+    "STAT_UNIT": "%",
+    "HEADLINE": "a parede da maratona <span class=\"hl\">não é cabeça.</span>",
+    "LEAD": "70% dos amadores ingerem menos da metade do carbo recomendado.<br>É glicogênio acabando — 60–90g de carbo por hora a partir do km 8 muda o final da prova."
+  },
+  "story_vars": {
+    "HEADLINE": "quanto carbo <span class=\"hl\">por hora</span>?",
+    "LEAD": "Resposta na enquete. A maioria fica em metade do que precisa."
+  }
+}

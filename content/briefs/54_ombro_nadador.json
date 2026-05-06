@@ -1,0 +1,19 @@
+{
+  "id": "54_ombro_nadador",
+  "template": "feature",
+  "pillar": "educacional-prevencao",
+  "title": "Ombro do nadador",
+  "vars": {
+    "BG_IMAGE": "villarinho_swim_face.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%",
+    "PILL": "PREVENÇÃO · NATAÇÃO",
+    "HEADLINE": "<span class=\"hl\">ombro</span> do nadador: silencioso e cumulativo.",
+    "LEAD": "Tendinopatia do supraespinhoso ou impacto subacromial. Causa: cotovelo baixo na recuperação, rotação interna excessiva, fraqueza do manguito rotador. Prevenção: drills de cotovelo alto + 2× semana de YTW, face pull, rotação externa com banda."
+  },
+  "story_vars": {
+    "PILL": "PREVENÇÃO",
+    "HEADLINE": "<span class=\"hl\">já doeu</span> o ombro?",
+    "LEAD": "Vota: nunca · às vezes · sempre · convivo. Quem treina volume aceita o convite cedo ou tarde."
+  }
+}

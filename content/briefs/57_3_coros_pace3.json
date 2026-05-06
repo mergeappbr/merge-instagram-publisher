@@ -1,0 +1,17 @@
+{
+  "id": "57_3_coros_pace3",
+  "template": "product",
+  "pillar": "comparativo-wearables",
+  "title": "Wearable · Coros Pace 3",
+  "vars": {
+    "PILL": "WEARABLE · COROS",
+    "PRODUCT_IMAGE": "comparativos/coros_pace3.png",
+    "STAT_NUM": "39",
+    "STAT_UNIT": "g",
+    "HEADLINE": "<span class=\"hl\">pace 3</span>: leve, direto, barato.",
+    "LEAD": "GPS dual-frequency, 24 dias bateria, 38h GPS. Sem mapa colorido nem música. R$ 1.999. Dado e bateria sem firula."
+  },
+  "story_vars": {
+    "PILL": "COROS PACE 3"
+  }
+}

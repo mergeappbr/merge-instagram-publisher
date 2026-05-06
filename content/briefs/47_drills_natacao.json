@@ -1,0 +1,19 @@
+{
+  "id": "47_drills_natacao",
+  "template": "quote",
+  "pillar": "educacional-natacao",
+  "title": "Carrossel · drills natação — capa",
+  "vars": {
+    "PILL": "DRILLS · NATAÇÃO",
+    "HEADLINE": "<span class=\"hl\">4 drills</span> que viram seu nado.",
+    "LEAD": "Não é volume que conserta técnica — é repetição focada. Quatro exercícios curtos, três vezes por semana, e o nado muda. Arrasta pra ver.",
+    "BG_IMAGE": "villarinho_swim.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "PILL": "DRILLS",
+    "HEADLINE": "<span class=\"hl\">4 drills.</span> 1 nado novo.",
+    "LEAD": "No feed, a sequência completa. Aqui só o spoiler."
+  }
+}

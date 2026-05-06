@@ -1,0 +1,16 @@
+{
+  "id": "37_6_zonas_z5",
+  "template": "stat",
+  "pillar": "educacional-corrida",
+  "title": "Carrossel · Z5 vo2max",
+  "vars": {
+    "STAT_NUM": "90–100",
+    "STAT_UNIT": "% FCmax",
+    "STAT_CAPTION": "ZONA 5 · VO2 MAX",
+    "HEADLINE": "<span class=\"hl\">Z5</span> · não fala, segura.",
+    "LEAD": "Tiros curtos de 30s a 3min. Empurra o teto da sua capacidade aeróbica. Pouco volume aqui dá muito retorno — e cobra recovery na mesma medida.",
+    "BG_IMAGE": "villarinho_track.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

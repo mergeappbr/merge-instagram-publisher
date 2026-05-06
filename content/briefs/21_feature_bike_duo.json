@@ -1,0 +1,19 @@
+{
+  "id": "21_feature_bike_duo",
+  "template": "feature",
+  "pillar": "modalidade-bike",
+  "title": "Feature · bike road em dupla",
+  "vars": {
+    "BG_IMAGE": "villarinho_bike_motion.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 50%",
+    "PILL": "BIKE ROAD",
+    "HEADLINE": "<span class=\"hl\">vácuo</span> é o segundo treino mais importante da semana.",
+    "LEAD": "Andar atrás de alguém ensina ritmo, leitura de estrada e economia. Quem pedala sozinho fica forte. Quem pedala em dupla fica esperto."
+  },
+  "story_vars": {
+    "PILL": "BIKE ROAD",
+    "HEADLINE": "<span class=\"hl\">com quem</span> você pedala?",
+    "LEAD": "Marca quem segura sua roda no longo. A gente quer ver a dupla."
+  }
+}

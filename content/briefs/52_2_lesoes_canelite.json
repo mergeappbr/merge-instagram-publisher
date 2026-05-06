@@ -1,0 +1,13 @@
+{
+  "id": "52_2_lesoes_canelite",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Lesão 1 · canelite",
+  "vars": {
+    "STAT_NUM": "01",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "LESÃO · CANELITE (SHIN SPLINTS)",
+    "HEADLINE": "<span class=\"hl\">canelite</span>: dor na frente da tíbia.",
+    "LEAD": "Causa: aumento brusco de volume, cadência baixa, calçado errado. Prevenção: regra dos 10% (não aumenta volume mais de 10% por semana), cadência ≥170spm, força de panturrilha 2× semana."
+  }
+}

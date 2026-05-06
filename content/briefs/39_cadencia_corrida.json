@@ -1,0 +1,23 @@
+{
+  "id": "39_cadencia_corrida",
+  "template": "stat",
+  "pillar": "educacional-corrida",
+  "title": "Cadência corrida · 180 spm",
+  "vars": {
+    "STAT_NUM": "180",
+    "STAT_UNIT": "spm",
+    "STAT_CAPTION": "PASSOS POR MINUTO",
+    "HEADLINE": "cadência alta <span class=\"hl\">poupa joelho</span>.",
+    "LEAD": "Passada curta e rápida reduz força de impacto e tempo de contato com o solo. Não precisa cravar 180 — começa medindo a sua e aumenta 5%. O resto vem com tempo.",
+    "BG_IMAGE": "villarinho_woman_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 30%"
+  },
+  "story_vars": {
+    "STAT_NUM": "180",
+    "STAT_UNIT": "spm",
+    "STAT_CAPTION": "MEDE A SUA",
+    "HEADLINE": "qual sua <span class=\"hl\">cadência</span>?",
+    "LEAD": "Caixinha pra contar. Abaixo de 165 vale aumentar 5%. Acima de 180 já tá no clube."
+  }
+}

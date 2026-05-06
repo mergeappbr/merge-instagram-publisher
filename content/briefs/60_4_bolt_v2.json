@@ -1,0 +1,16 @@
+{
+  "id": "60_4_bolt_v2",
+  "template": "stat",
+  "pillar": "comparativo-bike",
+  "title": "GPS bike · Wahoo Elemnt Bolt V2",
+  "vars": {
+    "STAT_NUM": "15",
+    "STAT_UNIT": "h",
+    "STAT_CAPTION": "WAHOO BOLT V2 · BATERIA",
+    "HEADLINE": "<span class=\"hl\">bolt v2</span>: o aerodinâmico.",
+    "LEAD": "Tela 2,2'' · formato gota d'água aero · botões físicos · 15h.<br><br>Setup pelo app é o mais fácil do mercado. Prático e leve. R$ 2.999.",
+    "BG_IMAGE": "villarinho_bike_pair.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  }
+}

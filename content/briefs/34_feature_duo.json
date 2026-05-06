@@ -1,0 +1,19 @@
+{
+  "id": "34_feature_duo",
+  "template": "feature",
+  "pillar": "comunidade",
+  "title": "Feature · dupla mista",
+  "vars": {
+    "BG_IMAGE": "villarinho_duo_mixed.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%",
+    "PILL": "EM DUPLA",
+    "HEADLINE": "<span class=\"hl\">ela</span> puxa. ele puxa.",
+    "LEAD": "Treino bom não tem gênero, idade nem nível. Tem ritmo. Quando dois ritmos diferentes se encontram, os dois saem melhores."
+  },
+  "story_vars": {
+    "PILL": "EM DUPLA",
+    "HEADLINE": "<span class=\"hl\">quem</span> te puxa?",
+    "LEAD": "Marca quem treina contigo e divide o ritmo da semana."
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "08_feature_gadget_wearable",
+  "template": "feature",
+  "pillar": "gadgets",
+  "title": "Feature · Wearables · o relógio mede e o resto?",
+  "vars": {
+    "BG_IMAGE": "villarinho_watch.jpg",
+    "OVERLAY": "side",
+    "BG_POSITION": "center",
+    "PILL": "GADGETS · O QUE O DADO NÃO CONTA",
+    "HEADLINE": "o relógio mede. e o <span class=\"hl-block\">resto</span>?",
+    "LEAD": "Pace, frequência cardíaca, VO2, cadência. O número aparece. Mas vira progresso quando vira contexto: sono, hidratação, comunidade, plano. Tudo no mesmo lugar.",
+    "CTA_LABEL": "qual o seu? comenta"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "60_3_edge1050",
+  "template": "stat",
+  "pillar": "comparativo-bike",
+  "title": "GPS bike · Garmin Edge 1050",
+  "vars": {
+    "STAT_NUM": "20",
+    "STAT_UNIT": "h",
+    "STAT_CAPTION": "GARMIN EDGE 1050 · BATERIA",
+    "HEADLINE": "<span class=\"hl\">edge 1050</span>: a referência.",
+    "LEAD": "Tela 3,5'' alto brilho · alto-falante · GroupRide · ClimbPro · 20h.<br><br>Ecossistema Garmin Connect domina. Todo recurso possível. R$ 5.999.",
+    "BG_IMAGE": "villarinho_bike_motion.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

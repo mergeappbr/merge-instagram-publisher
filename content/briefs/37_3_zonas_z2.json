@@ -1,0 +1,16 @@
+{
+  "id": "37_3_zonas_z2",
+  "template": "stat",
+  "pillar": "educacional-corrida",
+  "title": "Carrossel · Z2 base aeróbica",
+  "vars": {
+    "STAT_NUM": "60–70",
+    "STAT_UNIT": "% FCmax",
+    "STAT_CAPTION": "ZONA 2 · BASE AERÓBICA",
+    "HEADLINE": "<span class=\"hl\">Z2</span> · ritmo de conversa.",
+    "LEAD": "A zona mais importante e a mais subestimada. Constrói mitocôndria, queima gordura, sustenta corredor por anos. 70 a 80% do volume mora aqui.",
+    "BG_IMAGE": "villarinho_woman_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 25%"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "52_3_lesoes_fascite",
+  "template": "stat",
+  "pillar": "educacional-prevencao",
+  "title": "Lesão 2 · fascite plantar",
+  "vars": {
+    "STAT_NUM": "02",
+    "STAT_UNIT": "",
+    "STAT_CAPTION": "LESÃO · FASCITE PLANTAR",
+    "HEADLINE": "<span class=\"hl\">fascite</span>: dor no calcanhar de manhã.",
+    "LEAD": "Inflamação da fáscia plantar. Causa: sobrecarga, panturrilha curta, drop muito baixo cedo demais. Prevenção: alongamento de panturrilha + fáscia, fortalecimento de pé, transição gradual de calçado."
+  }
+}

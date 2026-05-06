@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.tmp_posts/
+output/
+!output/reels/
+!output/published.csv
+.DS_Store

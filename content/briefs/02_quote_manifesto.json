@@ -1,0 +1,13 @@
+{
+  "id": "02_quote_manifesto",
+  "template": "quote",
+  "pillar": "marca",
+  "title": "Quote · onde o wellness acontece",
+  "vars": {
+    "KICKER": "MERGE · MANIFESTO",
+    "PILL": "O MAIOR ECOSSISTEMA WELLNESS DO BRASIL",
+    "HEADLINE": "onde o <span class=\"hl-block\">wellness</span> acontece.",
+    "LEAD": "Treinos, comunidade, assessoria e shopping em um só lugar. Construindo a infraestrutura do wellness brasileiro.",
+    "CTA_LABEL": "saiba mais"
+  }
+}

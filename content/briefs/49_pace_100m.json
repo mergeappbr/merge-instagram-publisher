@@ -1,0 +1,23 @@
+{
+  "id": "49_pace_100m",
+  "template": "stat",
+  "pillar": "educacional-natacao",
+  "title": "Pace 100m natação",
+  "vars": {
+    "STAT_NUM": "1:30",
+    "STAT_UNIT": "/100m",
+    "STAT_CAPTION": "PACE Z2 · REFERÊNCIA",
+    "HEADLINE": "pace por <span class=\"hl\">100m</span> é seu FCmax da água.",
+    "LEAD": "Se a frequência cardíaca não funciona dentro d'água, o pace funciona. Faz 4×100m all-out e tira a média — Z2 fica em pace+10 a 15s. CSS (Critical Swim Speed) cruza 400m e 200m TT pra achar o seu threshold real.",
+    "BG_IMAGE": "villarinho_swim.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  },
+  "story_vars": {
+    "STAT_NUM": "1:30",
+    "STAT_UNIT": "/100m",
+    "STAT_CAPTION": "Z2 EXEMPLO",
+    "HEADLINE": "<span class=\"hl\">qual</span> seu pace 100m?",
+    "LEAD": "Caixinha pra contar. Sem julgamento — é a base pra calibrar treino."
+  }
+}

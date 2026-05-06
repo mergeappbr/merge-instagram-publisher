@@ -1,0 +1,25 @@
+{
+  "id": "45_mtb_vs_road",
+  "template": "compare",
+  "pillar": "educacional-bike",
+  "title": "MTB x Road · o que cada uma desenvolve",
+  "vars": {
+    "HEADLINE": "<span class=\"hl\">terra</span> ou asfalto?",
+    "LEAD": "Cada modalidade desenvolve uma habilidade — e a outra cobra de volta.",
+    "LEFT_LABEL": "ROAD",
+    "LEFT_BODY": "Aerodinâmica. FTP elevado. Potência sustentada. Pelotão e tática. Cadência limpa. Mente longa em distância.",
+    "RIGHT_LABEL": "MTB",
+    "RIGHT_BODY": "Habilidade técnica. Força explosiva. Leitura de chão. Transferência de peso. Coordenação. Mente curta em decisão.",
+    "BG_IMAGE": "villarinho_mtb_trail.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  },
+  "story_vars": {
+    "HEADLINE": "<span class=\"hl\">terra</span> ou asfalto?",
+    "LEAD": "Vota na enquete. Quem treina os dois fica completo.",
+    "LEFT_LABEL": "ROAD",
+    "LEFT_BODY": "FTP alto. Aero. Cadência. Pelotão.",
+    "RIGHT_LABEL": "MTB",
+    "RIGHT_BODY": "Técnica. Força. Leitura. Reflexo."
+  }
+}

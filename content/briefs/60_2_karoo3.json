@@ -1,0 +1,16 @@
+{
+  "id": "60_2_karoo3",
+  "template": "stat",
+  "pillar": "comparativo-bike",
+  "title": "GPS bike · Hammerhead Karoo",
+  "vars": {
+    "STAT_NUM": "15",
+    "STAT_UNIT": "h",
+    "STAT_CAPTION": "HAMMERHEAD KAROO · BATERIA",
+    "HEADLINE": "<span class=\"hl\">karoo</span>: a tela mais bonita.",
+    "LEAD": "Touch 3,2'' retina · mapas 3D · integração TR/Strava · 15h.<br><br>SRAM puxando atualizações. UX tipo smartphone. R$ 4.499.",
+    "BG_IMAGE": "villarinho_bike.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 40%"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "52_lesoes_corrida",
+  "template": "quote",
+  "pillar": "educacional-prevencao",
+  "title": "Carrossel · lesões corrida — capa",
+  "vars": {
+    "PILL": "PREVENÇÃO · CORRIDA",
+    "HEADLINE": "<span class=\"hl\">5 lesões</span> que tiram corredor de prova.",
+    "LEAD": "A boa notícia: 4 das 5 são prevenidas com força + cadência + carga progressiva. A ruim: ignorar uma por 2 semanas vira 2 meses parado. Arrasta pra ver.",
+    "BG_IMAGE": "villarinho_woman_run.jpg",
+    "OVERLAY": "bottom",
+    "BG_POSITION": "center 35%"
+  },
+  "story_vars": {
+    "PILL": "PREVENÇÃO",
+    "HEADLINE": "<span class=\"hl\">5 lesões.</span> 5 prevenções.",
+    "LEAD": "No feed tem o detalhe. Aqui só o alerta."
+  }
+}
