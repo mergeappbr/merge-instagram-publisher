@@ -35,7 +35,9 @@ import csv
 import html
 import subprocess
 import sys
+import threading
 import time
+import traceback
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -318,15 +320,36 @@ def tick(dry_run: bool = False) -> int:
     return n_ok
 
 
+def _start_bot_thread() -> None:
+    """Sobe o long-polling do bot Telegram numa thread daemon — mesmo processo,
+    mesmo volume montado. Falha aqui não derruba o scheduler (só loga)."""
+    def _run() -> None:
+        try:
+            from bot.poller import main as bot_main
+            bot_main()
+        except SystemExit as e:
+            print(f"⚠ bot encerrou: {e}")
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ bot crashed: {e!r}")
+            traceback.print_exc()
+    t = threading.Thread(target=_run, name="merge-bot", daemon=True)
+    t.start()
+    print("scheduler · bot thread iniciada")
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true", help="1 passada e sai")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--no-bot", action="store_true", help="não sobe a thread do bot")
     args = parser.parse_args(argv)
 
     print(f"Merge scheduler · TZ={TZ} · tick={TICK_SECONDS}s")
     print(f"  calendar : {CALENDAR}")
     print(f"  published: {PUBLISHED}")
+
+    if not args.once and not args.dry_run and not args.no_bot:
+        _start_bot_thread()
 
     info = runway_info(datetime.now(TZ))
     notify(
