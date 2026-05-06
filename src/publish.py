@@ -207,6 +207,18 @@ def create_reel_container(
     return _post(client, f"{IG_USER_ID}/media", payload)["id"]
 
 
+def create_story_container(
+    client: httpx.Client,
+    image_url: str,
+) -> str:
+    """Container pra IG Stories (imagem). Sem caption — stories não usa."""
+    payload = {
+        "media_type": "STORIES",
+        "image_url": image_url,
+    }
+    return _post(client, f"{IG_USER_ID}/media", payload)["id"]
+
+
 def wait_until_finished(client: httpx.Client, container_id: str, timeout_s: int = 180) -> None:
     deadline = time.time() + timeout_s
     while time.time() < deadline:
@@ -222,6 +234,54 @@ def wait_until_finished(client: httpx.Client, container_id: str, timeout_s: int 
 
 def publish_container(client: httpx.Client, creation_id: str) -> str:
     return _post(client, f"{IG_USER_ID}/media_publish", {"creation_id": creation_id})["id"]
+
+
+# ---------------------------------------------------------------------------
+# Stories (API pública pro news pipeline)
+# ---------------------------------------------------------------------------
+
+def publish_story(local_image_path: str, *, post_id: str, prefix: str | None = None) -> str:
+    """
+    Publica IG Story a partir de uma imagem local (PNG/JPG).
+    Sobe pro R2 → cria container STORIES → publica → loga.
+
+    Retorna media_id. Levanta SystemExit em falha (mesmo padrão do publish.py).
+
+    Uso (do news pipeline):
+        from publish import publish_story
+        media_id = publish_story("output/stories/story_news_xxx.png", post_id="story_news_xxx")
+    """
+    if not ACCESS_TOKEN or not IG_USER_ID:
+        sys.exit("Faltam META_GRAPH_ACCESS_TOKEN ou IG_BUSINESS_ACCOUNT_ID")
+    img = Path(local_image_path)
+    if not img.exists():
+        sys.exit(f"Story image não encontrada: {img}")
+
+    pfx = prefix or f"ig/stories/{post_id}/{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    print(f"→ STORY: subindo 1 imagem para R2 (prefix: {pfx})")
+    urls = upload_to_r2([img], pfx)
+    image_url = urls[0]
+
+    with httpx.Client() as client:
+        print("→ Criando container STORIES…")
+        creation_id = create_story_container(client, image_url)
+        print(f"  · {creation_id}")
+        wait_until_finished(client, creation_id)
+        print("→ Publicando story…")
+        media_id = publish_container(client, creation_id)
+        print(f"✓ Story publicado! media_id={media_id}")
+
+    log_publication({
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "media_id": media_id,
+        "creation_id": creation_id,
+        "format": "story",
+        "post_id": post_id,
+        "assets": img.name,
+        "caption_preview": "",
+        "scheduled_for": "",
+    })
+    return media_id
 
 
 # ---------------------------------------------------------------------------

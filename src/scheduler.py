@@ -47,12 +47,15 @@ CALENDAR = ROOT / "content" / "calendar.csv"
 PUBLISHED = ROOT / "output" / "published.csv"
 SKIPPED_STATE = ROOT / "output" / ".skipped_slots.txt"
 SUMMARY_STATE = ROOT / "output" / ".last_summary_date.txt"
+INSIGHTS_COLLECT_STATE = ROOT / "output" / ".last_insights_collect.txt"
 
 TZ = ZoneInfo("America/Sao_Paulo")
 TICK_SECONDS = 60
 MAX_STALENESS_MINUTES = 60  # slot atrasado mais que isso é pulado
 RUNWAY_LOW_THRESHOLD_DAYS = 7
+RUNWAY_AUTOGEN_THRESHOLD_DAYS = 14  # gatilho pra Fase B (autogen)
 SUMMARY_HOUR = 9  # envia resumo diário no primeiro tick após 09:00 BRT
+INSIGHTS_COLLECT_HOUR = 7  # coleta de insights 1x/dia, depois das 07h BRT
 
 
 def parse_dt(value: str) -> datetime:
@@ -221,9 +224,73 @@ def maybe_daily_summary(now: datetime) -> None:
     SUMMARY_STATE.write_text(today, encoding="utf-8")
 
 
+def _maybe_collect_insights(now: datetime) -> None:
+    """1x/dia, após INSIGHTS_COLLECT_HOUR, coleta insights da Graph API."""
+    today = now.date().isoformat()
+    if INSIGHTS_COLLECT_STATE.exists():
+        if INSIGHTS_COLLECT_STATE.read_text(encoding="utf-8").strip() == today:
+            return
+    if now.hour < INSIGHTS_COLLECT_HOUR:
+        return
+    try:
+        from insights.collector import collect_now
+        n = collect_now()
+        print(f"insights · snapshots coletados: {n}")
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ insights collect erro: {e!r}")
+        return
+    INSIGHTS_COLLECT_STATE.parent.mkdir(parents=True, exist_ok=True)
+    INSIGHTS_COLLECT_STATE.write_text(today, encoding="utf-8")
+
+
+def _maybe_news_watch(now: datetime) -> None:
+    try:
+        from news.watcher import maybe_run as news_maybe_run
+        news_maybe_run(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ news watcher erro: {e!r}")
+
+
+def _maybe_stories(now: datetime) -> None:
+    try:
+        from news.stories import maybe_dispatch
+        maybe_dispatch(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ stories dispatch erro: {e!r}")
+
+
+def _maybe_insights_reports(now: datetime) -> None:
+    try:
+        from insights.reporter import maybe_daily_report, maybe_monthly_report
+        maybe_daily_report(now)
+        maybe_monthly_report(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ insights report erro: {e!r}")
+
+
+def _maybe_autogen(now: datetime) -> None:
+    """Gatilha geração de briefs quando runway < threshold."""
+    info = runway_info(now)
+    if info["days_remaining"] >= RUNWAY_AUTOGEN_THRESHOLD_DAYS:
+        return
+    try:
+        from autogen.runner import maybe_generate_batch
+        n = maybe_generate_batch()
+        if n:
+            print(f"autogen · {n} previews enviados (runway {info['days_remaining']}d)")
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ autogen erro: {e!r}")
+
+
 def tick(dry_run: bool = False) -> int:
     now = datetime.now(TZ)
     maybe_daily_summary(now)
+    if not dry_run:
+        _maybe_collect_insights(now)
+        _maybe_insights_reports(now)
+        _maybe_news_watch(now)
+        _maybe_stories(now)
+        _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:
         return 0
