@@ -29,6 +29,12 @@ DIRETRIZES OBRIGATÓRIAS DE LINGUAGEM:
 - Cita fonte quando faz claim científico (paper, atleta, organização)
 - Tom de comunidade: "a gente", "você", "manda na caixinha" — nunca "querido leitor"
 
+VOCABULÁRIO OBRIGATÓRIO (regras de marca):
+- "triathlon" SEMPRE em inglês. NUNCA "triatlo", "triatlon" ou "triathlo".
+- "pace" (NUNCA "pacing"). Pode usar "ritmo" como sinônimo em pt-BR.
+- Modalidades em pt-BR: "corrida", "trail", "MTB", "natação", "Hyrox", "ciclismo".
+  Mas "triathlon" e nomes de provas (UTMB, Cocodona, Hyrox SP) ficam em inglês.
+
 FORMATO DA ARTE (HEADLINE + LEAD):
 - HEADLINE: clickbait honesto, max 7 palavras, 1 grupo destacado entre <span class="hl"> ... </span>
   Exemplos bons: "RPE: a escala que <span class="hl">substitui o relógio</span>"

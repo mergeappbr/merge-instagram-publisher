@@ -49,8 +49,9 @@ body {
   display: flex;
   flex-direction: column;
 }
-.canvas--feed   { height: 1350px; padding: var(--pad-feed) var(--pad-feed) 160px; }
-.canvas--story  { height: 1920px; padding: var(--pad-story) var(--pad-story) 220px; }
+/* Respiro inferior generoso pra evitar texto colado na borda */
+.canvas--feed   { height: 1350px; padding: var(--pad-feed) var(--pad-feed) 220px; }
+.canvas--story  { height: 1920px; padding: var(--pad-story) var(--pad-story) 320px; }
 
 /* Background image (foto do tema) com overlay escurecido */
 .bg-image {
@@ -64,11 +65,12 @@ body {
 .bg-overlay {
   position: absolute;
   inset: 0;
+  /* Overlay mais leve — deixa a foto respirar mantendo legibilidade do texto */
   background: linear-gradient(
     180deg,
-    rgba(10,10,10,0.65) 0%,
-    rgba(10,10,10,0.78) 55%,
-    rgba(10,10,10,0.92) 100%
+    rgba(10,10,10,0.42) 0%,
+    rgba(10,10,10,0.60) 55%,
+    rgba(10,10,10,0.82) 100%
   );
   z-index: 1;
 }
@@ -152,6 +154,9 @@ body {
   color: var(--ink);
   margin: 0;
   text-transform: lowercase;
+  /* Evita órfãos/quebras feias: navegador tenta balancear as linhas */
+  text-wrap: balance;
+  hyphens: manual;
 }
 .headline--story { font-size: 152px; }
 .headline .hl {
@@ -177,6 +182,7 @@ body {
   color: var(--ink-soft);
   margin: 32px 0 0;
   max-width: 880px;
+  text-wrap: pretty;  /* evita palavra solta na última linha */
 }
 .lead--story { font-size: 36px; }
 
