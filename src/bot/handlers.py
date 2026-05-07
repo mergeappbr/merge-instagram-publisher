@@ -58,6 +58,21 @@ def _handle_callback(cb: dict) -> None:
         return
     action, aid = data.split(":", 1)
 
+    # produce_news não tem approval — `aid` é prefixo do hash do pool.
+    # Trata antes do read_approval pra não cair em "expirado".
+    if action == "produce_news":
+        api.answer_callback(cb_id, "produzindo…")
+        _disable_buttons(msg, status="produzindo 🎨")
+        try:
+            _produce_news_by_hash(aid, chat_id=chat_id)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ produce_news falhou: {e!r}")
+            api.send_message(
+                f"⚠️ falha ao produzir: {html.escape(str(e)[:200])}",
+                chat_id=str(chat_id) if chat_id else None,
+            )
+        return
+
     approval = state.read_approval(aid)
     if approval is None:
         api.answer_callback(cb_id, "expirado ou não encontrado")
@@ -101,20 +116,6 @@ def _handle_callback(cb: dict) -> None:
             except Exception as e:  # noqa: BLE001
                 print(f"⚠ reject {kind} falhou: {e!r}")
         state.archive_approval(aid, decision="rejected")
-        return
-
-    if action == "produce_news":
-        # `aid` aqui é prefixo do hash do item no pool, não approval_id
-        api.answer_callback(cb_id, "produzindo…")
-        _disable_buttons(msg, status="produzindo 🎨")
-        try:
-            _produce_news_by_hash(aid, chat_id=chat_id)
-        except Exception as e:  # noqa: BLE001
-            print(f"⚠ produce_news falhou: {e!r}")
-            api.send_message(
-                f"⚠️ falha ao produzir: {html.escape(str(e)[:200])}",
-                chat_id=str(chat_id) if chat_id else None,
-            )
         return
 
     if action == "adjust":
