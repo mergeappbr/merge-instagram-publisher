@@ -441,8 +441,12 @@ def _force_news_fitbit(chat_id: int) -> None:
         "primary_modality": "wellness",
         "reasoning": "Lançamento que muda jogo do segmento (sem assinatura vs WHOOP).",
         "angle_suggestion": (
-            "Fim do monopólio do WHOOP — Google entra com Fitbit Air a US$99 sem assinatura."
+            "Google ataca o WHOOP com Fitbit Air a US$99 — WHOOP deve aparecer em "
+            "DESTAQUE na headline (clickbait estratégico, é briga direta entre os "
+            "dois produtos). Ex: 'Google ataca o <span class=\"hl\">WHOOP</span> com "
+            "Fitbit Air'. Mencionar ambas marcas no caption."
         ),
+        "bg_override": "FitbitGoogle.webp",
         "added_at": datetime.now(timezone.utc).isoformat(),
     }
     ok = feed_post.dispatch_one(item, "manual_fitbit")

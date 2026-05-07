@@ -127,6 +127,14 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
     }
     brief = writer.write_brief(plan_entry, news_context=news_context)
     brief["id"] = bid
+    # Override de BG — quando o item traz `bg_override`, força no brief (e no
+    # story_vars) sobrescrevendo o que o writer escolheu. Útil pra notícias
+    # com foto oficial dedicada (ex: lançamento Fitbit Air).
+    bg_override = item.get("bg_override")
+    if bg_override:
+        brief.setdefault("vars", {})["BG_IMAGE"] = bg_override
+        if "story_vars" in brief:
+            brief["story_vars"]["BG_IMAGE"] = bg_override
     review = reviewer.review(brief)
     return brief, plan_entry, review
 
