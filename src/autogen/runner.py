@@ -169,15 +169,29 @@ def _create_approval(brief: dict, plan_entry: dict, review: dict) -> str:
 
 
 def on_brief_approve(approval: dict) -> None:
-    """Humano aprovou. Adiciona ao calendar.csv no scheduled_at planejado."""
+    """Humano aprovou. Adiciona ao calendar.csv no scheduled_at planejado.
+
+    News posts (theme=news OU is_news_scheduled=True) sobrescrevem o slot
+    planejado e ficam scheduled_at=agora — assim o próximo tick do scheduler
+    publica em <1min. Sem isso, news cai no próximo slot livre do calendar
+    (pode ser semanas no futuro) e perde o timing de real-time.
+    """
     brief = approval["brief"]
     plan_entry = approval["plan_entry"]
-    sched = plan_entry.get("scheduled_at", "")
-    try:
-        when = datetime.strptime(sched, "%Y-%m-%d %H:%M")
-    except ValueError:
-        # fallback: próximo slot livre
-        when = calendar_io.next_free_slots(1)[0]
+    is_news = (
+        approval.get("is_news_scheduled")
+        or plan_entry.get("theme") == "news"
+    )
+    if is_news:
+        # Real-time: publica no próximo tick (1 min de janela é ok)
+        when = datetime.now()
+    else:
+        sched = plan_entry.get("scheduled_at", "")
+        try:
+            when = datetime.strptime(sched, "%Y-%m-%d %H:%M")
+        except ValueError:
+            # fallback: próximo slot livre
+            when = calendar_io.next_free_slots(1)[0]
     fmt = plan_entry.get("format", "static")
     theme = plan_entry.get("theme", "")
     note = brief.get("title", brief.get("id", ""))[:60]
