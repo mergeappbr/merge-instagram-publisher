@@ -7,8 +7,8 @@
   --bg: #0A0A0A;             /* preto profundo */
   --bg-elev: #141414;         /* elevações de card */
   --ink: #F2F2F2;             /* texto primário (off-white) */
-  --ink-soft: #C9C9C9;
-  --muted: #6E6E6E;           /* labels, kickers, footnotes */
+  --ink-soft: #DCDCDC;        /* texto secundário (lead/subhead) — passa AA sobre overlay padrão */
+  --muted: #808080;           /* labels, kickers, footnotes — 5.0:1 contra #0A0A0A (passa AA) */
   --hairline: rgba(255,255,255,0.10);
 
   --orange-100: #FF6900;      /* gradient start (logo oficial) */
@@ -498,7 +498,7 @@ body {
 .product--story .copy .pill { align-self: flex-start; }
 .product .product-stat { display: flex; align-items: baseline; margin-top: 36px; line-height: 0.85; }
 .product .product-stat__num {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-weight: 900;
   font-size: 196px;
   letter-spacing: -0.04em;
