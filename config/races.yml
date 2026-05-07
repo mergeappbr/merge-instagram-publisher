@@ -1,0 +1,58 @@
+# Calendário de provas — milestones T-30/T-15/T-7/T-1 (countdown) + T+1 (resultados).
+#
+# kind=ironman → roda pipeline completo (countdown + carrossel resultados M+F).
+# kind=mtb|trail → só countdown (briefs gerados manualmente; tracker só notifica Pedro).
+#
+# Datas em formato ISO YYYY-MM-DD (timezone implícita: race day local, mas tracker
+# compara com America/Sao_Paulo no scheduler — boa o suficiente pra T-N dias).
+
+races:
+  - id: im_brasil_2026
+    name: "IRONMAN Brasil"
+    kind: ironman
+    distance: full          # full | 70.3
+    location: "Florianópolis · SC"
+    location_short: "FLORIPA"
+    date: "2026-05-31"
+    site: "https://www.ironman.com/im-brazil"
+    ironstats_handle: "ironstatsbr"
+    logo: "IronFullLogo.png"
+    bg_countdown: "villarinho_openwater.jpg"
+    bg_results_cover: "villarinho_race.jpg"
+    bg_results_male: "villarinho_race.jpg"
+    bg_results_female: "villarinho_woman_run.jpg"
+    race_label_short: "FLORIPA · 31/05"
+    kicker: "IRONMAN BRASIL · 31/05/26"
+
+  - id: sertoes_nova_lima_2026
+    name: "Sertões MTB · Nova Lima"
+    kind: mtb
+    location: "Nova Lima · MG"
+    location_short: "NOVA LIMA"
+    date: "2026-05-22"      # primeiro dia
+    date_end: "2026-05-24"
+    site: "https://sertoes.com"
+    race_label_short: "NOVA LIMA · 22/05"
+    kicker: "SERTÕES MTB · 22-24/05"
+
+  - id: sertoes_ibitipoca_2026
+    name: "Sertões MTB · Ibitipoca"
+    kind: mtb
+    location: "Ibitipoca · MG"
+    location_short: "IBITIPOCA"
+    date: "2026-09-17"
+    date_end: "2026-09-19"
+    site: "https://sertoes.com"
+    race_label_short: "IBITIPOCA · 17/09"
+    kicker: "SERTÕES MTB · 17-19/09"
+
+  - id: el_cruce_2026
+    name: "El Cruce Saucony"
+    kind: trail
+    location: "Patagônia · ARG/CHI"
+    location_short: "PATAGÔNIA"
+    date: "2026-12-05"
+    date_end: "2026-12-11"
+    site: "https://elcrucecolumbia.com"
+    race_label_short: "PATAGÔNIA · 05/12"
+    kicker: "EL CRUCE · 05-11/12"

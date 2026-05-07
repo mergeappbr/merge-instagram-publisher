@@ -121,6 +121,43 @@ def send_photo_file(
     return r.json()
 
 
+def send_carousel_preview(
+    photo_paths: list[str],
+    *,
+    caption: str,
+    chat_id: str | None = None,
+    reply_markup: dict | None = None,
+    silent: bool = False,
+) -> dict:
+    """Envia uma sequência de PNGs como mensagens separadas, simulando um
+    carrossel. Os primeiros N-1 slides vão com caption mínima (ex: "slide 1/3").
+    O último carrega a caption completa + reply_markup com os botões de
+    aprovação. Retorna o response do envio final (o que tem o keyboard) — útil
+    pra o handler editar a caption depois pra registrar a decisão.
+
+    Por que não sendMediaGroup (álbum nativo)? Porque a Telegram Bot API não
+    aceita inline_keyboard em álbum. Enviar separado é o jeito de manter os
+    botões num único ponto de decisão pro carrossel inteiro.
+    """
+    if not photo_paths:
+        return {}
+    total = len(photo_paths)
+    for i, path in enumerate(photo_paths[:-1], start=1):
+        send_photo_file(
+            path,
+            caption=f"slide {i}/{total}",
+            chat_id=chat_id,
+            silent=True,  # primeiros slides silenciosos; só o último notifica
+        )
+    return send_photo_file(
+        photo_paths[-1],
+        caption=caption,
+        chat_id=chat_id,
+        reply_markup=reply_markup,
+        silent=silent,
+    )
+
+
 def edit_message_text(
     chat_id: int | str,
     message_id: int,

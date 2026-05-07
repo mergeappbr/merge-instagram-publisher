@@ -1,0 +1,15 @@
+{
+  "id": "im_floripa_2026_results_2",
+  "template": "im_ranking_full",
+  "pillar": "ironman",
+  "title": "IM Brasil · top 10 masc (slide 2/3 — mock)",
+  "vars": {
+    "BG_IMAGE": "villarinho_race.jpg",
+    "EVENT_LOGO": "IronFullLogo.png",
+    "GENDER_LABEL": "masculino",
+    "RACE_LABEL": "IRONMAN BRASIL · FLORIPA · 31/05/2026",
+    "SLIDE_NUM": "2",
+    "SLIDE_TOTAL": "3",
+    "ROWS_HTML": "<div class=\"im-rk-row top1\"><div class=\"im-rk-pos\">1</div><div class=\"im-rk-name\">Igor Amorelli</div><div class=\"im-rk-time\">08:23:11</div></div><div class=\"im-rk-row top2\"><div class=\"im-rk-pos\">2</div><div class=\"im-rk-name\">Reinaldo Colucci</div><div class=\"im-rk-time\">08:31:42</div></div><div class=\"im-rk-row top3\"><div class=\"im-rk-pos\">3</div><div class=\"im-rk-name\">Manoel Messias</div><div class=\"im-rk-time\">08:38:55</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">4</div><div class=\"im-rk-name\">Frederico Tedesco</div><div class=\"im-rk-time\">08:42:30</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">5</div><div class=\"im-rk-name\">Bruno Matheus</div><div class=\"im-rk-time\">08:47:18</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">6</div><div class=\"im-rk-name\">Gustavo Nogueira</div><div class=\"im-rk-time\">08:52:04</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">7</div><div class=\"im-rk-name\">Diogo Sclebin</div><div class=\"im-rk-time\">08:56:33</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">8</div><div class=\"im-rk-name\">Felipe Manente</div><div class=\"im-rk-time\">09:01:27</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">9</div><div class=\"im-rk-name\">Lucas Pellegrini</div><div class=\"im-rk-time\">09:05:49</div></div><div class=\"im-rk-row\"><div class=\"im-rk-pos\">10</div><div class=\"im-rk-name\">Caio Coppi</div><div class=\"im-rk-time\">09:11:02</div></div>"
+  }
+}

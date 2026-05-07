@@ -53,6 +53,30 @@ def _register_handlers() -> None:
     except Exception as e:  # noqa: BLE001
         print(f"⚠ não foi possível registrar 'story': {e!r}")
 
+    try:
+        from ironman.runner import (
+            on_race_countdown_approve,
+            on_race_countdown_reject,
+            on_race_results_approve,
+            on_race_results_regen,
+            on_race_results_reject,
+        )
+        handlers.register_kind(
+            "race_countdown",
+            on_approve=on_race_countdown_approve,
+            on_reject=on_race_countdown_reject,
+            on_regen=None,  # countdown não tem ajuste via texto livre
+        )
+        handlers.register_kind(
+            "race_results",
+            on_approve=on_race_results_approve,
+            on_reject=on_race_results_reject,
+            on_regen=on_race_results_regen,  # ajuste = colar rankings manuais
+        )
+        print("bot · registrado handlers 'race_countdown' + 'race_results'")
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ não foi possível registrar handlers ironman: {e!r}")
+
 
 def main() -> None:
     if not api.BOT_TOKEN:

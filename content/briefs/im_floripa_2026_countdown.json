@@ -1,0 +1,16 @@
+{
+  "id": "im_floripa_2026_countdown",
+  "template": "im_countdown",
+  "pillar": "ironman",
+  "title": "IM Brasil Floripa · contagem regressiva",
+  "vars": {
+    "BG_IMAGE": "villarinho_openwater.jpg",
+    "EVENT_LOGO": "IronFullLogo.png",
+    "KICKER": "IRONMAN BRASIL · 31/05/26",
+    "DAYS": "24",
+    "DAYS_UNIT": "dias",
+    "HEADLINE": "faltam <span class=\"hl\">24 dias</span> pra largada.",
+    "LEAD": "3,8 km de natação. 180 km de bike. 42 km de corrida. Floripa, 31 de maio. Quem vai estar lá?",
+    "RACE_LABEL": "FLORIPA · 31/05"
+  }
+}

@@ -102,6 +102,15 @@ def build_html(brief: dict, size: str) -> str:
     else:
         product_image_url = ""
 
+    # Resolve event logo (logo de evento/parceiro) — resolvido de brand/ direto
+    # (não brand/images/), pois logos institucionais ficam na raiz do brand kit.
+    event_logo_rel = base_vars.get("EVENT_LOGO", "")
+    if event_logo_rel:
+        event_logo_path = (ROOT / "brand" / event_logo_rel).resolve()
+        event_logo_url = event_logo_path.as_uri()
+    else:
+        event_logo_url = ""
+
     # Variantes de overlay e posição
     overlay = base_vars.get("OVERLAY", "")  # "", "side", "bottom"
     overlay_class = f"bg-overlay--{overlay}" if overlay in ("side", "bottom") else ""
@@ -151,6 +160,7 @@ def build_html(brief: dict, size: str) -> str:
         "BG_IMAGE": bg_image_url,
         "SCREEN_IMAGE": screen_image_url,
         "PRODUCT_IMAGE": product_image_url,
+        "EVENT_LOGO": event_logo_url,
         "OVERLAY_VARIANT": overlay_class,
         "BG_POSITION_STYLE": bg_position_style,
         "BG_CLASS": bg_class,

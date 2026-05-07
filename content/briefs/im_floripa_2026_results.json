@@ -1,0 +1,14 @@
+{
+  "id": "im_floripa_2026_results",
+  "template": "im_results_cover",
+  "pillar": "ironman",
+  "title": "IM Brasil · capa carrossel resultados (mock)",
+  "vars": {
+    "BG_IMAGE": "villarinho_race.jpg",
+    "EVENT_LOGO": "IronFullLogo.png",
+    "HEADLINE": "ironman <span class=\"hl\">brasil</span>.",
+    "RACE_LOCATION": "Florianópolis · SC",
+    "RACE_DATE": "31 de maio · 2026",
+    "SLIDE_TOTAL": "3"
+  }
+}

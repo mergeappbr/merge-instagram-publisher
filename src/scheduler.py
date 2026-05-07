@@ -324,6 +324,15 @@ def _maybe_competitors_digest(now: datetime) -> None:
         print(f"⚠ competitors digest erro: {e!r}")
 
 
+def _maybe_ironman_tracker(now: datetime) -> None:
+    """Diário 09h BRT — checa milestones T-30/-15/-7/-1 e T+1 de races.yml."""
+    try:
+        from ironman.tracker import maybe_run as ironman_maybe_run
+        ironman_maybe_run(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ ironman tracker erro: {e!r}")
+
+
 def _maybe_autogen(now: datetime) -> None:
     """Gatilha geração de briefs quando runway < threshold."""
     info = runway_info(now)
@@ -347,6 +356,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_news_watch(now)
         _maybe_stories(now)
         _maybe_competitors_digest(now)
+        _maybe_ironman_tracker(now)
         _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:

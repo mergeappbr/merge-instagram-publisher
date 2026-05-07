@@ -1,0 +1,181 @@
+<!-- IRONMAN RANKING — top 10 de UM gênero por slide.
+     Carrossel: capa (1/3) + masc (2/3) + fem (3/3).
+     Vars: GENDER_LABEL, RACE_LABEL, SLIDE_NUM, SLIDE_TOTAL, ROWS_HTML, EVENT_LOGO -->
+<style>
+  .im-rk-canvas {
+    /* overlay próprio mais escuro pra dar contraste à tabela */
+  }
+  .im-rk-bg-photo {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    z-index: 0;
+  }
+  .im-rk-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(10,10,10,0.55) 0%,
+      rgba(10,10,10,0.86) 30%,
+      rgba(10,10,10,0.94) 100%
+    );
+    z-index: 1;
+  }
+  .im-rk-block {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .im-rk-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .im-rk-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 26px;
+    background: var(--orange);
+    color: var(--orange-ink);
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .im-rk-logo-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 12px 18px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  }
+  .im-rk-logo-card img {
+    height: 44px;
+    width: auto;
+    display: block;
+  }
+  .im-rk-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 88px;
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    text-transform: lowercase;
+    margin: 0 0 12px;
+  }
+  .canvas--story .im-rk-title { font-size: 112px; }
+  .im-rk-title .hl { color: var(--orange); }
+  .im-rk-sub {
+    font-family: var(--font-mono);
+    font-size: 19px;
+    color: var(--ink-soft);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0 0 28px;
+  }
+  .im-rk-table {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+  }
+  .im-rk-row {
+    display: grid;
+    grid-template-columns: 76px 1fr 200px;
+    align-items: center;
+    gap: 22px;
+    padding: 18px 22px;
+    background: rgba(20,20,20,0.72);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .im-rk-row.top1 {
+    background: var(--orange);
+    color: var(--orange-ink);
+    border-color: var(--orange);
+    padding: 22px 22px;
+  }
+  .im-rk-row.top1 .im-rk-pos,
+  .im-rk-row.top1 .im-rk-time,
+  .im-rk-row.top1 .im-rk-name {
+    color: var(--orange-ink);
+  }
+  .im-rk-row.top2,
+  .im-rk-row.top3 {
+    background: rgba(255,105,0,0.18);
+    border-color: rgba(255,105,0,0.5);
+  }
+  .im-rk-pos {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 38px;
+    color: var(--orange);
+    letter-spacing: -0.02em;
+    text-align: center;
+  }
+  .im-rk-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .im-rk-time {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 30px;
+    color: var(--ink-soft);
+    text-align: right;
+    letter-spacing: 0.02em;
+  }
+  .im-rk-foot {
+    margin-top: 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 17px;
+    color: var(--muted);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .im-rk-foot .handle { color: var(--ink-soft); font-weight: 700; }
+  .im-rk-foot .src { color: var(--orange); font-weight: 700; }
+  .im-rk-foot .counter { color: var(--ink-soft); }
+</style>
+
+<div class="canvas canvas--{{SIZE}} im-rk-canvas">
+  <div class="im-rk-bg-photo" style="background-image:url('{{BG_IMAGE}}');"></div>
+  <div class="im-rk-overlay"></div>
+  <div class="im-rk-block">
+    <div class="im-rk-head">
+      <span class="im-rk-pill">{{GENDER_LABEL}}</span>
+      <div class="im-rk-logo-card">
+        <img src="{{EVENT_LOGO}}" alt="">
+      </div>
+    </div>
+    <h1 class="im-rk-title">top 10 <span class="hl">brasileiros</span>.</h1>
+    <p class="im-rk-sub">{{RACE_LABEL}}</p>
+    <div class="im-rk-table">
+      {{ROWS_HTML}}
+    </div>
+    <div class="im-rk-foot">
+      <span class="handle">@mergeapp.wellness</span>
+      <span class="counter">{{SLIDE_NUM}}/{{SLIDE_TOTAL}}</span>
+      <span class="src">dados via @ironstatsbr · ironman.com</span>
+    </div>
+  </div>
+</div>

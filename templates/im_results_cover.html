@@ -1,0 +1,145 @@
+<!-- IRONMAN RESULTS COVER — capa do carrossel de resultados.
+     Fundo CLARO (foge do dark Merge), logo IM grande central, accent laranja.
+     Vars: EVENT_LOGO, RACE_NAME, RACE_LOCATION, RACE_DATE, SLIDE_TOTAL -->
+<style>
+  .im-rc-canvas {
+    background: linear-gradient(180deg, #F2F2F2 0%, #E8E8E8 50%, #DCDCDC 100%);
+    color: #0A0A0A;
+  }
+  .im-rc-bg-photo {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    z-index: 0;
+  }
+  .im-rc-block {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+  }
+  .im-rc-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .im-rc-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 26px;
+    background: #0A0A0A;
+    color: #FFFFFF;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .im-rc-pill .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--orange);
+    margin-right: 14px;
+  }
+  .im-rc-counter {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    color: #6E6E6E;
+    letter-spacing: 0.06em;
+  }
+  .im-rc-logo-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 0;
+  }
+  .im-rc-logo {
+    width: 320px;
+    max-height: 360px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 36px rgba(0,0,0,0.18));
+  }
+  .canvas--story .im-rc-logo { width: 420px; max-height: 480px; }
+  .im-rc-divider {
+    width: 120px;
+    height: 6px;
+    background: var(--orange);
+    margin: 36px 0 28px;
+    border-radius: 3px;
+  }
+  .im-rc-race-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 92px;
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    color: #0A0A0A;
+    text-transform: lowercase;
+    margin: 0;
+    max-width: 880px;
+  }
+  .canvas--story .im-rc-race-name { font-size: 124px; }
+  .im-rc-race-name .hl { color: var(--orange); }
+  .im-rc-meta {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 600;
+    color: #4A4A4A;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .canvas--story .im-rc-meta { font-size: 28px; }
+  .im-rc-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid rgba(10,10,10,0.12);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: #6E6E6E;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .im-rc-foot .handle { color: #0A0A0A; font-weight: 700; }
+  .im-rc-foot .swipe { color: var(--orange); font-weight: 700; }
+</style>
+
+<div class="canvas canvas--{{SIZE}} im-rc-canvas">
+  <div class="im-rc-bg-photo" style="background-image:url('{{BG_IMAGE}}');"></div>
+  <div class="im-rc-block">
+    <div class="im-rc-top">
+      <span class="im-rc-pill"><span class="dot"></span>resultados</span>
+      <span class="im-rc-counter">1/{{SLIDE_TOTAL}}</span>
+    </div>
+    <div class="im-rc-logo-wrap">
+      <img src="{{EVENT_LOGO}}" alt="" class="im-rc-logo">
+      <div class="im-rc-divider"></div>
+      <h1 class="im-rc-race-name">{{HEADLINE}}</h1>
+      <div class="im-rc-meta">
+        <span>{{RACE_LOCATION}}</span>
+        <span>{{RACE_DATE}}</span>
+      </div>
+    </div>
+    <div class="im-rc-foot">
+      <span class="handle">@mergeapp.wellness</span>
+      <span class="swipe">top 10 brasileiros · m + f</span>
+    </div>
+  </div>
+</div>
