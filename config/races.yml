@@ -53,9 +53,8 @@ races:
     date: "2026-05-22"      # primeiro dia
     date_end: "2026-05-24"
     site: "https://sertoes.com"
-    # Logo: drope `SertoesLogo.png` em brand/ que ela passa a aparecer.
-    # Sem arquivo, template usa pill laranja com sigla.
-    logo: "SertoesLogo.png"
+    logo: "SertoesLogo.webp"
+    logo_on_dark: true            # logo branca → card preto pra aparecer
     bg_pool:
       - villarinho_mtb_trail.jpg
       - villarinho_bike_motion.jpg
@@ -70,7 +69,8 @@ races:
     date: "2026-09-17"
     date_end: "2026-09-19"
     site: "https://sertoes.com"
-    logo: "SertoesLogo.png"
+    logo: "SertoesLogo.webp"
+    logo_on_dark: true
     bg_pool:
       - villarinho_mtb_trail.jpg
       - villarinho_bike_motion.jpg
@@ -85,7 +85,7 @@ races:
     date: "2026-12-05"
     date_end: "2026-12-11"
     site: "https://elcrucecolumbia.com"
-    # logo: "ElCruceLogo.png"   # quando tiver arquivo, descomentar
+    logo: "ElCruceLogo.png"       # logo redonda colorida, fica bem no card branco
     bg_pool:
       - villarinho_mtb_trail.jpg
       - villarinho_run.jpg

@@ -107,14 +107,17 @@ def _short_date_pt(d: date) -> str:
 def _logo_block_html(race: dict) -> str:
     """Constrói o HTML do canto superior direito do template im_countdown.
 
-    - Race com logo configurado E arquivo presente em brand/ → logo card branco.
+    - Race com logo configurado E arquivo presente em brand/ → logo card.
+      Card branco por padrão; quando `logo_on_dark: true` no yaml (logo é
+      branca/clara), card vira preto pra logo aparecer.
     - Caso contrário → pill laranja com sigla curta da prova (location + data).
     """
     logo_file = race.get("logo")
     if logo_file:
         path = (ROOT / "brand" / logo_file).resolve()
         if path.exists():
-            return f'<div class="im-cd-logo-card"><img src="{path.as_uri()}" alt=""></div>'
+            cls = "im-cd-logo-card is-dark" if race.get("logo_on_dark") else "im-cd-logo-card"
+            return f'<div class="{cls}"><img src="{path.as_uri()}" alt=""></div>'
         # Logo declarada mas arquivo ausente — log e fallback.
         print(f"⚠ logo {logo_file!r} declarada em races.yml mas ausente em brand/")
     label = race.get("race_label_short") or race.get("location_short") or race.get("name", "")
