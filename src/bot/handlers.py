@@ -130,7 +130,8 @@ def _handle_message(msg: dict) -> None:
                 "/news — status do news watcher + pool\n"
                 "/force_news — força watcher rodar agora\n"
                 "/force_stories — força dispatch de stories (ignora janela)\n"
-                "/force_news_feed — força 1 feed news post agora"
+                "/force_news_feed — força 1 feed news post agora\n"
+                "/force_news_fitbit — TEMP: dispara news Fitbit Air vs WHOOP"
             )
         elif text == "/pending":
             _list_pending(chat_id)
@@ -147,6 +148,8 @@ def _handle_message(msg: dict) -> None:
             _force_stories(chat_id)
         elif text == "/force_news_feed":
             _force_news_feed(chat_id)
+        elif text == "/force_news_fitbit":
+            _force_news_fitbit(chat_id)
         return
 
     # Texto livre direcionado a um approval específico
@@ -392,6 +395,61 @@ def _force_news_feed(chat_id: int) -> None:
         api.send_message("✅ feed news preview enviado.", chat_id=str(chat_id))
     else:
         api.send_message("❌ feed news falhou (veja logs).", chat_id=str(chat_id))
+
+
+def _force_news_fitbit(chat_id: int) -> None:
+    """TEMP: dispara news Fitbit Air vs WHOOP (item hardcoded). Remover após uso."""
+    import hashlib
+    from datetime import datetime, timezone
+    api.send_message("⏳ disparando news Fitbit Air vs WHOOP…", chat_id=str(chat_id), silent=True)
+    try:
+        from news import feed_post
+    except Exception as e:  # noqa: BLE001
+        api.send_message(
+            f"⚠️ feed_post indisponível: {html.escape(str(e))}", chat_id=str(chat_id)
+        )
+        return
+    feed_name = "The Verge"
+    link = "https://www.theverge.com/2026/5/7/google-fitbit-air-launch-whoop"
+    title = "Google launches Fitbit Air at $99 to challenge WHOOP subscription model"
+    h = hashlib.sha1((feed_name + "|" + link + "|" + title).encode("utf-8")).hexdigest()
+    item = {
+        "feed_name": feed_name,
+        "category": "tech_wearables",
+        "modalities": ["running", "cycling", "wellness"],
+        "feed_relevance": 0.7,
+        "title": title,
+        "link": link,
+        "summary": (
+            "Google launched the Fitbit Air, a screenless fitness band at US$99.99, "
+            "directly targeting WHOOP and other health-monitoring wearables. "
+            "Weighs only 5.2g without strap, monitors HR, SpO2, skin temp, has "
+            "3-axis accelerometer, 7-day battery. WHOOP 5.0 (closest rival) requires "
+            "US$199/year subscription, WHOOP MG plan US$359/year — no hardware-only "
+            "option. Fitbit Air works without subscription; optional Health Premium "
+            "US$9.99/month or US$79/year. Both track 24h HR, sleep stages, SpO2, "
+            "HRV, skin temp, afib detection. WHOOP MG adds FDA-approved ECG. Fitbit "
+            "Air gets Google Health Coach (Gemini-powered). Pre-orders May 7, retail "
+            "May 26 in US."
+        ),
+        "published_at": datetime.now(timezone.utc).isoformat(),
+        "hash": h,
+        "score": 9.0,
+        "post_event": False,
+        "viral_potential": 9,
+        "alignment": 8,
+        "primary_modality": "wellness",
+        "reasoning": "Lançamento que muda jogo do segmento (sem assinatura vs WHOOP).",
+        "angle_suggestion": (
+            "Fim do monopólio do WHOOP — Google entra com Fitbit Air a US$99 sem assinatura."
+        ),
+        "added_at": datetime.now(timezone.utc).isoformat(),
+    }
+    ok = feed_post.dispatch_one(item, "manual_fitbit")
+    if ok:
+        api.send_message("✅ Fitbit news preview enviado.", chat_id=str(chat_id))
+    else:
+        api.send_message("❌ Fitbit news falhou (veja logs).", chat_id=str(chat_id))
 
 
 def _list_pending(chat_id: int) -> None:
