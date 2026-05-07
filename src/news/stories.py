@@ -219,15 +219,23 @@ def on_story_reject(approval: dict) -> None:
 # --------------------- runner ---------------
 
 def _slot_state_file(now: datetime) -> Path | None:
-    if now.hour == MORNING_HOUR:
-        return STORY_STATE_MORNING
-    if now.hour == AFTERNOON_HOUR:
+    """Decide qual slot de stories disparar agora.
+
+    Lógica catch-up: depois das 8h, se o slot da manhã ainda não rodou hoje,
+    dispara. Depois das 14h, se o da tarde não rodou, dispara. Garante que
+    Railway restart/cold-start não faz a gente perder o dia inteiro.
+
+    Tarde tem prioridade sobre manhã quando ambos pendentes (não acumular).
+    """
+    today = now.date().isoformat()
+
+    def _done(p: Path) -> bool:
+        return p.exists() and p.read_text(encoding="utf-8").strip() == today
+
+    if now.hour >= AFTERNOON_HOUR and not _done(STORY_STATE_AFTERNOON):
         return STORY_STATE_AFTERNOON
-    # janela de tolerância: até 1h depois (caso scheduler atrasou)
-    if MORNING_HOUR <= now.hour < MORNING_HOUR + 1:
+    if now.hour >= MORNING_HOUR and not _done(STORY_STATE_MORNING):
         return STORY_STATE_MORNING
-    if AFTERNOON_HOUR <= now.hour < AFTERNOON_HOUR + 1:
-        return STORY_STATE_AFTERNOON
     return None
 
 

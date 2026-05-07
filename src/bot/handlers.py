@@ -126,7 +126,10 @@ def _handle_message(msg: dict) -> None:
                 "<b>Comandos</b>\n"
                 "/pending — lista approvals pendentes\n"
                 "/races — lista provas configuradas\n"
-                "/race &lt;id&gt; — força countdown agora (ex: <code>/race sertoes_nova_lima_2026</code>)"
+                "/race &lt;id&gt; — força countdown agora\n"
+                "/news — status do news watcher + pool\n"
+                "/force_news — força watcher rodar agora\n"
+                "/force_stories — força dispatch de stories (ignora janela)"
             )
         elif text == "/pending":
             _list_pending(chat_id)
@@ -135,6 +138,12 @@ def _handle_message(msg: dict) -> None:
         elif text.startswith("/race "):
             race_id = text[len("/race "):].strip()
             _force_race_countdown(chat_id, race_id)
+        elif text == "/news":
+            _news_status(chat_id)
+        elif text == "/force_news":
+            _force_news_watch(chat_id)
+        elif text == "/force_stories":
+            _force_stories(chat_id)
         return
 
     # Texto livre direcionado a um approval específico
@@ -249,6 +258,112 @@ def _force_race_countdown(chat_id: int, race_id: str) -> None:
         return
     if not ok:
         api.send_message("❌ render falhou (veja logs).", chat_id=str(chat_id))
+
+
+def _news_status(chat_id: int) -> None:
+    """Resume estado do news watcher e pool: última rodada, total no pool,
+    top 5 items não usados, e quando os slots de stories rodaram pela última vez."""
+    import json as _json
+    from pathlib import Path as _Path
+
+    root = _Path(__file__).resolve().parent.parent.parent
+    pool_file = root / "output" / "news_pool.json"
+    watcher_state = root / "output" / ".last_news_watcher.txt"
+    morning_state = root / "output" / ".last_stories_morning.txt"
+    afternoon_state = root / "output" / ".last_stories_afternoon.txt"
+
+    def _read(p):
+        try:
+            return p.read_text(encoding="utf-8").strip() if p.exists() else "—"
+        except OSError:
+            return "ERR"
+
+    pool: list[dict] = []
+    if pool_file.exists():
+        try:
+            pool = _json.loads(pool_file.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            pool = []
+    pending = [p for p in pool if not p.get("used_in_story")]
+    pending.sort(key=lambda x: float(x.get("score", 0)), reverse=True)
+
+    lines = [
+        "<b>📰 News status</b>",
+        f"watcher último run: <code>{html.escape(_read(watcher_state))}</code>",
+        f"stories manhã: <code>{html.escape(_read(morning_state))}</code>",
+        f"stories tarde: <code>{html.escape(_read(afternoon_state))}</code>",
+        "",
+        f"pool total: {len(pool)} · pendentes: {len(pending)}",
+    ]
+    if pending:
+        lines.append("")
+        lines.append("<b>top 5 pendentes</b>")
+        for it in pending[:5]:
+            sc = it.get("score", "?")
+            ti = (it.get("title") or "?")[:90]
+            fn = it.get("feed_name", "?")
+            lines.append(f"· [{sc}] {html.escape(fn)} · {html.escape(ti)}")
+    api.send_message("\n".join(lines), chat_id=str(chat_id))
+
+
+def _force_news_watch(chat_id: int) -> None:
+    api.send_message("⏳ rodando news watcher…", chat_id=str(chat_id), silent=True)
+    try:
+        from news.watcher import watch_once
+    except Exception as e:  # noqa: BLE001
+        api.send_message(f"⚠️ news indisponível: {html.escape(str(e))}", chat_id=str(chat_id))
+        return
+    try:
+        stats = watch_once()
+    except Exception as e:  # noqa: BLE001
+        api.send_message(
+            f"❌ watch_once falhou: <code>{html.escape(str(e)[:300])}</code>",
+            chat_id=str(chat_id),
+        )
+        return
+    api.send_message(
+        f"✅ watcher · novos={stats.get('new',0)} scored={stats.get('scored',0)} "
+        f"reactive={stats.get('reactive',0)} pooled={stats.get('pooled',0)}",
+        chat_id=str(chat_id),
+    )
+
+
+def _force_stories(chat_id: int) -> None:
+    """Força dispatch de stories ignorando janela de horário e state files.
+    Usa direto a parte interna do maybe_dispatch."""
+    api.send_message("⏳ forçando dispatch de stories…", chat_id=str(chat_id), silent=True)
+    try:
+        from news import stories as st
+    except Exception as e:  # noqa: BLE001
+        api.send_message(f"⚠️ stories indisponível: {html.escape(str(e))}", chat_id=str(chat_id))
+        return
+    items = st._next_unused_from_pool(st.STORIES_PER_RUN)
+    if not items:
+        api.send_message(
+            "⚠️ pool sem items pendentes (score≥5). "
+            "Rode /force_news pra puxar dos feeds primeiro.",
+            chat_id=str(chat_id),
+        )
+        return
+    sent = 0
+    for item in items:
+        try:
+            brief = st._make_story_brief(item)
+            st._save_brief_json(brief)
+            if not st._render_story_only(brief["id"]):
+                continue
+            aid = st._create_approval(brief, item)
+            st._preview_story(brief, aid, item)
+            sent += 1
+        except Exception as e:  # noqa: BLE001
+            api.send_message(
+                f"⚠️ story falhou: <code>{html.escape(str(e)[:200])}</code>",
+                chat_id=str(chat_id),
+            )
+    api.send_message(
+        f"✅ dispatch forçado: {sent} preview(s) enviado(s).",
+        chat_id=str(chat_id),
+    )
 
 
 def _list_pending(chat_id: int) -> None:
