@@ -137,10 +137,12 @@ def _send_preview(brief: dict, plan_entry: dict, review: dict, approval_id: str)
     if len(full_caption) > 1024:
         full_caption = full_caption[:1020] + "..."
 
+    # 'Postar agora' = publish_now (real-time, ignora esteira do calendar)
+    # 'Aprovar' = aprove + agenda no slot planejado (esteira regular)
     keyboard = api.inline_keyboard(
         [
-            [("✅ Aprovar", f"approve:{approval_id}"), ("❌ Rejeitar", f"reject:{approval_id}")],
-            [("✏️ Ajustar", f"adjust:{approval_id}")],
+            [("🚀 Postar agora", f"publish_now:{approval_id}"), ("✅ Aprovar", f"approve:{approval_id}")],
+            [("❌ Rejeitar", f"reject:{approval_id}"), ("✏️ Ajustar", f"adjust:{approval_id}")],
         ]
     )
     return api.send_photo_file(
@@ -182,7 +184,8 @@ def on_brief_approve(approval: dict) -> None:
         approval.get("is_news_scheduled")
         or plan_entry.get("theme") == "news"
     )
-    if is_news:
+    force_now = approval.get("force_publish_now", False)
+    if is_news or force_now:
         # Real-time: publica no próximo tick (1 min de janela é ok)
         when = datetime.now()
     else:

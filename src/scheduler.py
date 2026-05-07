@@ -51,6 +51,7 @@ PUBLISHED = ROOT / "output" / "published.csv"
 SKIPPED_STATE = ROOT / "output" / ".skipped_slots.txt"
 SUMMARY_STATE = ROOT / "output" / ".last_summary_date.txt"
 INSIGHTS_COLLECT_STATE = ROOT / "output" / ".last_insights_collect.txt"
+HOURLY_NEWS_STATE = ROOT / "output" / ".last_hourly_news_report.txt"
 SLOT_FAILURES_STATE = ROOT / "output" / ".slot_failures.json"
 
 TZ = ZoneInfo("America/Sao_Paulo")
@@ -271,6 +272,26 @@ def maybe_daily_summary(now: datetime) -> None:
     SUMMARY_STATE.write_text(today, encoding="utf-8")
 
 
+def maybe_hourly_news_report(now: datetime) -> None:
+    """Manda ranking horário das news mais quentes do pool (texto + botão
+    'Produzir' por item). Dispara 1x por hora-cheia entre 8h e 22h BRT.
+    State file guarda 'YYYY-MM-DDTHH' da última hora enviada."""
+    if now.hour < 8 or now.hour > 22:
+        return
+    stamp = now.strftime("%Y-%m-%dT%H")
+    if HOURLY_NEWS_STATE.exists():
+        if HOURLY_NEWS_STATE.read_text(encoding="utf-8").strip() == stamp:
+            return
+    try:
+        from bot.handlers import _send_hourly_news_ranking
+        _send_hourly_news_ranking(chat_id=None)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ hourly news report erro: {e!r}")
+        return
+    HOURLY_NEWS_STATE.parent.mkdir(parents=True, exist_ok=True)
+    HOURLY_NEWS_STATE.write_text(stamp, encoding="utf-8")
+
+
 def _maybe_collect_insights(now: datetime) -> None:
     """1x/dia, após INSIGHTS_COLLECT_HOUR, coleta insights da Graph API."""
     today = now.date().isoformat()
@@ -361,6 +382,7 @@ def tick(dry_run: bool = False) -> int:
     now = datetime.now(TZ)
     maybe_daily_summary(now)
     if not dry_run:
+        maybe_hourly_news_report(now)
         _maybe_collect_insights(now)
         _maybe_insights_reports(now)
         _maybe_news_watch(now)

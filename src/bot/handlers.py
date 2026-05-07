@@ -65,11 +65,17 @@ def _handle_callback(cb: dict) -> None:
 
     kind = approval.get("kind", "brief")
 
-    if action == "approve":
-        api.answer_callback(cb_id, "aprovado")
-        _disable_buttons(msg, status="aprovado ✅")
+    if action in ("approve", "publish_now"):
+        force_now = action == "publish_now"
+        label = "postar agora 🚀" if force_now else "aprovado ✅"
+        api.answer_callback(cb_id, label)
+        _disable_buttons(msg, status=label)
         fn = HANDLERS_APPROVE.get(kind)
         if fn:
+            if force_now:
+                # Marca o approval pra on_brief_approve forçar scheduled_at=now
+                approval["force_publish_now"] = True
+                state.write_approval(approval)
             try:
                 fn(approval)
             except Exception as e:  # noqa: BLE001
@@ -79,7 +85,10 @@ def _handle_callback(cb: dict) -> None:
                     f"<code>{html.escape(aid)}</code>: {html.escape(str(e)[:200])}"
                 )
                 return
-        state.archive_approval(aid, decision="approved")
+        state.archive_approval(
+            aid,
+            decision="published_now" if force_now else "approved",
+        )
         return
 
     if action == "reject":
@@ -92,6 +101,20 @@ def _handle_callback(cb: dict) -> None:
             except Exception as e:  # noqa: BLE001
                 print(f"⚠ reject {kind} falhou: {e!r}")
         state.archive_approval(aid, decision="rejected")
+        return
+
+    if action == "produce_news":
+        # `aid` aqui é prefixo do hash do item no pool, não approval_id
+        api.answer_callback(cb_id, "produzindo…")
+        _disable_buttons(msg, status="produzindo 🎨")
+        try:
+            _produce_news_by_hash(aid, chat_id=chat_id)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ produce_news falhou: {e!r}")
+            api.send_message(
+                f"⚠️ falha ao produzir: {html.escape(str(e)[:200])}",
+                chat_id=str(chat_id) if chat_id else None,
+            )
         return
 
     if action == "adjust":
@@ -133,7 +156,8 @@ def _handle_message(msg: dict) -> None:
                 "/force_news_feed — força 1 feed news post agora\n"
                 "/force_news_fitbit — TEMP: dispara news Fitbit Air vs WHOOP\n"
                 "/publish_now [slot] — publica brief news preso na esteira\n"
-                "/calendar_news — lista news pendentes no calendar"
+                "/calendar_news — lista news pendentes no calendar\n"
+                "/news_ranking — top 5 news quentes (com botão produzir)"
             )
         elif text == "/pending":
             _list_pending(chat_id)
@@ -157,6 +181,8 @@ def _handle_message(msg: dict) -> None:
             _publish_now(chat_id, arg or None)
         elif text == "/calendar_news":
             _list_calendar_news(chat_id)
+        elif text == "/news_ranking":
+            _send_hourly_news_ranking(chat_id)
         return
 
     # Texto livre direcionado a um approval específico
@@ -461,6 +487,110 @@ def _force_news_fitbit(chat_id: int) -> None:
         api.send_message("✅ Fitbit news preview enviado.", chat_id=str(chat_id))
     else:
         api.send_message("❌ Fitbit news falhou (veja logs).", chat_id=str(chat_id))
+
+
+def _send_hourly_news_ranking(chat_id: int | None = None) -> int:
+    """Lista top news pendentes do pool com botão pra produzir cada uma.
+
+    Filtra: não usado em feed/story, score >= 5. Ordena por score desc.
+    Retorna número de items enviados.
+    """
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent.parent
+    pool_file = root / "output" / "news_pool.json"
+    if not pool_file.exists():
+        if chat_id is not None:
+            api.send_message("📰 pool vazio.", chat_id=str(chat_id))
+        return 0
+    try:
+        pool = json.loads(pool_file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        if chat_id is not None:
+            api.send_message("📰 pool corrompido.", chat_id=str(chat_id))
+        return 0
+    pending = [
+        p for p in pool
+        if not p.get("used_in_feed")
+        and not p.get("used_in_story")
+        and float(p.get("score", 0)) >= 5
+    ]
+    pending.sort(key=lambda x: float(x.get("score", 0)), reverse=True)
+    top = pending[:5]
+    if not top:
+        if chat_id is not None:
+            api.send_message(
+                "📰 nenhuma news quente nesta hora.", chat_id=str(chat_id), silent=True
+            )
+        return 0
+
+    from datetime import datetime
+    header = (
+        f"📰 <b>RANKING NEWS · {datetime.now().strftime('%d/%m %Hh')}</b>\n"
+        f"<i>top {len(top)} mais quentes do mercado wellness · clica pra produzir</i>"
+    )
+    api.send_message(header, chat_id=str(chat_id) if chat_id else None, silent=True)
+
+    for i, item in enumerate(top, start=1):
+        title = item.get("title", "?")[:160]
+        src = item.get("feed_name", "?")
+        score = item.get("score", 0)
+        modality = item.get("primary_modality", "?")
+        angle = item.get("angle_suggestion", "")[:200]
+        link = item.get("link", "")
+        h = item.get("hash", "")
+        msg = (
+            f"<b>#{i} · score {score:.1f}</b> · <i>{html.escape(src)}</i> · "
+            f"<code>{html.escape(modality)}</code>\n"
+            f"<b>{html.escape(title)}</b>"
+        )
+        if angle:
+            msg += f"\n💡 <i>{html.escape(angle)}</i>"
+        if link:
+            msg += f"\n🔗 {html.escape(link)}"
+        kb = api.inline_keyboard([
+            [("🎨 Produzir", f"produce_news:{h[:32]}")],
+        ])
+        api.send_message(
+            msg,
+            chat_id=str(chat_id) if chat_id else None,
+            reply_markup=kb,
+            silent=True,
+        )
+    return len(top)
+
+
+def _produce_news_by_hash(hash_prefix: str, chat_id: int | None = None) -> bool:
+    """Acha item no pool por prefixo de hash e dispara feed_post.dispatch_one."""
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent.parent
+    pool_file = root / "output" / "news_pool.json"
+    if not pool_file.exists():
+        api.send_message("📰 pool não existe.", chat_id=str(chat_id) if chat_id else None)
+        return False
+    pool = json.loads(pool_file.read_text(encoding="utf-8"))
+    item = next((p for p in pool if (p.get("hash") or "").startswith(hash_prefix)), None)
+    if item is None:
+        api.send_message(
+            f"⚠️ item <code>{html.escape(hash_prefix)}</code> não está no pool.",
+            chat_id=str(chat_id) if chat_id else None,
+        )
+        return False
+    try:
+        from news import feed_post
+    except Exception as e:  # noqa: BLE001
+        api.send_message(
+            f"⚠️ feed_post indisponível: {html.escape(str(e))}",
+            chat_id=str(chat_id) if chat_id else None,
+        )
+        return False
+    api.send_message(
+        f"⏳ produzindo: <i>{html.escape(item.get('title','?')[:80])}</i>",
+        chat_id=str(chat_id) if chat_id else None,
+        silent=True,
+    )
+    return feed_post.dispatch_one(item, "ranking_pick")
 
 
 def _list_pending_news_rows() -> list[dict]:
