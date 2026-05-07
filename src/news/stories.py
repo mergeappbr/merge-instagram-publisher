@@ -64,8 +64,19 @@ def _save_pool(pool: list[dict]) -> None:
 
 
 def _next_unused_from_pool(n: int) -> list[dict]:
+    """Pega top-N items não usados em story OU feed.
+
+    Coordenação com feed_post.py: feed_post marca `used_in_feed` no dispatch
+    (não na aprovação) pra reservar o top item; stories pega os 2 seguintes.
+    Se feed_post não rodou ainda no slot, stories pega top-N normal — o item
+    top vai pra stories e na próxima rodada feed_post pega outro (o pool
+    rotaciona naturalmente).
+    """
     pool = _load_pool()
-    pending = [p for p in pool if not p.get("used_in_story")]
+    pending = [
+        p for p in pool
+        if not p.get("used_in_story") and not p.get("used_in_feed")
+    ]
     pending.sort(key=lambda x: float(x.get("score", 0)), reverse=True)
     return pending[:n]
 

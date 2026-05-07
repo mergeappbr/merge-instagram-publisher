@@ -306,6 +306,16 @@ def _maybe_stories(now: datetime) -> None:
         print(f"⚠ stories dispatch erro: {e!r}")
 
 
+def _maybe_news_feed(now: datetime) -> None:
+    """Feed news 2x/dia (08h/14h BRT) — pega top item do pool e gera feed
+    post via writer+reviewer. Roda ANTES de stories pra reservar o item top."""
+    try:
+        from news.feed_post import maybe_dispatch as feed_news_dispatch
+        feed_news_dispatch(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ news feed dispatch erro: {e!r}")
+
+
 def _maybe_insights_reports(now: datetime) -> None:
     try:
         from insights.reporter import maybe_daily_report, maybe_monthly_report
@@ -354,6 +364,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_collect_insights(now)
         _maybe_insights_reports(now)
         _maybe_news_watch(now)
+        _maybe_news_feed(now)   # antes de stories pra reservar item top
         _maybe_stories(now)
         _maybe_competitors_digest(now)
         _maybe_ironman_tracker(now)

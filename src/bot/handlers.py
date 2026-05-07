@@ -129,7 +129,8 @@ def _handle_message(msg: dict) -> None:
                 "/race &lt;id&gt; — força countdown agora\n"
                 "/news — status do news watcher + pool\n"
                 "/force_news — força watcher rodar agora\n"
-                "/force_stories — força dispatch de stories (ignora janela)"
+                "/force_stories — força dispatch de stories (ignora janela)\n"
+                "/force_news_feed — força 1 feed news post agora"
             )
         elif text == "/pending":
             _list_pending(chat_id)
@@ -144,6 +145,8 @@ def _handle_message(msg: dict) -> None:
             _force_news_watch(chat_id)
         elif text == "/force_stories":
             _force_stories(chat_id)
+        elif text == "/force_news_feed":
+            _force_news_feed(chat_id)
         return
 
     # Texto livre direcionado a um approval específico
@@ -364,6 +367,31 @@ def _force_stories(chat_id: int) -> None:
         f"✅ dispatch forçado: {sent} preview(s) enviado(s).",
         chat_id=str(chat_id),
     )
+
+
+def _force_news_feed(chat_id: int) -> None:
+    """Força 1 feed news post agora ignorando janela e state files."""
+    api.send_message("⏳ forçando feed news…", chat_id=str(chat_id), silent=True)
+    try:
+        from news import feed_post
+    except Exception as e:  # noqa: BLE001
+        api.send_message(
+            f"⚠️ feed_post indisponível: {html.escape(str(e))}", chat_id=str(chat_id)
+        )
+        return
+    item = feed_post._pick_top_unused()
+    if item is None:
+        api.send_message(
+            f"⚠️ pool sem item score≥{feed_post.MIN_SCORE} pendente. "
+            "Rode /force_news pra puxar dos feeds primeiro.",
+            chat_id=str(chat_id),
+        )
+        return
+    ok = feed_post.dispatch_one(item, "manual")
+    if ok:
+        api.send_message("✅ feed news preview enviado.", chat_id=str(chat_id))
+    else:
+        api.send_message("❌ feed news falhou (veja logs).", chat_id=str(chat_id))
 
 
 def _list_pending(chat_id: int) -> None:
