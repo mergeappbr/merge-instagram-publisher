@@ -155,6 +155,12 @@
   .im-rk-foot .handle { color: var(--ink-soft); font-weight: 700; }
   .im-rk-foot .src { color: var(--orange); font-weight: 700; }
   .im-rk-foot .counter { color: var(--ink-soft); }
+  .im-rk-foot .brand-mark { display: inline-flex; align-items: center; }
+  .im-rk-foot .brand-mark .brand-logo {
+    position: static; top: auto; left: auto;
+    width: 32px; height: auto; display: block;
+  }
+  .canvas--story .im-rk-foot .brand-mark .brand-logo { width: 42px; }
 </style>
 
 <div class="canvas canvas--{{SIZE}} im-rk-canvas">
@@ -173,7 +179,7 @@
       {{ROWS_HTML}}
     </div>
     <div class="im-rk-foot">
-      <span class="handle">@mergeapp.wellness</span>
+      <span class="brand-mark">{{LOGO}}</span>
       <span class="counter">{{SLIDE_NUM}}/{{SLIDE_TOTAL}}</span>
       <span class="src">dados via @ironstatsbr · ironman.com</span>
     </div>

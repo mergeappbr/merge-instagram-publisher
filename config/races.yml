@@ -1,10 +1,17 @@
 # Calendário de provas — milestones T-30/T-15/T-7/T-1 (countdown) + T+1 (resultados).
 #
-# kind=ironman → roda pipeline completo (countdown + carrossel resultados M+F).
-# kind=mtb|trail → só countdown (briefs gerados manualmente; tracker só notifica Pedro).
+# kind=ironman → countdown auto + carrossel resultados M+F.
+# kind=mtb|trail → countdown auto. Resultados (T+1) ainda manual (sem fetcher).
 #
 # Datas em formato ISO YYYY-MM-DD (timezone implícita: race day local, mas tracker
 # compara com America/Sao_Paulo no scheduler — boa o suficiente pra T-N dias).
+#
+# Imagens:
+#   bg_pool (lista) → tracker rotaciona evitando repetir nos últimos 60 dias
+#                     (state em output/.bg_history.json).
+#   bg_countdown (string) → retrocompat, single image.
+#   logo → arquivo em brand/ (não brand/images/). Quando ausente OU arquivo
+#          não encontrado, template usa pill laranja com sigla.
 
 races:
   - id: im_brasil_2026
@@ -17,7 +24,21 @@ races:
     site: "https://www.ironman.com/im-brazil"
     ironstats_handle: "ironstatsbr"
     logo: "IronFullLogo.png"
-    bg_countdown: "villarinho_openwater.jpg"
+    bg_pool:
+      - villarinho_openwater.jpg
+      - villarinho_swim.jpg
+      - villarinho_swim_face.jpg
+      - villarinho_bike.jpg
+      - villarinho_bike_motion.jpg
+      - villarinho_bike_pair.jpg
+      - villarinho_run.jpg
+      - villarinho_track.jpg
+      - villarinho_race.jpg
+      - villarinho_rain.jpg
+      - villarinho_smile.jpg
+      - villarinho_friends.jpg
+      - villarinho_duo_mixed.jpg
+      - villarinho_woman_run.jpg
     bg_results_cover: "villarinho_race.jpg"
     bg_results_male: "villarinho_race.jpg"
     bg_results_female: "villarinho_woman_run.jpg"
@@ -32,6 +53,12 @@ races:
     date: "2026-05-22"      # primeiro dia
     date_end: "2026-05-24"
     site: "https://sertoes.com"
+    # Logo: drope `SertoesLogo.png` em brand/ que ela passa a aparecer.
+    # Sem arquivo, template usa pill laranja com sigla.
+    logo: "SertoesLogo.png"
+    bg_pool:
+      - villarinho_mtb_trail.jpg
+      - villarinho_bike_motion.jpg
     race_label_short: "NOVA LIMA · 22/05"
     kicker: "SERTÕES MTB · 22-24/05"
 
@@ -43,6 +70,10 @@ races:
     date: "2026-09-17"
     date_end: "2026-09-19"
     site: "https://sertoes.com"
+    logo: "SertoesLogo.png"
+    bg_pool:
+      - villarinho_mtb_trail.jpg
+      - villarinho_bike_motion.jpg
     race_label_short: "IBITIPOCA · 17/09"
     kicker: "SERTÕES MTB · 17-19/09"
 
@@ -54,5 +85,10 @@ races:
     date: "2026-12-05"
     date_end: "2026-12-11"
     site: "https://elcrucecolumbia.com"
+    # logo: "ElCruceLogo.png"   # quando tiver arquivo, descomentar
+    bg_pool:
+      - villarinho_mtb_trail.jpg
+      - villarinho_run.jpg
+      - villarinho_track.jpg
     race_label_short: "PATAGÔNIA · 05/12"
     kicker: "EL CRUCE · 05-11/12"

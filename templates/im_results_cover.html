@@ -119,6 +119,12 @@
   }
   .im-rc-foot .handle { color: #0A0A0A; font-weight: 700; }
   .im-rc-foot .swipe { color: var(--orange); font-weight: 700; }
+  .im-rc-foot .brand-mark { display: inline-flex; align-items: center; }
+  .im-rc-foot .brand-mark .brand-logo {
+    position: static; top: auto; left: auto;
+    width: 32px; height: auto; display: block;
+  }
+  .canvas--story .im-rc-foot .brand-mark .brand-logo { width: 42px; }
 </style>
 
 <div class="canvas canvas--{{SIZE}} im-rc-canvas">
@@ -138,7 +144,7 @@
       </div>
     </div>
     <div class="im-rc-foot">
-      <span class="handle">@mergeapp.wellness</span>
+      <span class="brand-mark">{{LOGO}}</span>
       <span class="swipe">top 10 brasileiros · m + f</span>
     </div>
   </div>

@@ -119,8 +119,11 @@ def _send_countdown_preview(brief: dict, race: dict, days: int, approval_id: str
     lead_plain = _strip_html(brief.get("vars", {}).get("LEAD", ""))
     caption_body = brief.get("caption_md", "")
 
+    kind_label = {"ironman": "Ironman", "mtb": "MTB", "trail": "Trail"}.get(
+        race.get("kind", ""), race.get("kind", "Race").title()
+    )
     cap_lines = [
-        f"🏁 <b>[Ironman · T-{days}] {html.escape(race.get('name','?'))}</b>",
+        f"🏁 <b>[{kind_label} · T-{days}] {html.escape(race.get('name','?'))}</b>",
         f"<i>{html.escape(race.get('location',''))} · {html.escape(race['date'])}</i>",
         "",
         f"<b>ARTE</b>",

@@ -1,5 +1,5 @@
-<!-- IRONMAN COUNTDOWN — número gigante de dias + título da prova + handle + logo.
-     Vars: KICKER, DAYS, DAYS_UNIT, HEADLINE, LEAD, RACE_LABEL, EVENT_LOGO -->
+<!-- COUNTDOWN — número gigante de dias + título da prova + handle.
+     Vars: KICKER, DAYS, DAYS_UNIT, HEADLINE, LEAD, RACE_LABEL, EVENT_LOGO (opcional) -->
 <style>
   .im-cd-bg-photo {
     position: absolute;
@@ -66,6 +66,19 @@
     width: auto;
     display: block;
   }
+  .im-cd-event-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 22px;
+    background: var(--orange);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 800;
+    color: #0a0a0a;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+  }
   .im-cd-stage {
     flex: 1;
     display: flex;
@@ -130,6 +143,12 @@
   .canvas--story .im-cd-foot { font-size: 22px; }
   .im-cd-foot .handle { color: var(--ink-soft); font-weight: 700; }
   .im-cd-foot .race { color: var(--orange); font-weight: 700; }
+  .im-cd-foot .brand-mark { display: inline-flex; align-items: center; }
+  .im-cd-foot .brand-mark .brand-logo {
+    position: static; top: auto; left: auto;
+    width: 32px; height: auto; display: block;
+  }
+  .canvas--story .im-cd-foot .brand-mark .brand-logo { width: 42px; }
 </style>
 
 <div class="canvas canvas--{{SIZE}}">
@@ -138,9 +157,7 @@
   <div class="im-cd-block">
     <div class="im-cd-top">
       <span class="im-cd-kicker"><span class="dot"></span>{{KICKER}}</span>
-      <div class="im-cd-logo-card">
-        <img src="{{EVENT_LOGO}}" alt="">
-      </div>
+      {{LOGO_BLOCK}}
     </div>
     <div class="im-cd-stage">
       <div class="im-cd-num">{{DAYS}}<span class="unit">{{DAYS_UNIT}}</span></div>
@@ -148,7 +165,7 @@
       <p class="im-cd-lead">{{LEAD}}</p>
     </div>
     <div class="im-cd-foot">
-      <span class="handle">@mergeapp.wellness</span>
+      <span class="brand-mark">{{LOGO}}</span>
       <span class="race">{{RACE_LABEL}}</span>
     </div>
   </div>

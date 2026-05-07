@@ -2,8 +2,11 @@
 Geração dos briefs JSON pra cada milestone de uma race.
 
 Countdown (T-30/T-15/T-7/T-1):
-  - 1 brief usando template `im_countdown` com EVENT_LOGO opcional.
-  - Caption gerada via Claude Sonnet (curta, anti claim, anti emoji).
+  - 1 brief usando template `im_countdown`.
+  - Quando race tem `logo` configurado → logo card com a marca da prova.
+    Sem logo → pill laranja com sigla (location_short + data).
+  - Caption gerada via Claude Sonnet, com prompt específico por modalidade
+    (ironman, mtb, trail) — vocabulário e referências do mercado de cada esporte.
 
 Resultados (T+1, só kind=ironman):
   - 3 briefs (capa + masc + fem) usando templates `im_results_cover` + `im_ranking_full`.
@@ -16,18 +19,49 @@ Briefs são salvos em content/briefs/ pelo runner depois.
 """
 from __future__ import annotations
 
-from datetime import date
+import json
+import random
+from datetime import date, datetime, timedelta
+from pathlib import Path
 
 from llm import complete
 
 from .config import parse_race_date
 
+ROOT = Path(__file__).resolve().parent.parent.parent
+BG_HISTORY_PATH = ROOT / "output" / ".bg_history.json"
+BG_COOLDOWN_DAYS = 60
+
 # ----- countdown -----
 
 CAPTION_SYSTEM = (
-    "Você é o copywriter da Merge — comunicação direta, anti bro-science, "
-    "stats-first. Sem emoji, sem claim médico, sem 'você sabia'. Português brasileiro."
+    "Você é o copywriter da Merge — comunidade endurance Brasil (triathlon, "
+    "mtb, trail running, ciclismo). Comunicação direta, anti bro-science, "
+    "stats-first, vocabulário de quem está dentro do esporte. Sem emoji, sem "
+    "claim médico, sem 'você sabia', sem 'imagina só'. Português brasileiro, "
+    "lowercase no estilo The News/OFitFeed."
 )
+
+CAPTION_TONE_BY_KIND = {
+    "ironman": (
+        "Tom: triathlon BR. Pode mencionar T1/T2, divisão (swim/bike/run), "
+        "kona slots, sub-9/sub-10/sub-12 conforme distância, kit IM, age group. "
+        "Refira a prova como 'IM <local>' ou pelo nome completo. Distância importa "
+        "(full = 226km total / 70.3 = 113km)."
+    ),
+    "mtb": (
+        "Tom: ultramaratona MTB BR. Sertões é 3 etapas (formato stage race), "
+        "cross-country marathon (XCM). Pode mencionar altimetria, traçado, "
+        "single tracks, rolagem, dupla mista, elite. Sem comparar com road bike. "
+        "Vocabulário: 'pelotão', 'etapa rainha', 'GC' (general classification)."
+    ),
+    "trail": (
+        "Tom: trail running. El Cruce é stage race 3 dias na Patagônia (ARG/CHI), "
+        "duplas, refúgios. Pode mencionar D+ (desnível positivo), terreno técnico, "
+        "altimetria, Saucony (patrocinador), passagem de fronteira. Sem clichê de "
+        "'natureza intocada' ou 'desafio'."
+    ),
+}
 
 CAPTION_USER_TPL = """Escreva uma legenda CURTA pra Instagram (máx 380 chars) sobre
 {name} faltando {days} {days_word} pra largada.
@@ -37,10 +71,21 @@ Detalhes:
 - Data: {date_label}
 {distance_line}
 
-Tom: hype contido, foca em quem vai correr / quem está acompanhando.
-Estrutura: 1 linha de gancho + 1 linha de stats da prova + 1 linha CTA suave
-("vai estar lá?", "quem vai?", etc).
-NÃO usar hashtag. NÃO terminar com pergunta retórica genérica."""
+{tone_block}
+
+Estrutura obrigatória:
+1ª linha — gancho factual (não retórica). pode ser stat, número de dias, ou
+contexto de quem vai correr.
+2ª linha — stats concretos da prova (distância, formato, ou referência interna).
+3ª linha — CTA suave que NÃO seja "vai estar lá?" ou "quem vai?". Varie:
+"quem fechou kit", "quem tá no taper", "quem largou inscrição", "tá no plano?",
+"quem vai pra cidade?", etc — escolha 1 que faça sentido pro contexto.
+
+Regras duras:
+- NÃO usar hashtag. NÃO usar emoji. NÃO usar exclamação.
+- NÃO usar "imagina só", "você sabia", "fala galera", "olá pessoal".
+- NÃO prometer resultado/treino. NÃO fazer claim médico.
+- Lowercase predominante (estilo TNS/OFitFeed). Nomes próprios mantém capitalização."""
 
 
 def _days_word(days: int) -> str:
@@ -59,15 +104,140 @@ def _short_date_pt(d: date) -> str:
     return d.strftime("%d/%m")
 
 
+def _logo_block_html(race: dict) -> str:
+    """Constrói o HTML do canto superior direito do template im_countdown.
+
+    - Race com logo configurado E arquivo presente em brand/ → logo card branco.
+    - Caso contrário → pill laranja com sigla curta da prova (location + data).
+    """
+    logo_file = race.get("logo")
+    if logo_file:
+        path = (ROOT / "brand" / logo_file).resolve()
+        if path.exists():
+            return f'<div class="im-cd-logo-card"><img src="{path.as_uri()}" alt=""></div>'
+        # Logo declarada mas arquivo ausente — log e fallback.
+        print(f"⚠ logo {logo_file!r} declarada em races.yml mas ausente em brand/")
+    label = race.get("race_label_short") or race.get("location_short") or race.get("name", "")
+    return f'<span class="im-cd-event-pill">{label}</span>'
+
+
+# ----- background rotation (60d cooldown) -----
+
+def _load_bg_history() -> dict:
+    if not BG_HISTORY_PATH.exists():
+        return {}
+    try:
+        return json.loads(BG_HISTORY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_bg_history(hist: dict) -> None:
+    BG_HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    BG_HISTORY_PATH.write_text(json.dumps(hist, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _pick_bg(race: dict, today: date | None = None) -> str:
+    """Escolhe um BG do pool da race, evitando repetir nos últimos 60 dias.
+
+    Ordem de fallback:
+      1. `bg_pool` (lista) — filtra usadas em <60d, sorteia entre as restantes.
+         Se todas estão em cooldown, sorteia entre todas (cooldown é soft).
+      2. `bg_countdown` (string única, retrocompat) — usa direto.
+      3. "" — renderer entende e omite background.
+    """
+    today = today or datetime.now().date()
+    pool: list[str] = race.get("bg_pool") or []
+    if not pool:
+        single = race.get("bg_countdown", "")
+        if single:
+            _record_bg_used(single, today)
+        return single
+
+    hist = _load_bg_history()
+    cutoff = today - timedelta(days=BG_COOLDOWN_DAYS)
+    eligible = []
+    for img in pool:
+        last = hist.get(img)
+        if not last:
+            eligible.append(img)
+            continue
+        try:
+            last_d = datetime.strptime(last, "%Y-%m-%d").date()
+        except ValueError:
+            eligible.append(img)
+            continue
+        if last_d < cutoff:
+            eligible.append(img)
+    if not eligible:
+        # Cooldown soft: ao invés de não publicar, escolhe a mais antiga.
+        eligible = sorted(pool, key=lambda i: hist.get(i, "0000-00-00"))[:1]
+    chosen = random.choice(eligible)
+    _record_bg_used(chosen, today)
+    return chosen
+
+
+def _record_bg_used(img: str, when: date) -> None:
+    hist = _load_bg_history()
+    hist[img] = when.isoformat()
+    _save_bg_history(hist)
+
+
+def _distance_line(race: dict) -> str:
+    kind = race.get("kind", "")
+    distance = race.get("distance", "")
+    if kind == "ironman" and distance == "full":
+        return "- Distância: 3,8 km natação · 180 km bike · 42 km corrida (226 km total)"
+    if kind == "ironman" and distance == "70.3":
+        return "- Distância: 1,9 km natação · 90 km bike · 21 km corrida (113 km total)"
+    if kind == "mtb":
+        return "- Formato: stage race / ultramaratona MTB"
+    if kind == "trail":
+        return "- Formato: stage race trail running"
+    return ""
+
+
+def _lead_line(race: dict, race_date: date) -> str:
+    kind = race.get("kind", "")
+    distance = race.get("distance", "")
+    loc = race.get("location_short", "").title()
+    short = _short_date_pt(race_date)
+    if kind == "ironman" and distance == "full":
+        return (
+            f"3,8 km de natação. 180 km de bike. 42 km de corrida. "
+            f"{loc}, {short}. quem fechou kit?"
+        )
+    if kind == "ironman" and distance == "70.3":
+        return (
+            f"1,9 km de natação. 90 km de bike. 21 km de corrida. "
+            f"{loc}, {short}. quem fechou kit?"
+        )
+    if kind == "mtb":
+        end = race.get("date_end") or race["date"]
+        end_d = parse_race_date(end)
+        return (
+            f"3 etapas de mtb · {loc}, {short}–{_short_date_pt(end_d)}. "
+            f"quem tá no pelotão?"
+        )
+    if kind == "trail":
+        end = race.get("date_end") or race["date"]
+        end_d = parse_race_date(end)
+        return (
+            f"stage race em duplas · {loc}, {short}–{_short_date_pt(end_d)}. "
+            f"quem fechou inscrição?"
+        )
+    end = race.get("date_end") or race["date"]
+    lead = f"{race.get('location','')} · {_date_label_pt(race_date)}"
+    if end != race["date"]:
+        lead += f" → {_date_label_pt(parse_race_date(end))}"
+    return lead + "."
+
+
 def build_countdown_brief(race: dict, days: int) -> dict:
     """Retorna dict de brief (id, template, vars, caption_md, title)."""
     race_date = parse_race_date(race["date"])
-    distance = race.get("distance", "")
-    distance_line = ""
-    if race.get("kind") == "ironman" and distance == "full":
-        distance_line = "- Distância: 3,8 km natação · 180 km bike · 42 km corrida"
-    elif race.get("kind") == "ironman" and distance == "70.3":
-        distance_line = "- Distância: 1,9 km natação · 90 km bike · 21 km corrida"
+    kind = race.get("kind", "endurance")
+    tone_block = CAPTION_TONE_BY_KIND.get(kind, "")
 
     user = CAPTION_USER_TPL.format(
         name=race["name"],
@@ -75,7 +245,8 @@ def build_countdown_brief(race: dict, days: int) -> dict:
         days_word=_days_word(days),
         location=race.get("location", ""),
         date_label=_date_label_pt(race_date),
-        distance_line=distance_line,
+        distance_line=_distance_line(race),
+        tone_block=tone_block,
     )
     try:
         caption = complete(system=CAPTION_SYSTEM, user=user, fast=True, max_tokens=400)
@@ -85,7 +256,7 @@ def build_countdown_brief(race: dict, days: int) -> dict:
             f"faltam {days} {_days_word(days)} pra {race['name']} em "
             f"{race.get('location_short','').lower()}.\n\n"
             f"{race.get('location','')} · {_date_label_pt(race_date)}.\n\n"
-            f"quem vai estar lá?"
+            f"quem fechou inscrição?"
         )
         print(f"⚠ caption fallback ({race['id']}): {e!r}")
 
@@ -93,34 +264,20 @@ def build_countdown_brief(race: dict, days: int) -> dict:
     if days == 1:
         headline = 'a prova é <span class="hl">amanhã</span>.'
 
-    if race.get("kind") == "ironman" and distance == "full":
-        lead = "3,8 km de natação. 180 km de bike. 42 km de corrida. " + (
-            f"{race.get('location_short','').title()}, {_short_date_pt(race_date)}. Quem vai estar lá?"
-        )
-    elif race.get("kind") == "ironman" and distance == "70.3":
-        lead = "1,9 km de natação. 90 km de bike. 21 km de corrida. " + (
-            f"{race.get('location_short','').title()}, {_short_date_pt(race_date)}. Quem vai estar lá?"
-        )
-    else:
-        end = race.get("date_end") or race["date"]
-        lead = f"{race.get('location','')} · {_date_label_pt(race_date)}"
-        if end != race["date"]:
-            lead += f" → {_date_label_pt(parse_race_date(end))}"
-        lead += "."
-
     brief = {
         "id": f"{race['id']}_t{days}",
         "template": "im_countdown",
-        "pillar": "ironman" if race.get("kind") == "ironman" else "endurance",
+        "pillar": "ironman" if kind == "ironman" else "endurance",
         "title": f"{race['name']} · T-{days}",
         "vars": {
-            "BG_IMAGE": race.get("bg_countdown", ""),
+            "LOGO_BLOCK": _logo_block_html(race),
+            "BG_IMAGE": _pick_bg(race),
             "EVENT_LOGO": race.get("logo", ""),
             "KICKER": race.get("kicker", race["name"].upper()),
             "DAYS": str(days),
             "DAYS_UNIT": _days_word(days),
             "HEADLINE": headline,
-            "LEAD": lead,
+            "LEAD": _lead_line(race, race_date),
             "RACE_LABEL": race.get("race_label_short", ""),
         },
         "caption_md": caption,

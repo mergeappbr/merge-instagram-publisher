@@ -119,6 +119,12 @@
   }
   .im-sp-foot .handle { color: var(--ink-soft); }
   .im-sp-foot .src { color: var(--orange); }
+  .im-sp-foot .brand-mark { display: inline-flex; align-items: center; }
+  .im-sp-foot .brand-mark .brand-logo {
+    position: static; top: auto; left: auto;
+    width: 32px; height: auto; display: block;
+  }
+  .canvas--story .im-sp-foot .brand-mark .brand-logo { width: 42px; }
 </style>
 
 <div class="canvas canvas--{{SIZE}} {{BG_CLASS}}">
@@ -140,7 +146,7 @@
       </div>
     </div>
     <div class="im-sp-foot">
-      <span class="handle">@mergeapp.wellness</span>
+      <span class="brand-mark">{{LOGO}}</span>
       <span class="src">dados via @ironstatsbr · ironman.com</span>
     </div>
   </div>

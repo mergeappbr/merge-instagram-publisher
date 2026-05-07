@@ -91,15 +91,11 @@ def run_today(today: date | None = None, dry_run: bool = False) -> int:
             if dry_run:
                 fired += 1
                 continue
-            # Auto-geração só pra ironman (template depende de EVENT_LOGO).
-            # Outras kinds (mtb, trail) notificam Pedro pra criar manual.
-            if race.get("kind") == "ironman":
-                ok = runner.dispatch_countdown(race, m)
-                if ok:
-                    _mark_sent(state, rid, f"t{m}", today)
-                    fired += 1
-            else:
-                _notify_manual_countdown(race, m)
+            # Countdown automático pra todas as kinds (ironman, mtb, trail) —
+            # template renderiza logo card quando race tem `logo`, ou pill com
+            # sigla quando não tem. Caption usa prompt específico do kind.
+            ok = runner.dispatch_countdown(race, m)
+            if ok:
                 _mark_sent(state, rid, f"t{m}", today)
                 fired += 1
 
@@ -113,19 +109,6 @@ def run_today(today: date | None = None, dry_run: bool = False) -> int:
                     fired += _dispatch_results_or_notify(race, state, today)
 
     return fired
-
-
-def _notify_manual_countdown(race: dict, days: int) -> None:
-    """Race não-ironman bateu milestone — só avisa Pedro pra criar manual."""
-    from alerts import notify
-    import html as _html
-    notify(
-        f"📅 <b>[{_html.escape(race.get('kind','?').upper())} · T-{days}] "
-        f"{_html.escape(race.get('name','?'))}</b>\n"
-        f"{_html.escape(race.get('location',''))} · {_html.escape(race['date'])}\n\n"
-        f"<i>auto-geração de criativo só rola pra kind=ironman. "
-        f"Pra esta prova, crie manualmente em content/briefs/.</i>"
-    )
 
 
 def _dispatch_results_or_notify(race: dict, state: dict, today: date) -> int:
