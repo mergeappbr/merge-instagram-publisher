@@ -122,11 +122,19 @@ def _handle_message(msg: dict) -> None:
         # Comando direto — responde só se for /start ou similar; resto ignora.
         if text in ("/start", "/help"):
             api.send_message(
-                "Bot da <b>Merge</b>. Recebe previews e aceita ajustes em texto livre.\n"
-                "Comandos: /pending — lista approvals pendentes."
+                "Bot da <b>Merge</b>. Recebe previews e aceita ajustes em texto livre.\n\n"
+                "<b>Comandos</b>\n"
+                "/pending — lista approvals pendentes\n"
+                "/races — lista provas configuradas\n"
+                "/race &lt;id&gt; — força countdown agora (ex: <code>/race sertoes_nova_lima_2026</code>)"
             )
         elif text == "/pending":
             _list_pending(chat_id)
+        elif text == "/races":
+            _list_races(chat_id)
+        elif text.startswith("/race "):
+            race_id = text[len("/race "):].strip()
+            _force_race_countdown(chat_id, race_id)
         return
 
     # Texto livre direcionado a um approval específico
@@ -170,6 +178,77 @@ def _disable_buttons(msg: dict, *, status: str) -> None:
     elif "text" in msg:
         new_text = (msg.get("text") or "") + f"\n\n— <b>{status}</b>"
         api.edit_message_text(chat_id, msg_id, new_text[:4096], reply_markup={"inline_keyboard": []})
+
+
+def _list_races(chat_id: int) -> None:
+    try:
+        from ironman import config as race_cfg
+        from ironman import config as cfg_mod  # noqa: F401
+    except Exception as e:  # noqa: BLE001
+        api.send_message(f"⚠️ módulo ironman indisponível: {html.escape(str(e))}", chat_id=str(chat_id))
+        return
+    from datetime import datetime
+    races = race_cfg.load_races()
+    if not races:
+        api.send_message("nenhuma prova em races.yml.", chat_id=str(chat_id))
+        return
+    today = datetime.now().date()
+    lines = [f"<b>{len(races)} prova(s) configurada(s)</b>"]
+    for r in races:
+        d = race_cfg.days_until(r, today)
+        when = f"T-{d}" if d > 0 else (f"T+{-d}" if d < 0 else "hoje")
+        lines.append(
+            f"· <code>{html.escape(r['id'])}</code> · {html.escape(r.get('kind','?'))} · "
+            f"{html.escape(r.get('name','?'))} · {when}"
+        )
+    api.send_message("\n".join(lines), chat_id=str(chat_id))
+
+
+def _force_race_countdown(chat_id: int, race_id: str) -> None:
+    if not race_id:
+        api.send_message(
+            "uso: <code>/race &lt;id&gt;</code>\nveja /races pra IDs.",
+            chat_id=str(chat_id),
+        )
+        return
+    try:
+        from ironman import config as race_cfg
+        from ironman import runner as race_runner
+    except Exception as e:  # noqa: BLE001
+        api.send_message(f"⚠️ ironman indisponível: {html.escape(str(e))}", chat_id=str(chat_id))
+        return
+    from datetime import datetime
+    races = race_cfg.load_races()
+    race = next((r for r in races if r["id"] == race_id), None)
+    if race is None:
+        api.send_message(
+            f"⚠️ race <code>{html.escape(race_id)}</code> não encontrada. veja /races.",
+            chat_id=str(chat_id),
+        )
+        return
+    today = datetime.now().date()
+    days = race_cfg.days_until(race, today)
+    if days <= 0:
+        api.send_message(
+            f"⚠️ <code>{html.escape(race_id)}</code> já aconteceu (d_until={days}).",
+            chat_id=str(chat_id),
+        )
+        return
+    api.send_message(
+        f"⏳ gerando countdown forçado · <code>{html.escape(race_id)}</code> · T-{days}",
+        chat_id=str(chat_id),
+        silent=True,
+    )
+    try:
+        ok = race_runner.dispatch_countdown(race, days)
+    except Exception as e:  # noqa: BLE001
+        api.send_message(
+            f"❌ falha: <code>{html.escape(str(e)[:300])}</code>",
+            chat_id=str(chat_id),
+        )
+        return
+    if not ok:
+        api.send_message("❌ render falhou (veja logs).", chat_id=str(chat_id))
 
 
 def _list_pending(chat_id: int) -> None:
