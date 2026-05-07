@@ -371,6 +371,30 @@ def find_feed_folder_for_post(post_id: str) -> Path:
     sys.exit(f"Não achei {target} em nenhuma Semana XX/feed/ dentro de {tried or 'pasta nenhuma (todas inexistentes)'}")
 
 
+def find_story_for_post(post_id: str, feed_folder: Path | None) -> Path | None:
+    """Acha o PNG do story que acompanha o post.
+
+    Ordem de busca:
+      1. Se feed_folder veio de Semana XX/feed/, tenta Semana XX/stories/<NN>.png
+         (post numerado semanal — convenção em ~/Desktop/Merge - Posts Semanais/)
+      2. Tenta output/stories/<post_id>.png (autogen briefs renderizados)
+
+    Retorna None se nenhum existir — caller deve pular silenciosamente.
+    """
+    norm = post_id.lstrip("0") or "0"
+    if feed_folder is not None:
+        story_dir = feed_folder.parent / "stories"
+        # Tenta com e sem zero à esquerda (Semana 02 tem 06.png e 6.png pode aparecer)
+        for name in (f"{norm}.png", f"{post_id}.png"):
+            cand = story_dir / name
+            if cand.exists():
+                return cand
+    cand = ROOT / "output" / "stories" / f"{post_id}.png"
+    if cand.exists():
+        return cand
+    return None
+
+
 def find_reel_video(reel_id: str) -> Path:
     """Acha o MP4 do reel em output/reels/."""
     p = REELS_SRC / f"{reel_id}.mp4"
@@ -543,6 +567,30 @@ def main(argv: list[str] | None = None) -> None:
         "caption_preview": caption[:120].replace("\n", " "),
         "scheduled_for": datetime.fromtimestamp(schedule_ts).isoformat() if schedule_ts else "",
     })
+
+    # --- auto-publica story acompanhando o feed -----------------------------
+    # Stories só sobem quando o post é IMAGEM (static/carousel), não-agendado
+    # e não-dry-run. Para reels não há "story irmã" no padrão. Para schedule_ts
+    # o IG Graph não suporta agendar stories, então publicamos junto-do-feed
+    # apenas em publish imediato. Falha aqui NÃO derruba o publish do feed
+    # (já registrado em published.csv).
+    if not is_reel and not args.dry_run and not schedule_ts:
+        try:
+            story_png = find_story_for_post(args.post, folder)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ falha procurando story do post {args.post}: {e!r}")
+            story_png = None
+        if story_png is None:
+            print(f"ℹ nenhum story PNG pareado para post {args.post} — pulando")
+        else:
+            print(f"→ STORY: publicando {story_png.name} (companheiro do feed)")
+            try:
+                story_post_id = f"{args.post}_story"
+                publish_story(str(story_png), post_id=story_post_id)
+            except SystemExit as e:
+                print(f"⚠ story não publicado para {args.post}: {e}")
+            except Exception as e:  # noqa: BLE001
+                print(f"⚠ story falhou para {args.post}: {e!r}")
 
 
 if __name__ == "__main__":
