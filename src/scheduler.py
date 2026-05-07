@@ -488,14 +488,10 @@ def main(argv: list[str] | None = None) -> None:
     if not args.once and not args.dry_run and not args.no_bot:
         _start_bot_thread()
 
-    info = runway_info(datetime.now(TZ))
-    notify(
-        f"🚀 <b>Merge worker</b> iniciado\n"
-        f"runway: <b>{info['days_remaining']} dias</b> · "
-        f"{info['slots_pending']} posts na fila\n"
-        f"próximo: <code>{html.escape(info['next_slot'] or '—')}</code>",
-        silent=True,
-        force=True,
+    # Startup boot é silencioso — Railway reinicia muito (deploys, restarts).
+    # Notificação 1x/dia já vem via maybe_daily_summary; erros via notify().
+    print(
+        f"🚀 worker iniciado · runway {runway_info(datetime.now(TZ))['days_remaining']}d"
     )
 
     if args.once:
