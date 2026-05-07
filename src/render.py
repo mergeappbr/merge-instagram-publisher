@@ -40,6 +40,42 @@ def load_partials() -> None:
     ARROW_SVG = parts["ARROW_SVG"].strip()
 
 
+_IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def _resolve_image_path(rel: str) -> Path | None:
+    """Resolve BG_IMAGE para um arquivo de imagem real.
+
+    Aceita:
+      - Caminho relativo direto a brand/images/ (ex: 'marathon.jpg')
+      - Pasta direta em brand/images/ (ex: 'comparativos/foo.jpg' OU 'comparativos')
+      - Slug do banco em brand/images/_bank/ (ex: 'marathon_finish_line' →
+        procura em brand/images/_bank/marathon_finish_line/ pegando primeira
+        imagem alfabeticamente — preferindo subpasta 'unsplash' se existir)
+
+    Retorna None se não achar arquivo válido — caller deixa BG vazio (sem crash).
+    """
+    candidates: list[Path] = [
+        ROOT / "brand" / "images" / rel,
+        ROOT / "brand" / "images" / "_bank" / rel,  # slug do banco direto
+    ]
+    for p in candidates:
+        if p.is_file() and p.suffix.lower() in _IMAGE_EXTS:
+            return p
+        if p.is_dir():
+            # Procura em subpasta 'unsplash' primeiro, depois 'pexels', depois raiz
+            for sub in ("unsplash", "pexels", ""):
+                d = p / sub if sub else p
+                if d.is_dir():
+                    files = sorted(
+                        f for f in d.iterdir()
+                        if f.is_file() and f.suffix.lower() in _IMAGE_EXTS
+                    )
+                    if files:
+                        return files[0]
+    return None
+
+
 def build_html(brief: dict, size: str) -> str:
     """Monta HTML final para um brief em determinado tamanho ('feed' ou 'story')."""
     template_name = brief["template"]
@@ -79,10 +115,12 @@ def build_html(brief: dict, size: str) -> str:
         base_vars.update(brief.get("story_vars", {}))
 
     # Resolve background image (caminho relativo a brand/images/ → file:// URL)
+    # Aceita: arquivo direto ('marathon.jpg'), pasta direta ('comparativos'), OU
+    # slug do _bank ('marathon_finish_line' → procura em _bank/<slug>/).
     bg_rel = base_vars.get("BG_IMAGE", "")
     if bg_rel:
-        bg_path = (ROOT / "brand" / "images" / bg_rel).resolve()
-        bg_image_url = bg_path.as_uri()
+        bg_path = _resolve_image_path(bg_rel)
+        bg_image_url = bg_path.as_uri() if bg_path else ""
     else:
         bg_image_url = ""
 

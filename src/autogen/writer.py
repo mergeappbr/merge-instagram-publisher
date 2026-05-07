@@ -125,7 +125,32 @@ def _build_user_prompt(
         parts.append(f"- summary: {news_context.get('summary','?')[:600]}")
         parts.append(f"- evento_finalizado: {news_context.get('post_event','?')}")
         parts.append(
-            "Importante: trate como NOTÍCIA. Linguagem direta tipo OFitFeed / The News (TNS)."
+            "\nREGRAS OBRIGATÓRIAS PARA NEWS:\n"
+            "- PILL: SEMPRE 'NEWS' (curto, 4 letras). NUNCA 'PESQUISA', 'ESTUDO',\n"
+            "  'PAPER', 'ANÁLISE', 'STUDY', 'NEWS RESEARCH'. É só 'NEWS'.\n"
+            "- Vocabulário pt-BR: use 'pace' (NUNCA 'pacing' — esse termo não\n"
+            "  existe em português). Use 'ritmo' como alternativa quando fizer sentido.\n"
+            "- Caption MAIS densa que post comum: 4-6 parágrafos curtos, com dados\n"
+            "  concretos da notícia (números, atletas, organizações, datas).\n"
+            "- INCLUA 1 bloco de bullet points em destaque com os 3-5 pontos-chave\n"
+            "  da notícia. Formato dentro do caption_md (linha em branco antes/depois):\n"
+            "\n"
+            "      Destaques:\n"
+            "\n"
+            "      - <ponto 1, com número/dado concreto>\n"
+            "      - <ponto 2>\n"
+            "      - <ponto 3>\n"
+            "\n"
+            "- BG_IMAGE: para corrida feminina/maratona use 'marathon.jpg' OU o\n"
+            "  slug do banco 'marathon_finish_line' (resolve auto). Para corrida\n"
+            "  geral use 'track_sprint_athlete' ou 'trail_running_effort'. Para\n"
+            "  fisioterapia/lesão use 'running_injury_physiotherapy'. Sempre prefira\n"
+            "  imagem que combina com o ângulo da notícia.\n"
+            "- TEMPLATE: 'feature' por default (1 imagem direta). Use 'carousel_cover'\n"
+            "  quando a notícia tem 3+ achados/estatísticas distintos — fica melhor\n"
+            "  abrir cada ponto num slide próprio. Se carousel_cover, devolva\n"
+            "  carousel_slides com 3-4 slides (cada um {PILL,HEADLINE,LEAD}).\n"
+            "- Tom: direto, OFitFeed / The News (TNS) — sem floreio.\n"
         )
 
     parts.append(f"\nTEMPLATES DISPONÍVEIS: {', '.join(templates)}")
