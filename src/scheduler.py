@@ -373,13 +373,15 @@ def tick(dry_run: bool = False) -> int:
                     force=True,
                 )
             else:
-                # falhas intermediárias: notify normal (passa pelo dedupe,
-                # então mensagem idêntica não repete dentro da janela de 1h)
+                # falhas intermediárias: dedupe_key estável por post_id pra
+                # não spammar mesmo que o stderr (que contém timestamp da
+                # pasta de upload) mude a cada tick.
                 notify(
                     f"❌ <b>Merge</b> · falha publicando "
                     f"<code>{html.escape(row['post_id'])}</code> "
                     f"({failures}/{MAX_SLOT_FAILURES})\n"
-                    f"<pre>{html.escape(tail)}</pre>"
+                    f"<pre>{html.escape(tail)}</pre>",
+                    dedupe_key=f"slot_fail:{_norm(row['post_id'])}",
                 )
     return n_ok
 

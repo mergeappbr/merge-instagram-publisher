@@ -385,6 +385,10 @@ def find_reel_video(reel_id: str) -> Path:
 
 # Match `## NN ·` pra posts numerados, ou `## reel_xxx ·` pra reels.
 CAPTION_HEADING_RE = re.compile(r"^##\s+(0?\d+|reel_[a-z0-9_]+)\b.*$", re.IGNORECASE)
+# Match qualquer linha de metadata interna: **Hook do post:**, **Story tip:**,
+# **Hook do reel:**, **Caption:**, etc. Tudo que começa com **Xxx:** é
+# diretiva interna pro time/AI e NUNCA deve vazar pra legenda do IG.
+CAPTION_META_RE = re.compile(r"^\*\*[^*\n]+:\*\*")
 
 
 def caption_from_md(captions_path: Path, post_id: str) -> str:
@@ -419,7 +423,9 @@ def caption_from_md(captions_path: Path, post_id: str) -> str:
         if line.strip() == "---":
             break
         ls = line.lstrip()
-        if ls.startswith("**Hook do post:**") or ls.startswith("**Hook do reel:**"):
+        # Filtra QUALQUER linha de metadata `**Xxx:**` (Hook do post, Story tip,
+        # Hook do reel, etc) — são diretivas internas, nunca vão pro IG.
+        if CAPTION_META_RE.match(ls):
             continue
         body_lines.append(line)
 

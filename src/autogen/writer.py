@@ -36,10 +36,30 @@ FORMATO DA ARTE (HEADLINE + LEAD):
 - LEAD: até 3 linhas, separadas por <br> quando faz lista; usa <br><br> entre parágrafos
   Em arte de stat: deixa o número GIGANTE; o lead complementa em 1 frase
 
-FORMATO DA LEGENDA (caption.md):
+FORMATO DA LEGENDA (caption_md) — REGRAS RÍGIDAS:
 - Hook do post (1ª frase): repete/expande a headline
 - Corpo: 2-4 parágrafos curtos, dados concretos, exemplos
 - CTA final: pergunta ou comando seco (ex: "Salva esse post.", "Manda o seu na caixinha.")
+- **NUNCA** inclua linhas tipo `**Story tip:**`, `**Hook do post:**`, `**Caption:**`
+  ou qualquer metadata `**Xxx:**` dentro do `caption_md`. Esses marcadores são
+  diretivas internas — vão em outros campos, NÃO no caption_md.
+- Quando listar itens (faixas, zonas, etapas, comparações), separe CADA item
+  numa linha própria com **linha em branco entre eles**, NÃO em linha única
+  separada por ponto-mediano. Exemplo BOM:
+      "RPE é a escala 1-10:
+
+      1-2 caminhada ·
+
+      3-4 leve ·
+
+      5-6 moderado (ainda fala) ·
+
+      7-8 forte (frase curta) ·
+
+      9-10 máximo (não fala)."
+  Exemplo RUIM (NUNCA faça): "1-2 caminhada · 3-4 leve · 5-6 moderado · ..."
+- Quando mudar de assunto/seção dentro da legenda, use linha em branco para
+  separar visualmente. Não amontoe parágrafos.
 
 CARROSSEL (quando template=carousel_cover):
 - Slide 1 = capa (HEADLINE + LEAD do brief master)

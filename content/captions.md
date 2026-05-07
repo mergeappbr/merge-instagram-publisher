@@ -472,7 +472,17 @@ Hoje você correu em qual?
 ## 38 · QUOTE · RPE
 **Hook do post:** sem relógio, ainda dá pra treinar certo.
 
-RPE (rating of perceived exertion) é a escala 1-10 do esforço percebido. 1-2 caminhada · 3-4 leve · 5-6 moderado (ainda fala) · 7-8 forte (frase curta) · 9-10 máximo (não fala).
+RPE (rating of perceived exertion) é a escala 1-10 do esforço percebido.
+
+1-2 caminhada ·
+
+3-4 leve ·
+
+5-6 moderado (ainda fala) ·
+
+7-8 forte (frase curta) ·
+
+9-10 máximo (não fala).
 
 Atleta que sabe escutar o corpo nunca depende só do dado. RPE é a calibração.
 

@@ -118,6 +118,10 @@ def _dedupe_key(text: str) -> str:
     return hashlib.sha1(norm.encode("utf-8")).hexdigest()
 
 
+def _explicit_key(key: str) -> str:
+    return "k:" + hashlib.sha1(key.encode("utf-8")).hexdigest()
+
+
 def _load_seen() -> dict[str, float]:
     if not DEDUPE_STATE_PATH.exists():
         return {}
@@ -136,8 +140,8 @@ def _save_seen(seen: dict[str, float]) -> None:
         print(f"⚠ alerts dedupe save falhou: {e!r}")
 
 
-def _should_skip(text: str) -> bool:
-    """True se mensagem idêntica já saiu dentro de DEDUPE_WINDOW_SECONDS."""
+def _should_skip(text: str, *, dedupe_key: str | None = None) -> bool:
+    """True se mensagem (ou dedupe_key) já saiu dentro de DEDUPE_WINDOW_SECONDS."""
     if DEDUPE_WINDOW_SECONDS <= 0:
         return False
     now = time.time()
@@ -145,7 +149,7 @@ def _should_skip(text: str) -> bool:
     # purga entradas velhas
     cutoff = now - DEDUPE_WINDOW_SECONDS
     seen = {k: v for k, v in seen.items() if v >= cutoff}
-    key = _dedupe_key(text)
+    key = _explicit_key(dedupe_key) if dedupe_key else _dedupe_key(text)
     if key in seen:
         return True
     seen[key] = now
@@ -158,17 +162,27 @@ def _should_skip(text: str) -> bool:
     return False
 
 
-def notify(text: str, *, silent: bool = False, force: bool = False) -> bool:
+def notify(
+    text: str,
+    *,
+    silent: bool = False,
+    force: bool = False,
+    dedupe_key: str | None = None,
+) -> bool:
     """Manda mensagem (HTML) pro Telegram + mirror Discord (se configurado).
 
     silent=True suprime notificação sonora no Telegram. Discord ignora silent.
     force=True ignora o dedupe (use só pra resumos diários ou eventos únicos
     que precisam sair mesmo se idênticos a um anterior).
+    dedupe_key=str usa essa chave estável pro dedupe (em vez do hash do texto).
+    Útil quando o texto contém timestamps/contadores que mudam a cada tick mas
+    o evento é o mesmo (ex: "falha publicando 38" deve sair 1x por hora mesmo
+    que o stderr embutido mude).
 
     Dedupe: mensagens idênticas dentro de DEDUPE_WINDOW_SECONDS (default 1h)
     são silenciosamente puladas — evita spam quando um erro repete a cada tick.
     """
-    if not force and _should_skip(text):
+    if not force and _should_skip(text, dedupe_key=dedupe_key):
         return True  # tratamos como sucesso (já entregue antes)
     tg_ok = _send_telegram(text, silent=silent)
     _send_discord(text)  # fire-and-forget, não afeta retorno
