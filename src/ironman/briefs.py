@@ -61,6 +61,21 @@ CAPTION_TONE_BY_KIND = {
         "altimetria, Saucony (patrocinador), passagem de fronteira. Sem clichê de "
         "'natureza intocada' ou 'desafio'."
     ),
+    "marathon": (
+        "Tom: corrida de rua, maratona 42km. Pode mencionar pace alvo (sub-3, "
+        "sub-3:30, sub-4, sub-5), corte da elite, BQ (Boston Qualifier), "
+        "negative split, taper, carb load, parcial 21km. World Athletics label "
+        "(gold/elite/heritage) quando fizer sentido. Vocabulário: 'pelotão de "
+        "elite', 'baliza', 'cut-off', 'PR' (personal record)."
+    ),
+    "hyrox": (
+        "Tom: hyrox / functional fitness racing. Formato fixo: 8x 1km de corrida "
+        "intercalado com 8 estações (skierg, sled push, sled pull, burpee broad "
+        "jump, rowing, farmers carry, sandbag lunges, wall balls). Categorias: "
+        "Open, Pro, Doubles (mista/masc/fem), Relay. Vocabulário: 'roxer', "
+        "'compound time', 'split por estação', 'transição', 'roxzone', "
+        "'workout station'. Sem comparar com crossfit ou maratona."
+    ),
 }
 
 CAPTION_USER_TPL = """Escreva uma legenda CURTA pra Instagram (máx 380 chars) sobre
@@ -197,6 +212,14 @@ def _distance_line(race: dict) -> str:
         return "- Formato: stage race / ultramaratona MTB"
     if kind == "trail":
         return "- Formato: stage race trail running"
+    if kind == "marathon":
+        if distance == "42":
+            return "- Distância: 42,195 km · maratona oficial"
+        if distance == "21":
+            return "- Distância: 21,0975 km · meia-maratona"
+        return "- Formato: corrida de rua"
+    if kind == "hyrox":
+        return "- Formato: 8 km corrida + 8 estações funcionais (skierg, sled push/pull, burpee broad jump, row, farmers carry, sandbag lunges, wall balls)"
     return ""
 
 
@@ -227,6 +250,17 @@ def _lead_line(race: dict, race_date: date) -> str:
         end_d = parse_race_date(end)
         return (
             f"stage race em duplas · {loc}, {short}–{_short_date_pt(end_d)}. "
+            f"quem fechou inscrição?"
+        )
+    if kind == "marathon":
+        if distance == "42":
+            return f"42,195 km · {loc}, {short}. quem tá no taper?"
+        if distance == "21":
+            return f"21,0975 km · {loc}, {short}. quem tá no taper?"
+        return f"corrida de rua · {loc}, {short}. quem tá fechando treino?"
+    if kind == "hyrox":
+        return (
+            f"8 km de corrida + 8 estações · {loc}, {short}. "
             f"quem fechou inscrição?"
         )
     end = race.get("date_end") or race["date"]

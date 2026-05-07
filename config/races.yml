@@ -92,3 +92,94 @@ races:
       - villarinho_track.jpg
     race_label_short: "PATAGÔNIA · 05/12"
     kicker: "EL CRUCE · 05-11/12"
+
+  # ----- maratonas BR -----
+
+  - id: maratona_poa_2026
+    name: "Maratona Internacional Porto Alegre"
+    kind: marathon
+    distance: "42"
+    location: "Porto Alegre · RS"
+    location_short: "POA"
+    date: "2026-05-31"
+    site: "https://maratonadeportoalegre.com.br"
+    # Logo: drope `MaratonaPOALogo.png` (ou .webp) em brand/.
+    # Patrocinador Olympikus — naming rights desde 2022.
+    logo: "MaratonaPOALogo.png"
+    bg_pool:
+      - villarinho_run.jpg
+      - villarinho_track.jpg
+      - villarinho_rain.jpg
+      - villarinho_woman_run.jpg
+    race_label_short: "POA · 31/05"
+    kicker: "MARATONA POA · 31/05/26"
+
+  - id: maratona_rio_2026
+    name: "Maratona do Rio"
+    kind: marathon
+    distance: "42"
+    location: "Rio de Janeiro · RJ"
+    location_short: "RIO"
+    date: "2026-06-07"
+    date_end: "2026-06-07"
+    site: "https://www.maratonadorio.com.br"
+    logo: "MaratonaRioLogo_white.png"   # arquivo já existe em brand/
+    logo_on_dark: true                   # versão branca → card preto
+    bg_pool:
+      - villarinho_run.jpg
+      - villarinho_track.jpg
+      - villarinho_smile.jpg
+      - villarinho_friends.jpg
+    race_label_short: "RIO · 07/06"
+    kicker: "MARATONA DO RIO · 07/06/26"
+
+  - id: nb42k_poa_2026
+    name: "New Balance 42K Porto Alegre"
+    kind: marathon
+    distance: "42"
+    location: "Porto Alegre · RS"
+    location_short: "POA"
+    date: "2026-07-12"
+    site: "https://www.newbalance.com.br/corrida-nb-42k-poa"
+    # Logo: drope `NB42KLogo.png` em brand/. Logo NB padrão (N) também serve.
+    logo: "NB42KLogo.png"
+    bg_pool:
+      - villarinho_run.jpg
+      - villarinho_track.jpg
+      - villarinho_rain.jpg
+    race_label_short: "POA · 12/07"
+    kicker: "NB 42K POA · 12/07/26"
+
+  # ----- Hyrox BR (apenas campeonatos brasileiros futuros) -----
+  # Logo HyroxLogo.png já tratada (preto sobre transparente, crop tight).
+  # Usa card branco padrão (logo é preta). Sem logo_on_dark.
+
+  - id: hyrox_sao_paulo_2026
+    name: "HYROX São Paulo"
+    kind: hyrox
+    location: "São Paulo · SP"
+    location_short: "SAO PAULO"
+    date: "2026-10-17"
+    site: "https://hyrox.com/event/hyrox-sao-paulo-2/"
+    logo: "HyroxLogo.png"
+    bg_pool:
+      - villarinho_track.jpg
+      - villarinho_race.jpg
+      - villarinho_smile.jpg
+    race_label_short: "SP · 17/10"
+    kicker: "HYROX SP · 17/10/26"
+
+  - id: hyrox_rio_2026
+    name: "HYROX Rio de Janeiro"
+    kind: hyrox
+    location: "Rio de Janeiro · RJ"
+    location_short: "RIO"
+    date: "2026-11-21"
+    site: "https://hyrox.com/event/hyrox-rio-de-janeiro/"
+    logo: "HyroxLogo.png"
+    bg_pool:
+      - villarinho_track.jpg
+      - villarinho_race.jpg
+      - villarinho_smile.jpg
+    race_label_short: "RIO · 21/11"
+    kicker: "HYROX RIO · 21/11/26"

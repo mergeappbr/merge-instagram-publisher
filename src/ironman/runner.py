@@ -28,7 +28,11 @@ from autogen import calendar_io
 from bot import api, state
 
 from . import briefs as briefs_mod
+from . import config as race_cfg
 from . import results as results_mod
+
+# Janela de detecção de cluster — provas mesma kind dentro deste range no Telegram preview
+CLUSTER_WINDOW_DAYS = 30
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 BRIEFS_DIR = ROOT / "content" / "briefs"
@@ -109,6 +113,42 @@ def _create_countdown_approval(brief: dict, race: dict, days: int) -> str:
     return aid
 
 
+def _kind_label(kind: str) -> str:
+    return {
+        "ironman": "Ironman",
+        "mtb": "MTB",
+        "trail": "Trail",
+        "marathon": "Maratona",
+        "hyrox": "Hyrox",
+    }.get(kind, (kind or "Race").title())
+
+
+def _detect_cluster(race: dict) -> list[dict]:
+    """Retorna outras provas mesma `kind` em até CLUSTER_WINDOW_DAYS dias da
+    race atual. Usado pra avisar no preview do Telegram que existe sobreposição
+    de eventos da mesma modalidade — ajuda a não saturar o feed.
+    """
+    try:
+        all_races = race_cfg.load_races()
+    except Exception:  # noqa: BLE001
+        return []
+    target_kind = race.get("kind")
+    target_id = race.get("id")
+    target_d = race_cfg.parse_race_date(race["date"])
+    nearby: list[dict] = []
+    for other in all_races:
+        if other.get("id") == target_id or other.get("kind") != target_kind:
+            continue
+        try:
+            other_d = race_cfg.parse_race_date(other["date"])
+        except Exception:  # noqa: BLE001
+            continue
+        gap = abs((other_d - target_d).days)
+        if gap <= CLUSTER_WINDOW_DAYS:
+            nearby.append({"name": other.get("name", "?"), "date": other["date"], "gap": gap})
+    return nearby
+
+
 def _send_countdown_preview(brief: dict, race: dict, days: int, approval_id: str) -> dict:
     feed_png = OUT_FEED / f"{brief['id']}.png"
     if not feed_png.exists():
@@ -119,12 +159,26 @@ def _send_countdown_preview(brief: dict, race: dict, days: int, approval_id: str
     lead_plain = _strip_html(brief.get("vars", {}).get("LEAD", ""))
     caption_body = brief.get("caption_md", "")
 
-    kind_label = {"ironman": "Ironman", "mtb": "MTB", "trail": "Trail"}.get(
-        race.get("kind", ""), race.get("kind", "Race").title()
-    )
+    kind_label = _kind_label(race.get("kind", ""))
     cap_lines = [
         f"🏁 <b>[{kind_label} · T-{days}] {html.escape(race.get('name','?'))}</b>",
         f"<i>{html.escape(race.get('location',''))} · {html.escape(race['date'])}</i>",
+    ]
+
+    cluster = _detect_cluster(race)
+    if cluster:
+        cap_lines.append("")
+        cap_lines.append(
+            f"⚠️ <b>cluster {kind_label.lower()}</b> "
+            f"(mesma modalidade ≤{CLUSTER_WINDOW_DAYS}d):"
+        )
+        for c in cluster[:3]:
+            cap_lines.append(
+                f"· {html.escape(c['name'])} · {html.escape(c['date'])} "
+                f"(gap {c['gap']}d)"
+            )
+
+    cap_lines += [
         "",
         f"<b>ARTE</b>",
         f"HEAD: {html.escape(head_plain)[:200]}",
