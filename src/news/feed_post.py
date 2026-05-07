@@ -194,8 +194,10 @@ def _send_preview(
         cap_text_lines.append(review_block)
     cap_text_lines.append(f"\nid: <code>{html.escape(approval_id)}</code>")
 
+    # News posts usam "Postar agora" — distingue de Aprovar (esteira do calendar).
+    # On_brief_approve detecta news e força scheduled_at=now (real-time).
     keyboard = api.inline_keyboard([
-        [("✅ Aprovar", f"approve:{approval_id}"), ("❌ Rejeitar", f"reject:{approval_id}")],
+        [("🚀 Postar agora", f"approve:{approval_id}"), ("❌ Rejeitar", f"reject:{approval_id}")],
         [("✏️ Ajustar", f"adjust:{approval_id}")],
     ])
     api.send_message("\n".join(cap_text_lines), reply_markup=keyboard)

@@ -131,7 +131,9 @@ def _handle_message(msg: dict) -> None:
                 "/force_news — força watcher rodar agora\n"
                 "/force_stories — força dispatch de stories (ignora janela)\n"
                 "/force_news_feed — força 1 feed news post agora\n"
-                "/force_news_fitbit — TEMP: dispara news Fitbit Air vs WHOOP"
+                "/force_news_fitbit — TEMP: dispara news Fitbit Air vs WHOOP\n"
+                "/publish_now [slot] — publica brief news preso na esteira\n"
+                "/calendar_news — lista news pendentes no calendar"
             )
         elif text == "/pending":
             _list_pending(chat_id)
@@ -150,6 +152,11 @@ def _handle_message(msg: dict) -> None:
             _force_news_feed(chat_id)
         elif text == "/force_news_fitbit":
             _force_news_fitbit(chat_id)
+        elif text == "/publish_now" or text.startswith("/publish_now "):
+            arg = text[len("/publish_now"):].strip()
+            _publish_now(chat_id, arg or None)
+        elif text == "/calendar_news":
+            _list_calendar_news(chat_id)
         return
 
     # Texto livre direcionado a um approval específico
@@ -454,6 +461,107 @@ def _force_news_fitbit(chat_id: int) -> None:
         api.send_message("✅ Fitbit news preview enviado.", chat_id=str(chat_id))
     else:
         api.send_message("❌ Fitbit news falhou (veja logs).", chat_id=str(chat_id))
+
+
+def _list_pending_news_rows() -> list[dict]:
+    """Lê calendar.csv e retorna rows de news (theme=news) ainda não publicadas."""
+    import csv
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent.parent
+    cal = root / "content" / "calendar.csv"
+    if not cal.exists():
+        return []
+    # Importa lazy pra evitar ciclo
+    from scheduler import published_post_ids, load_skipped, _norm
+    done = published_post_ids()
+    skipped = load_skipped()
+    with cal.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    pending = []
+    for r in rows:
+        if (r.get("theme") or "").strip() != "news":
+            continue
+        nid = _norm(r.get("post_id", ""))
+        if nid in done or nid in skipped:
+            continue
+        pending.append(r)
+    return pending
+
+
+def _list_calendar_news(chat_id: int) -> None:
+    """Lista news posts pendentes no calendar — útil pra escolher slot do /publish_now."""
+    pending = _list_pending_news_rows()
+    if not pending:
+        api.send_message("📅 nenhuma news pendente no calendar.", chat_id=str(chat_id))
+        return
+    lines = ["📰 <b>news pendentes no calendar</b>", ""]
+    for r in pending[:20]:
+        lines.append(
+            f"slot <code>{html.escape(r['slot'])}</code> · "
+            f"{html.escape(r['scheduled_at'])} · "
+            f"<code>{html.escape(r['post_id'][:50])}</code>"
+        )
+    lines.append("")
+    lines.append("usa <code>/publish_now &lt;slot&gt;</code> pra publicar agora.")
+    api.send_message("\n".join(lines), chat_id=str(chat_id))
+
+
+def _publish_now(chat_id: int, arg: str | None) -> None:
+    """Move scheduled_at de uma row de news pra agora — próximo tick publica.
+
+    Sem args: se exatamente 1 news pendente, move ela. Se 0/múltiplas, lista.
+    Com slot: move aquele slot específico.
+    """
+    import csv
+    from datetime import datetime
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent.parent
+    cal = root / "content" / "calendar.csv"
+    pending = _list_pending_news_rows()
+    if not pending:
+        api.send_message("📅 nenhuma news pendente.", chat_id=str(chat_id))
+        return
+    target = None
+    if arg:
+        for r in pending:
+            if r["slot"] == arg or r["post_id"] == arg:
+                target = r
+                break
+        if target is None:
+            api.send_message(
+                f"⚠️ slot/id <code>{html.escape(arg)}</code> não está em news pendentes. "
+                f"Rode <code>/calendar_news</code>.",
+                chat_id=str(chat_id),
+            )
+            return
+    else:
+        if len(pending) > 1:
+            api.send_message(
+                f"⚠️ {len(pending)} news pendentes. Use <code>/calendar_news</code> "
+                f"e depois <code>/publish_now &lt;slot&gt;</code>.",
+                chat_id=str(chat_id),
+            )
+            return
+        target = pending[0]
+    # Reescreve calendar.csv com scheduled_at=now pro target
+    with cal.open(encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+        fieldnames = rows[0].keys() if rows else []
+    new_when = datetime.now().strftime("%Y-%m-%d %H:%M")
+    for r in rows:
+        if r["slot"] == target["slot"] and r["post_id"] == target["post_id"]:
+            r["scheduled_at"] = new_when
+            break
+    with cal.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
+        w.writerows(rows)
+    api.send_message(
+        f"🚀 slot <code>{html.escape(target['slot'])}</code> "
+        f"(<code>{html.escape(target['post_id'][:40])}</code>) movido pra "
+        f"<code>{html.escape(new_when)}</code>. Próximo tick (≤1min) publica.",
+        chat_id=str(chat_id),
+    )
 
 
 def _list_pending(chat_id: int) -> None:
