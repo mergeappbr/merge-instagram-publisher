@@ -155,6 +155,9 @@ def _send_preview(
         bullets = [f"❗ {b}" for b in blockers] + [f"⚠️ {w}" for w in warns]
         review_block = "\n\n<b>review</b>\n" + "\n".join(bullets[:6])
 
+    # Photo caption: só metadata curta (ARTE + score). Legenda completa vai
+    # numa mensagem de texto separada logo depois (Telegram caption tem cap
+    # de 1024, texto vai até 4096 — caption_md inteira cabe sem truncar).
     cap_lines = [
         f"📰 <b>FEED NEWS · {slot_label.upper()} · score {score}</b>",
         f"<i>{html.escape(item.get('feed_name','?'))}</i>",
@@ -166,23 +169,28 @@ def _send_preview(
         f"<b>ARTE</b>",
         f"HEAD: {html.escape(head_plain)[:200]}",
         f"LEAD: {html.escape(lead_plain)[:300]}",
-        "",
-        f"<b>LEGENDA</b>",
-        f"<pre>{html.escape(caption[:450])}</pre>",
     ]
-    if review_block:
-        cap_lines.append(review_block)
-    cap_lines.append(f"\nid: <code>{html.escape(approval_id)}</code>")
+    photo_caption = "\n".join(cap_lines)
+    if len(photo_caption) > 1024:
+        photo_caption = photo_caption[:1020] + "..."
 
-    full_caption = "\n".join(cap_lines)
-    if len(full_caption) > 1024:
-        full_caption = full_caption[:1020] + "..."
+    api.send_photo_file(str(feed_png), caption=photo_caption)
+
+    # Mensagem 2: legenda completa (cap_md) + review + botões
+    cap_text_lines = [f"<b>LEGENDA COMPLETA</b> ({len(caption)} chars)", ""]
+    # Telegram text msg cap 4096; deixamos margem pra review_block + id
+    cap_text_lines.append(f"<pre>{html.escape(caption[:3500])}</pre>")
+    if len(caption) > 3500:
+        cap_text_lines.append(f"<i>... +{len(caption)-3500} chars</i>")
+    if review_block:
+        cap_text_lines.append(review_block)
+    cap_text_lines.append(f"\nid: <code>{html.escape(approval_id)}</code>")
 
     keyboard = api.inline_keyboard([
         [("✅ Aprovar", f"approve:{approval_id}"), ("❌ Rejeitar", f"reject:{approval_id}")],
         [("✏️ Ajustar", f"adjust:{approval_id}")],
     ])
-    api.send_photo_file(str(feed_png), caption=full_caption, reply_markup=keyboard)
+    api.send_message("\n".join(cap_text_lines), reply_markup=keyboard)
 
 
 def dispatch_one(item: dict, slot_label: str) -> bool:
