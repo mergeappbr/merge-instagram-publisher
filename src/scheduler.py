@@ -315,6 +315,15 @@ def _maybe_insights_reports(now: datetime) -> None:
         print(f"⚠ insights report erro: {e!r}")
 
 
+def _maybe_competitors_digest(now: datetime) -> None:
+    """Sexta 16h BRT — digest semanal de concorrentes."""
+    try:
+        from competitors.digest import maybe_run as competitors_maybe_run
+        competitors_maybe_run(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ competitors digest erro: {e!r}")
+
+
 def _maybe_autogen(now: datetime) -> None:
     """Gatilha geração de briefs quando runway < threshold."""
     info = runway_info(now)
@@ -337,6 +346,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_insights_reports(now)
         _maybe_news_watch(now)
         _maybe_stories(now)
+        _maybe_competitors_digest(now)
         _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:

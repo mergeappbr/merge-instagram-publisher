@@ -1,0 +1,49 @@
+# Concorrentes monitorados pelo Competitor Intelligence Agent.
+#
+# Roda toda sexta 16:00 BRT (antes do news-recap), gera
+# output/competitors_weekly.md + digest no Telegram.
+#
+# Campos:
+#   name      (obrigatório) — display name
+#   handle    (opcional)    — IG handle SEM @. Requer conta IG Business/Creator
+#                            pública (Business Discovery API). Se omitido,
+#                            só o site é monitorado.
+#   site      (opcional)    — URL pra tentar RSS (/feed, /rss, /blog/feed)
+#   notes     (opcional)    — contexto curto (posicionamento, ângulo)
+#
+# Edite à vontade. O agente lida com handles inválidos / feeds 404 sem crashar.
+
+competitors:
+  - name: House of Pace
+    handle: houseofp.ace
+    notes: clube/marca de corrida BR
+
+  - name: Pacer
+    handle: usepacer
+    notes: app/comunidade de corrida
+
+  - name: Zyla
+    handle: zyla.fit
+    notes: wellness/treino digital
+
+  - name: Asics Brasil
+    handle: asicsbrasil
+    site: https://www.asics.com.br
+    notes: foco corrida; storytelling de elite + amador
+
+  - name: Strava
+    handle: strava
+    site: https://blog.strava.com
+    notes: benchmark global de comunidade endurance e dados
+
+  - name: Nike Run Club
+    handle: nikerunning
+    notes: benchmark global de comunicação de corrida
+
+  - name: Hyrox Brasil
+    handle: hyroxbrazil
+    notes: modalidade-foco; comunicação de evento
+
+  - name: Iron Stats BR
+    handle: ironstatsbr
+    notes: stats das provas Ironman; ranking top 10 brasileiros; fonte de verdade pra módulo Ironman tracker
