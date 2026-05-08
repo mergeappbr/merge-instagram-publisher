@@ -354,9 +354,22 @@ def collect_post_images(folder: Path, post_id: str) -> list[Path]:
 
 
 def find_feed_folder_for_post(post_id: str) -> Path:
-    """Acha a pasta `Semana XX/feed/` que contém `<post_id>.png` em qualquer base candidata."""
+    """Acha a pasta que contém `<post_id>.png`.
+
+    Ordem:
+      1. `output/feed/` (flat — autogen, news, ironman renderizam aqui direto)
+      2. `Semana XX/feed/` dentro de cada base do FEED_BASE_CANDIDATES
+         (estrutura semanal do pipeline manual)
+    """
     norm = post_id.lstrip("0") or "0"
     target = f"{norm}.png"
+
+    # 1) Layout flat (output/feed/<id>.png) — usado por todo o fluxo automático
+    flat_dir = ROOT / "output" / "feed"
+    if (flat_dir / target).exists() or (flat_dir / f"{post_id}.png").exists():
+        return flat_dir
+
+    # 2) Layout semanal (Semana XX/feed/<id>.png) — pipeline manual
     tried: list[Path] = []
     for base in FEED_BASE_CANDIDATES:
         if base is None or not base.exists():
@@ -368,7 +381,10 @@ def find_feed_folder_for_post(post_id: str) -> Path:
                 continue
             if (feed_dir / target).exists():
                 return feed_dir
-    sys.exit(f"Não achei {target} em nenhuma Semana XX/feed/ dentro de {tried or 'pasta nenhuma (todas inexistentes)'}")
+    sys.exit(
+        f"Não achei {target} em output/feed/ nem em nenhuma Semana XX/feed/ "
+        f"dentro de {tried or 'pasta nenhuma (todas inexistentes)'}"
+    )
 
 
 def find_story_for_post(post_id: str, feed_folder: Path | None) -> Path | None:
