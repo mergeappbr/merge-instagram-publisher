@@ -72,13 +72,13 @@ SEMPRE em inglês, formato fotográfico estrito:
 
   "Editorial photograph of [SUBJECT] [ACTION], [SETTING], [LIGHTING],
   [COMPOSITION], shot on [LENS], shallow depth of field, magazine cover
-  composition, negative space at bottom, no text, no logos, photorealistic"
+  composition, subject centered, negative space top and bottom, no text, no logos, photorealistic"
 
 Exemplos do que QUERO:
 - "Editorial photograph of a Brazilian marathon runner pushing through
   fatigue at km 35 on urban asphalt, late afternoon golden light,
   determined expression, side profile, shot on 85mm f/1.8, shallow
-  depth of field, magazine cover composition, negative space at bottom,
+  depth of field, magazine cover composition, subject centered, negative space top and bottom,
   no text, no logos, photorealistic"
 - "Editorial photograph of professional cyclist in aerodynamic time-trial
   position on coastal road, sunrise backlight, motion blur on wheels,
@@ -177,12 +177,23 @@ def _passes_quality_gate(img_bytes: Optional[bytes]) -> bool:
 
 
 def _fetch_gemini_image(prompt: str) -> Optional[bytes]:
-    """Gera via Gemini 2.5 Flash Image (paid). Retorna None silenciosamente em falha."""
+    """Gera via Gemini 2.5 Flash Image (paid). Retorna None silenciosamente em falha.
+
+    Formato 9:16 (1080x1920) — mesma imagem serve feed (4:5 cropa topo/rodapé
+    via CSS background-size:cover) e story (9:16 nativo). Economiza 50%
+    de custo (1 chamada para 2 formatos).
+    """
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         return None
     url = GEMINI_ENDPOINT_TMPL.format(model=GEMINI_MODEL, key=key)
-    full_prompt = prompt + "\n\nAspect ratio: 4:5 portrait."
+    full_prompt = (
+        prompt
+        + "\n\nAspect ratio: 9:16 portrait (1080x1920). "
+        + "Subject MUST be centered vertically in the middle third of the frame. "
+        + "Generous negative space at top AND bottom thirds (will be cropped to 4:5 "
+        + "in feed format). No text, no logos, no watermarks anywhere."
+    )
     body = {
         "contents": [{"parts": [{"text": full_prompt}]}],
         "generationConfig": {"responseModalities": ["IMAGE"]},
@@ -210,16 +221,25 @@ def _fetch_gemini_image(prompt: str) -> Optional[bytes]:
 
 
 def _fetch_pollinations(prompt: str) -> Optional[bytes]:
-    """Gera via Pollinations FLUX (grátis, sem key)."""
+    """Gera via Pollinations FLUX (grátis, sem key).
+
+    Formato 9:16 (1080x1920) — mesma imagem serve feed (cropada via CSS
+    background-size:cover pra 4:5) e story (9:16 nativo).
+    """
+    enhanced_prompt = (
+        prompt
+        + " | Subject centered in middle third, generous negative space "
+        + "top and bottom, 9:16 portrait, no text, no logos."
+    )
     qs = urllib.parse.urlencode({
         "model": "flux",
         "width": 1080,
-        "height": 1350,
+        "height": 1920,
         "nologo": "true",
         "enhance": "true",
         "seed": int(time.time()) % 100000,
     })
-    url = f"https://image.pollinations.ai/prompt/{urllib.parse.quote(prompt)}?{qs}"
+    url = f"https://image.pollinations.ai/prompt/{urllib.parse.quote(enhanced_prompt)}?{qs}"
     try:
         with httpx.Client(timeout=120, follow_redirects=True) as client:
             r = client.get(url)
@@ -278,7 +298,7 @@ def resolve_bg_for_news(
             "scene_prompt": (
                 f"Editorial photography of {modality or 'endurance athlete'} "
                 f"in action, cinematic golden hour, shallow depth of field, "
-                f"magazine cover composition with negative space at bottom"
+                f"magazine cover composition with subject centered, negative space top and bottom"
             ),
         }
 
@@ -312,7 +332,7 @@ def resolve_bg_for_news(
                 f"Editorial photograph of {plan['entity']}, "
                 f"{modality or 'endurance'} context, cinematic golden hour, "
                 f"shallow depth of field, magazine cover composition, "
-                f"negative space at bottom, no text, no logos, photorealistic"
+                f"subject centered, negative space top and bottom, no text, no logos, photorealistic"
             )
             img_bytes, source_label = _try_scene(
                 scene_prompt, f"scene-fallback:{plan['entity']}:"
