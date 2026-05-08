@@ -101,15 +101,19 @@ races:
     distance: "42"
     location: "Porto Alegre · RS"
     location_short: "POA"
+    location_dative: "em Porto Alegre"
     date: "2026-05-31"
     site: "https://maratonadeportoalegre.com.br"
-    # Logo: drope `MaratonaPOALogo.png` (ou .webp) em brand/.
-    # Patrocinador Olympikus — naming rights desde 2022.
     logo: "MaratonaPOALogo.png"
-    # marathon.jpg = silhuetas correndo no nascer do sol urbano (default
-    # pra maratona de rua). Substituir por fotos POA-específicas quando tiver.
+    # Pool: marathon.jpg + 5 fotos do banco _bank (chegada/percurso urbano).
+    # Idealmente trocar por fotos da prova quando ficarem disponíveis.
     bg_pool:
       - marathon.jpg
+      - _bank/marathon_finish_line/pexels/3518952.jpg
+      - _bank/marathon_finish_line/pexels/17982930.jpg
+      - _bank/marathon_finish_line/pexels/29837388.jpg
+      - _bank/marathon_finish_line/unsplash/bLpwpZ2E_80.jpg
+      - _bank/marathon_finish_line/unsplash/pPYKExEwlkc.jpg
     race_label_short: "POA · 31/05"
     kicker: "MARATONA POA · 31/05/26"
 
@@ -119,15 +123,24 @@ races:
     distance: "42"
     location: "Rio de Janeiro · RJ"
     location_short: "RIO"
+    location_dative: "no Rio de Janeiro"
     date: "2026-06-07"
     date_end: "2026-06-07"
     site: "https://www.maratonadorio.com.br"
-    logo: "MaratonaRioLogo_white.png"   # arquivo já existe em brand/
-    logo_on_dark: true                   # versão branca → card preto
-    # marathon.jpg = silhuetas correndo no nascer do sol urbano (default).
-    # IDEAL: substituir por foto da prova (largada Aterro, calçadão, Cristo).
+    logo: "MaratonaRioLogo_white.png"
+    logo_on_dark: true
+    # Pool: marathon.jpg (silhuetas urbanas) + 5 fotos do banco _bank com
+    # cenas de chegada/percurso urbano. 3518952.jpg é foto BR (atleta com
+    # bandeira SP — perfeita pra maratona BR).
+    # IDEAL: subir 5+ fotos da Maratona do Rio (Aterro, calçadão, Cristo,
+    # largada) em brand/images/ pra substituir gradativamente.
     bg_pool:
       - marathon.jpg
+      - _bank/marathon_finish_line/pexels/3518952.jpg
+      - _bank/marathon_finish_line/pexels/17982930.jpg
+      - _bank/marathon_finish_line/pexels/29837388.jpg
+      - _bank/marathon_finish_line/unsplash/bLpwpZ2E_80.jpg
+      - _bank/marathon_finish_line/unsplash/pPYKExEwlkc.jpg
     race_label_short: "RIO · 07/06"
     kicker: "MARATONA DO RIO · 07/06/26"
 
@@ -140,9 +153,15 @@ races:
     date: "2026-07-12"
     site: "https://www.newbalance.com.br/corrida-nb-42k-poa"
     # Logo: drope `NB42KLogo.png` em brand/. Logo NB padrão (N) também serve.
+    location_dative: "em Porto Alegre"
     logo: "NB42KLogo.png"
     bg_pool:
       - marathon.jpg
+      - _bank/marathon_finish_line/pexels/3518952.jpg
+      - _bank/marathon_finish_line/pexels/17982963.jpg
+      - _bank/marathon_finish_line/pexels/30061216.jpg
+      - _bank/marathon_finish_line/unsplash/_mCw0lhLEoo.jpg
+      - _bank/marathon_finish_line/unsplash/vJvjWwYfPEk.jpg
     race_label_short: "POA · 12/07"
     kicker: "NB 42K POA · 12/07/26"
 

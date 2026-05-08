@@ -309,18 +309,20 @@ def build_countdown_brief(race: dict, days: int) -> dict:
         print(f"⚠ caption fallback ({race['id']}): {e!r}")
 
     # Headline NÃO repete o número de dias (já é protagonista no STAT gigante).
-    # Foca no EVENTO (acessível pra qualquer leitor), não em jargão técnico.
-    location_short = race.get("location_short", "").lower() or "a cidade"
+    # Foca no EVENTO. Usa location_dative pra preposição correta:
+    # "no Rio de Janeiro", "em Porto Alegre", "em Nova Lima". Se yaml não
+    # define, fallback usa location.
+    loc_dative = race.get("location_dative") or f"em {race.get('location', '').split('·')[0].strip()}"
     if days == 1:
         headline = 'a prova é <span class="hl">amanhã</span>.'
     elif days <= 7:
-        headline = f'<span class="hl">{location_short}</span> recebe a prova esta semana.'
+        headline = f'a prova chega <span class="hl">{loc_dative}</span> esta semana.'
     elif days <= 15:
-        headline = f'<span class="hl">duas semanas</span> pra {location_short}.'
+        headline = f'<span class="hl">duas semanas</span> pra largar {loc_dative}.'
     elif days <= 30:
-        headline = f'<span class="hl">um mês</span> pra largar em {location_short}.'
+        headline = f'<span class="hl">um mês</span> para largar {loc_dative}.'
     else:
-        headline = f'a prova começa a tomar forma em <span class="hl">{location_short}</span>.'
+        headline = f'a prova começa a tomar forma <span class="hl">{loc_dative}</span>.'
 
     brief = {
         "id": f"{race['id']}_t{days}",
