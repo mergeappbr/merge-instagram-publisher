@@ -20,7 +20,7 @@ from datetime import datetime
 from pathlib import Path
 
 from alerts import notify
-from bot import api, state
+from bot import api, r2_persist, state
 
 from . import calendar_io, planner, reviewer, store, writer
 
@@ -171,12 +171,18 @@ def _create_approval(brief: dict, plan_entry: dict, review: dict) -> str:
 
 
 def on_brief_approve(approval: dict) -> None:
-    """Humano aprovou. Adiciona ao calendar.csv no scheduled_at planejado.
+    """Humano aprovou.
 
-    News posts (theme=news OU is_news_scheduled=True) sobrescrevem o slot
-    planejado e ficam scheduled_at=agora — assim o próximo tick do scheduler
-    publica em <1min. Sem isso, news cai no próximo slot livre do calendar
-    (pode ser semanas no futuro) e perde o timing de real-time.
+    Para news/real-time (is_news_scheduled, theme=news, ou force_publish_now):
+      publica DIRETO via subprocess publish.py — não passa pelo calendar.csv.
+      Razão: Railway tem filesystem ephemeral; se acontece redeploy entre o
+      approval e o próximo tick do scheduler (60s), o slot recém-inserido no
+      calendar.csv volta pro estado git e o post nunca sai. Inline elimina
+      essa janela de risco.
+
+    Para os demais (autogen do calendar tradicional):
+      adiciona linha ao calendar.csv no scheduled_at planejado — scheduler
+      publica no horário previsto.
     """
     brief = approval["brief"]
     plan_entry = approval["plan_entry"]
@@ -185,16 +191,17 @@ def on_brief_approve(approval: dict) -> None:
         or plan_entry.get("theme") == "news"
     )
     force_now = approval.get("force_publish_now", False)
+
     if is_news or force_now:
-        # Real-time: publica no próximo tick (1 min de janela é ok)
-        when = datetime.now()
-    else:
-        sched = plan_entry.get("scheduled_at", "")
-        try:
-            when = datetime.strptime(sched, "%Y-%m-%d %H:%M")
-        except ValueError:
-            # fallback: próximo slot livre
-            when = calendar_io.next_free_slots(1)[0]
+        _publish_brief_inline(approval)
+        return
+
+    sched = plan_entry.get("scheduled_at", "")
+    try:
+        when = datetime.strptime(sched, "%Y-%m-%d %H:%M")
+    except ValueError:
+        # fallback: próximo slot livre
+        when = calendar_io.next_free_slots(1)[0]
     fmt = plan_entry.get("format", "static")
     theme = plan_entry.get("theme", "")
     note = brief.get("title", brief.get("id", ""))[:60]
@@ -210,6 +217,78 @@ def on_brief_approve(approval: dict) -> None:
         f"slot {row['slot']} · {row['scheduled_at']} · {row['format']}",
         silent=True,
     )
+
+
+def _publish_brief_inline(approval: dict) -> None:
+    """Publica AGORA via subprocess publish.py — sem passar pelo calendar.
+
+    Robustez contra Railway ephemeral fs:
+      - se brief JSON sumiu → reescreve do approval["brief"]
+      - se caption sumiu de captions.md → re-appendz
+      - se PNG sumiu → tenta restaurar do R2; se também faltar, re-renderiza
+    """
+    brief = approval["brief"]
+    bid = brief["id"]
+    fmt = approval.get("plan_entry", {}).get("format", "static")
+    aid = approval.get("id", "")
+
+    # 1) Garante brief JSON em disco (publish.py lê de content/briefs/<id>.json
+    # — não estritamente necessário pra static, mas mantém consistência).
+    brief_path = BRIEFS_DIR / f"{bid}.json"
+    if not brief_path.exists():
+        _save_brief_json(brief)
+
+    # 2) Garante seção da caption em captions.md
+    _ensure_caption_in_md(brief)
+
+    # 3) Garante PNG do feed
+    feed_png = OUT_FEED / f"{bid}.png"
+    if not feed_png.exists():
+        # Já tentou restore via handler? r2_persist.restore_approval baixa
+        # JSON+PNG. Aqui só re-renderiza se ainda faltar.
+        ok, err = _render_brief(bid)
+        if not ok or not feed_png.exists():
+            notify(
+                f"❌ não consegui re-renderizar <code>{html.escape(bid)}</code>:\n"
+                f"<pre>{html.escape(err[:300])}</pre>"
+            )
+            return
+
+    # 4) publish.py via subprocess (mesmo caminho que o scheduler usa)
+    cmd = [sys.executable, str(ROOT / "src" / "publish.py"), "--post", bid]
+    print(f"→ inline publish · {bid} ({fmt})")
+    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+    if proc.stdout:
+        sys.stdout.write(proc.stdout)
+    if proc.stderr:
+        sys.stderr.write(proc.stderr)
+    if proc.returncode == 0:
+        notify(
+            f"🚀 <b>publicado agora</b> · <code>{html.escape(bid)}</code>",
+            silent=False,
+        )
+        # Limpa backup R2 — não precisa mais de fallback pra esse aid.
+        if aid:
+            r2_persist.delete_backup(aid)
+    else:
+        tail = (proc.stderr or proc.stdout or "").strip()[-400:]
+        notify(
+            f"❌ <b>publish falhou</b> · <code>{html.escape(bid)}</code>\n"
+            f"<pre>{html.escape(tail)}</pre>"
+        )
+
+
+def _ensure_caption_in_md(brief: dict) -> None:
+    """Garante que captions.md tem a seção do brief. Idempotente."""
+    if not brief.get("caption_md"):
+        return
+    bid = brief["id"]
+    marker = f"## {bid} ·"
+    if CAPTIONS_PATH.exists():
+        text = CAPTIONS_PATH.read_text(encoding="utf-8")
+        if marker in text:
+            return
+    _append_caption_md(brief)
 
 
 def on_brief_reject(approval: dict) -> None:
@@ -236,6 +315,10 @@ def on_brief_reject(approval: dict) -> None:
             parts = text.split("\n---\n")
             kept = [seg for seg in parts if marker not in seg]
             CAPTIONS_PATH.write_text("\n---\n".join(kept), encoding="utf-8")
+    # Limpa backup R2 (se houver) — rejeição é definitiva.
+    aid = approval.get("id")
+    if aid:
+        r2_persist.delete_backup(aid)
 
 
 def on_brief_regen(approval: dict, instruction: str) -> None:

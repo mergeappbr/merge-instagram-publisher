@@ -24,7 +24,7 @@ from pathlib import Path
 
 from alerts import notify
 from autogen import reviewer, runner as autogen_runner, writer
-from bot import api, state as bot_state
+from bot import api, r2_persist, state as bot_state
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 POOL_FILE = ROOT / "output" / "news_pool.json"
@@ -135,6 +135,21 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
         brief.setdefault("vars", {})["BG_IMAGE"] = bg_override
         if "story_vars" in brief:
             brief["story_vars"]["BG_IMAGE"] = bg_override
+
+    # NEWS sempre usa o template magazine novo (foto full-bleed + headline
+    # gigante + footer com source · merge.). Override pós-writer pra não
+    # depender do LLM escolher template certo.
+    brief["template"] = "news_magazine"
+    vars_ = brief.setdefault("vars", {})
+    vars_["PILL"] = "NEWS"
+    vars_["SOURCE"] = (item.get("feed_name") or news_context["source"] or "—").strip()
+    vars_["DATE_LABEL"] = datetime.now().strftime("%d/%m")
+    if "story_vars" in brief:
+        sv = brief["story_vars"]
+        sv["PILL"] = "NEWS"
+        sv.setdefault("SOURCE", vars_["SOURCE"])
+        sv.setdefault("DATE_LABEL", vars_["DATE_LABEL"])
+
     review = reviewer.review(brief)
     return brief, plan_entry, review
 
@@ -244,6 +259,12 @@ def dispatch_one(item: dict, slot_label: str) -> bool:
     _mark_used_in_feed(item.get("hash", ""))
 
     _send_preview(brief, plan_entry, review, aid, item, slot_label)
+
+    # Backup do approval JSON + PNG em R2 — sobrevive a redeploy do Railway.
+    # Sem isso, qualquer push entre dispatch e approval mata o post (filesystem
+    # ephemeral derruba output/feed/<id>.png e output/bot_state/pending/<aid>.json).
+    feed_png = ROOT / "output" / "feed" / f"{brief['id']}.png"
+    r2_persist.backup(aid, feed_png)
     return True
 
 

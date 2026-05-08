@@ -75,6 +75,16 @@ def _handle_callback(cb: dict) -> None:
 
     approval = state.read_approval(aid)
     if approval is None:
+        # Fallback: tenta restaurar do R2 (Railway ephemeral fs derruba
+        # output/bot_state/pending/ em todo redeploy — sem isso, qualquer
+        # push entre dispatch e approval deixa o usuário com "expirado").
+        try:
+            from bot import r2_persist
+            approval = r2_persist.restore_approval(aid)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ r2 restore falhou: {e!r}")
+            approval = None
+    if approval is None:
         api.answer_callback(cb_id, "expirado ou não encontrado")
         return
 
