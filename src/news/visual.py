@@ -11,8 +11,11 @@ Estratégia (acertar na primeira geração):
 
   3. SCENE → engine primário com fallback:
      - Se `GEMINI_API_KEY` setado: Gemini 2.5 Flash Image (paid, ~$0.04/img)
-       como primary; Pollinations FLUX como fallback se Gemini falhar.
+       como ABSOLUTE PRIMARY com retry 3x (backoff 2s, 5s) em 429/5xx.
+       Pollinations FLUX só como safety net final se Gemini esgotar retries.
      - Sem key: Pollinations FLUX (free, sem fallback adicional).
+     - Prompts photographer-grade obrigatórios (8 camadas: subject, action,
+       setting, time, lighting, camera, lens, composition, grading).
 
   4. Quality gate: imagem precisa ter ≥50KB e magic bytes válidos.
      Imagens muito pequenas geralmente são erro/abstract/text-only.
@@ -67,30 +70,79 @@ REGRA 1 — ENTITY vs SCENE:
   estudo sobre HIIT", "polêmica regra ciclismo", "como evitar fadiga
   no km 35").
 
-REGRA 2 — scene_prompt (CRÍTICO pra acertar na 1ª geração):
-SEMPRE em inglês, formato fotográfico estrito:
+REGRA 2 — scene_prompt (CRÍTICO — qualidade de capa de revista, 1ª geração):
+SEMPRE em inglês, formato photographer-grade estrito. Estrutura obrigatória
+com TODAS as 8 camadas (em ordem):
 
-  "Editorial photograph of [SUBJECT] [ACTION], [SETTING], [LIGHTING],
-  [COMPOSITION], shot on [LENS], shallow depth of field, magazine cover
-  composition, subject centered, negative space top and bottom, no text, no logos, photorealistic"
+  "Editorial sports photograph for magazine cover. Subject: [SUBJECT —
+  ethnicity/gender/age/build/expression/apparel/gear, MUITO específico].
+  Action: [ACTION — verbo no gerúndio + detalhe corporal: gait, posture,
+  contact phase, hand position]. Setting: [SETTING geográfico real +
+  surface + atmospheric detail: heat haze, dust, mist, rain, sweat
+  droplets]. Time of day: [golden hour 17:30 / blue hour 06:00 / harsh
+  midday / overcast diffuse]. Lighting: [direction + quality + ratio —
+  ex: 'warm rim light from camera-right at 45°, key light front-fill,
+  dramatic key-to-fill ratio 4:1', or 'soft overcast diffuse omnidirectional
+  with cool 5500K tone']. Camera: [Sony A7R V / Canon EOS R5 / Leica SL3 /
+  Nikon Z9]. Lens: [exact focal + aperture — '85mm f/1.4 GM' / '70-200mm
+  f/2.8 GM at 135mm' / '35mm f/1.4 wide environmental']. Settings: [shutter
+  + ISO — '1/1250s ISO 400 frozen motion' or '1/60s ISO 100 motion blur on
+  wheels']. Composition: [rule of thirds, subject on right-third
+  intersection, leading lines from road/horizon, eye-level/low-angle].
+  Color grading: [Kodak Portra 400 warm editorial / teal-and-orange
+  cinematic / desaturated muted neutral / Fujifilm Eterna film stock].
+  Aesthetic: photorealistic, sharp focus on eyes/subject, shallow depth
+  of field with creamy bokeh background, magazine cover composition,
+  subject in middle vertical third, generous negative space top and
+  bottom, no text, no logos, no watermarks, no AI artifacts, no plastic
+  skin, no over-saturation."
 
-Exemplos do que QUERO:
-- "Editorial photograph of a Brazilian marathon runner pushing through
-  fatigue at km 35 on urban asphalt, late afternoon golden light,
-  determined expression, side profile, shot on 85mm f/1.8, shallow
-  depth of field, magazine cover composition, subject centered, negative space top and bottom,
-  no text, no logos, photorealistic"
-- "Editorial photograph of professional cyclist in aerodynamic time-trial
-  position on coastal road, sunrise backlight, motion blur on wheels,
-  shot on 70-200mm f/2.8, magazine cover composition, negative space at
-  bottom, no text, no logos, photorealistic"
+Exemplos GOLD STANDARD:
 
-ERROS A EVITAR no scene_prompt:
-- Abstrato/conceitual ("the concept of resilience") — VOID
-- Sem subject específico ("sport scene") — VOID
-- Sem lighting ("a runner") — VOID
-- Cores sem contexto ("dark blue background") — VOID
-- Pedir TEXTO na imagem (qualquer "with the words..." / "title saying...") — VOID
+- "Editorial sports photograph for magazine cover. Subject: Brazilian
+  male marathon runner, mid-30s, lean wiry build, technical singlet
+  and short shorts, race bib mid-torso, sweat-soaked hair, jaw clenched
+  in deep effort, gaze locked forward. Action: mid-stride at km 35,
+  right foot in toe-off phase, left arm driving back. Setting: urban
+  asphalt avenue with blurred crowd and Porto Alegre Guaíba waterfront
+  in distant background, heat haze rising from pavement. Time of day:
+  late afternoon golden hour 17:40. Lighting: warm rim light from
+  camera-right at 30°, key-to-fill ratio 3:1, golden glow on shoulders
+  and arms. Camera: Sony A7R V. Lens: 200mm f/2 GM. Settings: 1/2000s
+  ISO 320 frozen mid-stride. Composition: rule of thirds, runner on
+  right-third intersection, road as leading line from bottom-left,
+  low-angle 30cm above asphalt. Color grading: Kodak Portra 400 warm
+  editorial with rich skin tones. Aesthetic: photorealistic, tack-sharp
+  eyes, shallow depth of field with creamy bokeh crowd, magazine cover
+  composition, subject in middle vertical third, generous negative space
+  top and bottom, no text, no logos, no AI artifacts, no plastic skin."
+
+- "Editorial sports photograph for magazine cover. Subject: professional
+  male cyclist, late-20s, athletic build, full team kit in dark navy and
+  white, aero helmet with visor, tinted sunglasses, calm focused
+  expression. Action: aerodynamic time-trial tuck position, hands on
+  extension bars, back perfectly flat, cadence 95 RPM. Setting: empty
+  Atlantic coastal road with rocky cliffs and ocean horizon background,
+  fine sea spray in air. Time of day: sunrise blue-to-gold transition
+  06:30. Lighting: backlit with sun rising behind subject creating warm
+  halo on helmet edge, fill from ocean reflection. Camera: Canon EOS R5.
+  Lens: 70-200mm f/2.8 L IS at 135mm. Settings: 1/200s ISO 200 motion
+  blur on wheels. Composition: rule of thirds, cyclist centered on
+  middle-right, road sweeping in from bottom-right as leading line, low
+  panning angle. Color grading: teal-and-orange cinematic with crushed
+  blacks. Aesthetic: photorealistic, razor-sharp on helmet/face, shallow
+  depth of field, magazine cover composition, generous negative space
+  top and bottom, no text, no logos, no AI artifacts."
+
+ERROS QUE INVALIDAM o scene_prompt (rejeição automática):
+- Abstrato ("concept of resilience", "feeling of speed") — VOID
+- Subject vago ("a runner", "an athlete", "sport scene") — VOID
+- Sem lente específica ou aperture — VOID
+- Sem direção/qualidade de luz — VOID
+- Sem hora do dia explícita — VOID
+- Pedir TEXTO/LOGO na imagem ("with the words...", "title saying...") — VOID
+- Etnia genérica quando há contexto BR (deve ser "Brazilian") — VOID
+- Cores chapadas como única descrição ("dark blue background") — VOID
 
 REGRA 3 — BR context (CRÍTICO pra autenticidade):
 Se a notícia menciona atleta BR, prova BR, marca BR (Olympikus, Track&Field,
@@ -204,48 +256,84 @@ def _passes_quality_gate(img_bytes: Optional[bytes]) -> bool:
     return False
 
 
+_GEMINI_PROMPT_SUFFIX = (
+    "\n\n--- TECHNICAL SPECS ---\n"
+    "Aspect ratio: 9:16 portrait (1080x1920). "
+    "Subject MUST sit in the middle vertical third of the frame, with "
+    "generous negative space in the top third AND bottom third (will be "
+    "cropped to 4:5 for feed). "
+    "Render quality: 8K resolution, photorealistic, ultra-detailed skin "
+    "texture and fabric weave, sharp focus on eyes, natural film grain, "
+    "shot like a Sports Illustrated / Outside Magazine cover.\n\n"
+    "--- HARD NEGATIVES (do NOT include) ---\n"
+    "no text, no captions, no headlines, no logos, no watermarks, no "
+    "brand marks, no signage with words, no AI artifacts, no plastic "
+    "skin, no waxy faces, no over-saturation, no HDR halos, no fused "
+    "fingers, no extra limbs, no mannequin look, no stock-photo cliché, "
+    "no centered front-facing pose unless specified, no cartoon, no "
+    "illustration, no 3D render, no CGI."
+)
+
+
 def _fetch_gemini_image(prompt: str) -> Optional[bytes]:
-    """Gera via Gemini 2.5 Flash Image (paid). Retorna None silenciosamente em falha.
+    """Gera via Gemini 2.5 Flash Image (PRIMARY engine). Retry em 5xx/429.
 
     Formato 9:16 (1080x1920) — mesma imagem serve feed (4:5 cropa topo/rodapé
     via CSS background-size:cover) e story (9:16 nativo). Economiza 50%
     de custo (1 chamada para 2 formatos).
+
+    Retry: até 3 tentativas com backoff (2s, 5s) em 429/5xx. Nunca tenta
+    de novo em 4xx que não 429 (config error não vai melhorar).
     """
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
         return None
     url = GEMINI_ENDPOINT_TMPL.format(model=GEMINI_MODEL, key=key)
-    full_prompt = (
-        prompt
-        + "\n\nAspect ratio: 9:16 portrait (1080x1920). "
-        + "Subject MUST be centered vertically in the middle third of the frame. "
-        + "Generous negative space at top AND bottom thirds (will be cropped to 4:5 "
-        + "in feed format). No text, no logos, no watermarks anywhere."
-    )
+    full_prompt = prompt + _GEMINI_PROMPT_SUFFIX
     body = {
         "contents": [{"parts": [{"text": full_prompt}]}],
         "generationConfig": {"responseModalities": ["IMAGE"]},
     }
-    try:
-        with httpx.Client(timeout=120) as client:
-            r = client.post(url, json=body, headers={"Content-Type": "application/json"})
-            if r.status_code != 200:
+    backoffs = [2, 5]  # 3 tentativas: imediata, +2s, +5s
+    last_status: Optional[int] = None
+    for attempt in range(3):
+        if attempt > 0:
+            time.sleep(backoffs[attempt - 1])
+        try:
+            with httpx.Client(timeout=120) as client:
+                r = client.post(url, json=body, headers={"Content-Type": "application/json"})
+                last_status = r.status_code
+                if r.status_code == 200:
+                    resp = r.json()
+                    for cand in resp.get("candidates", []):
+                        for part in cand.get("content", {}).get("parts", []):
+                            inline = part.get("inlineData") or part.get("inline_data")
+                            if inline and inline.get("data"):
+                                img = base64.b64decode(inline["data"])
+                                print(
+                                    f"✓ visual: gemini {GEMINI_MODEL} → "
+                                    f"{len(img)//1024}KB (attempt {attempt+1})"
+                                )
+                                return img
+                    print("⚠ visual.gemini: resposta 200 sem imagem")
+                    return None  # 200 sem imagem = problema de prompt, não retry
+                # Retry só em 429 (rate limit) e 5xx (server)
+                if r.status_code == 429 or r.status_code >= 500:
+                    snippet = r.text[:200]
+                    print(
+                        f"↪ visual.gemini HTTP {r.status_code} "
+                        f"(attempt {attempt+1}/3): {snippet}"
+                    )
+                    continue
+                # 4xx que não 429 = config/auth/quota — não adianta retry
                 snippet = r.text[:200]
-                print(f"⚠ visual.gemini HTTP {r.status_code}: {snippet}")
+                print(f"⚠ visual.gemini HTTP {r.status_code} (no retry): {snippet}")
                 return None
-            resp = r.json()
-        for cand in resp.get("candidates", []):
-            for part in cand.get("content", {}).get("parts", []):
-                inline = part.get("inlineData") or part.get("inline_data")
-                if inline and inline.get("data"):
-                    img = base64.b64decode(inline["data"])
-                    print(f"✓ visual: gemini {GEMINI_MODEL} → {len(img)//1024}KB")
-                    return img
-        print("⚠ visual.gemini: resposta sem imagem")
-        return None
-    except Exception as e:  # noqa: BLE001
-        print(f"⚠ visual.gemini falhou: {e!r}")
-        return None
+        except Exception as e:  # noqa: BLE001
+            print(f"↪ visual.gemini exception (attempt {attempt+1}/3): {e!r}")
+            continue
+    print(f"⚠ visual.gemini esgotou retries (last={last_status})")
+    return None
 
 
 def _fetch_pollinations(prompt: str) -> Optional[bytes]:
@@ -320,13 +408,28 @@ def resolve_bg_for_news(
 
     plan = _classify(title, summary, modality)
     if not plan:
-        # Fallback puro: Pollinations com prompt simples
+        # Fallback puro (classifier offline): prompt photographer-grade genérico
         plan = {
             "strategy": "scene",
             "scene_prompt": (
-                f"Editorial photography of {modality or 'endurance athlete'} "
-                f"in action, cinematic golden hour, shallow depth of field, "
-                f"magazine cover composition with subject centered, negative space top and bottom"
+                f"Editorial sports photograph for magazine cover. "
+                f"Subject: professional {modality or 'endurance'} athlete, "
+                f"athletic build, technical apparel, intense focused expression. "
+                f"Action: peak effort moment in their discipline. "
+                f"Setting: real outdoor environment matching the sport. "
+                f"Time of day: late afternoon golden hour 17:30. "
+                f"Lighting: warm rim light from camera-right at 30°, "
+                f"key-to-fill ratio 3:1, dramatic golden glow. "
+                f"Camera: Sony A7R V. Lens: 85mm f/1.4 GM. "
+                f"Settings: 1/1250s ISO 400. "
+                f"Composition: rule of thirds, subject on right-third "
+                f"intersection, low-angle perspective. "
+                f"Color grading: Kodak Portra 400 warm editorial. "
+                f"Aesthetic: photorealistic, tack-sharp eyes, shallow depth "
+                f"of field with creamy bokeh, magazine cover composition, "
+                f"subject in middle vertical third, generous negative space "
+                f"top and bottom, no text, no logos, no AI artifacts, "
+                f"no plastic skin."
             ),
         }
 
@@ -335,12 +438,15 @@ def resolve_bg_for_news(
     has_gemini = bool(os.environ.get("GEMINI_API_KEY"))
 
     def _try_scene(prompt: str, label_prefix: str) -> tuple[Optional[bytes], str]:
-        """Gemini → Pollinations, com quality gate em cada um."""
+        """Gemini ABSOLUTE PRIMARY (paid, top quality, com retry interno).
+        FLUX só como safety net se Gemini falhar TODAS as tentativas.
+        Quality gate em cada engine.
+        """
         if has_gemini:
             b = _fetch_gemini_image(prompt)
             if _passes_quality_gate(b):
                 return b, f"{label_prefix}gemini"
-            print("↪ visual: gemini falhou/qualidade ruim, fallback FLUX")
+            print("↪ visual: gemini esgotado, safety-net FLUX")
         b = _fetch_pollinations(prompt)
         if _passes_quality_gate(b):
             return b, f"{label_prefix}flux"
@@ -357,10 +463,23 @@ def resolve_bg_for_news(
             # entity sem foto / quality gate falhou → scene gerada
             print(f"↪ visual: wiki '{plan['entity']}' sem foto válida, caindo pra scene")
             scene_prompt = plan.get("scene_prompt") or (
-                f"Editorial photograph of {plan['entity']}, "
-                f"{modality or 'endurance'} context, cinematic golden hour, "
-                f"shallow depth of field, magazine cover composition, "
-                f"subject centered, negative space top and bottom, no text, no logos, photorealistic"
+                f"Editorial sports photograph for magazine cover. "
+                f"Subject: {plan['entity']} in their signature "
+                f"{modality or 'endurance'} discipline, professional athlete, "
+                f"intense focused expression, technical apparel and gear. "
+                f"Action: peak performance moment, body in dynamic motion. "
+                f"Setting: real environment iconic to this athlete/event. "
+                f"Time of day: late afternoon golden hour 17:30. "
+                f"Lighting: warm rim light from camera-right at 30°, "
+                f"key-to-fill ratio 3:1. "
+                f"Camera: Sony A7R V. Lens: 200mm f/2 GM. "
+                f"Settings: 1/2000s ISO 400 frozen motion. "
+                f"Composition: rule of thirds, low-angle hero shot. "
+                f"Color grading: Kodak Portra 400 warm editorial. "
+                f"Aesthetic: photorealistic, tack-sharp eyes, shallow depth "
+                f"of field, magazine cover composition, subject in middle "
+                f"vertical third, generous negative space top and bottom, "
+                f"no text, no logos, no AI artifacts, no plastic skin."
             )
             img_bytes, source_label = _try_scene(
                 scene_prompt, f"scene-fallback:{plan['entity']}:"
