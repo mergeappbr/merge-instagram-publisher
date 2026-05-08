@@ -505,4 +505,10 @@ def resolve_bg_for_news(
     local.write_bytes(img_bytes)
     print(f"↗ visual: {aid} ← {source_label} ({local.name}, {len(img_bytes)//1024}KB)")
 
+    try:
+        from news.visual_report import log_generation
+        log_generation(aid=aid, source_label=source_label, byte_size=len(img_bytes))
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ visual.log_generation falhou: {e!r}")
+
     return _upload_r2(local, f"{R2_PREFIX}/{aid}{ext}")

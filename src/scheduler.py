@@ -437,6 +437,15 @@ def _maybe_r2_cleanup(now: datetime) -> None:
         print(f"⚠ r2_cleanup erro: {e!r}")
 
 
+def _maybe_visual_weekly_report(now: datetime) -> None:
+    """Domingo 20h BRT — relatório semanal de imagens geradas + custo estimado."""
+    try:
+        from news.visual_report import maybe_weekly_report
+        maybe_weekly_report(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ visual_report erro: {e!r}")
+
+
 def _maybe_autogen(now: datetime) -> None:
     """Gatilha geração de briefs quando runway < threshold."""
     info = runway_info(now)
@@ -466,6 +475,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_photo_reminder(now)
         _maybe_r2_cleanup(now)
         _maybe_gemini_credit_alert(now)
+        _maybe_visual_weekly_report(now)
         _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:
