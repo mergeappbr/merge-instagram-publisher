@@ -6,3 +6,8 @@ output/
 !output/reels/
 !output/published.csv
 .DS_Store
+
+# Imagens geradas por IA (imgen.py) — sobem pro R2/storage, não pro git
+brand/images/_bank/*/ai/*.png
+brand/images/_bank/*/ai/*.jpg
+brand/images/_bank/*/ai/*.webp

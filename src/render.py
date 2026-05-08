@@ -63,8 +63,9 @@ def _resolve_image_path(rel: str) -> Path | None:
         if p.is_file() and p.suffix.lower() in _IMAGE_EXTS:
             return p
         if p.is_dir():
-            # Procura em subpasta 'unsplash' primeiro, depois 'pexels', depois raiz
-            for sub in ("unsplash", "pexels", ""):
+            # 'ai/' tem prioridade (foto gerada deliberadamente p/ esse slug),
+            # depois stock 'unsplash' / 'pexels', por fim raiz do slug.
+            for sub in ("ai", "unsplash", "pexels", ""):
                 d = p / sub if sub else p
                 if d.is_dir():
                     files = sorted(

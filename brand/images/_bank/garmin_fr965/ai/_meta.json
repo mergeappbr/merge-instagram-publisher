@@ -1,0 +1,19 @@
+{
+  "entries": [
+    {
+      "file": "1.png",
+      "mode": "manual",
+      "preset": "product",
+      "model": "gemini (web app, manual)",
+      "prompt": "Product photography of Garmin Forerunner 965 GPS multisport smartwatch. AMOLED touchscreen displaying pace 5:30/km and heart rate 152 bpm in a running activity screen. Black silicone QuickFit band. Titanium bezel with Garmin branding subtle on the rim. 3/4 angle view with slight tilt. Pure white seamless backdrop, professional studio. Lighting: single softbox key light from upper-left, fill from right, soft contact shadow lower-right. Hyperrealistic, ultra-sharp focus on main subject, premium e-commerce campaign style. No text overlays, no watermarks, no logos beyond native branding on the product itself. Aspect ratio: 1:1.",
+      "aspect": "1:1",
+      "fields": {
+        "subject": "Garmin Forerunner 965 GPS multisport smartwatch",
+        "detail": "AMOLED touchscreen displaying pace 5:30/km and heart rate 152 bpm in a running activity screen. Black silicone QuickFit band. Titanium bezel with Garmin branding subtle on the rim.",
+        "aspect": "1:1"
+      },
+      "requested_at": "2026-05-08T12:51:16",
+      "saved": false
+    }
+  ]
+}
