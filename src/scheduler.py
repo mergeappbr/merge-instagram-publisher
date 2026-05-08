@@ -379,6 +379,55 @@ def _maybe_photo_reminder(now: datetime) -> None:
         print(f"⚠ photo reminder erro: {e!r}")
 
 
+GEMINI_CREDIT_ACTIVATED = datetime(2026, 5, 8, tzinfo=TZ)
+GEMINI_CREDIT_EXPIRY = GEMINI_CREDIT_ACTIVATED + timedelta(days=90)
+GEMINI_CREDIT_ALERTS_STATE = ROOT / "output" / ".gemini_credit_alerts.json"
+
+
+def _maybe_gemini_credit_alert(now: datetime) -> None:
+    """Avisa Pedro 7d e 1d antes do crédito de $300 expirar (2026-08-06).
+
+    Idempotente: cada milestone só dispara 1x. State em JSON no volume.
+    """
+    days_remaining = (GEMINI_CREDIT_EXPIRY.date() - now.date()).days
+    # Milestones: 7 dias antes (=7), 1 dia antes (=1), e dia da expiração (=0)
+    milestones = {7: "7d", 1: "1d", 0: "0d"}
+    if days_remaining not in milestones:
+        return
+    label = milestones[days_remaining]
+    try:
+        state = json.loads(GEMINI_CREDIT_ALERTS_STATE.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError):
+        state = {}
+    if state.get(label):
+        return
+    if days_remaining == 0:
+        msg = (
+            f"🚨 <b>Crédito Gemini ($300) EXPIRA HOJE</b>\n"
+            f"Ativado: 08/05/2026 · Expira: 06/08/2026\n\n"
+            f"Se ainda não foi usado, considera renovar projeto OU "
+            f"trocar GEMINI_API_KEY no Railway por outra trial."
+        )
+    elif days_remaining == 1:
+        msg = (
+            f"⚠️ <b>Crédito Gemini expira AMANHÃ</b> (06/08/2026)\n"
+            f"Última chance de revisar consumo / planejar próxima trial."
+        )
+    else:
+        msg = (
+            f"📅 <b>Crédito Gemini expira em 7 dias</b> (06/08/2026)\n"
+            f"Ativado em 08/05/2026 (90d trial GCP).\n\n"
+            f"Se quiser estender uso, considera abrir conta Google secundária "
+            f"pra nova trial OU manter Pollinations FLUX (free) como engine."
+        )
+    notify(msg, silent=False, force=True)
+    state[label] = now.isoformat(timespec="seconds")
+    GEMINI_CREDIT_ALERTS_STATE.parent.mkdir(parents=True, exist_ok=True)
+    GEMINI_CREDIT_ALERTS_STATE.write_text(
+        json.dumps(state, indent=2), encoding="utf-8"
+    )
+
+
 def _maybe_r2_cleanup(now: datetime) -> None:
     """Diário — apaga objetos R2 antigos pra ficar dentro do free tier (10GB)."""
     try:
@@ -416,6 +465,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_ironman_tracker(now)
         _maybe_photo_reminder(now)
         _maybe_r2_cleanup(now)
+        _maybe_gemini_credit_alert(now)
         _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:
