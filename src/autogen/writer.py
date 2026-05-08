@@ -196,8 +196,24 @@ def _build_user_prompt(
         parts.append("\nVERSÃO ATUAL DO BRIEF (você está REGENERANDO com instrução do humano):")
         import json as _json
         parts.append(_json.dumps(previous_brief, ensure_ascii=False, indent=2))
-        parts.append(f"\nINSTRUÇÃO DO HUMANO: {adjust_instruction}")
-        parts.append("Aplique a instrução com cirurgia. Não reescreva o que não foi pedido.")
+        parts.append(
+            f"\n=== INSTRUÇÃO DO HUMANO (PRIORIDADE MÁXIMA) ===\n{adjust_instruction}\n"
+            f"=== FIM DA INSTRUÇÃO ===\n"
+        )
+        parts.append(
+            "REGRAS DO REGEN:\n"
+            "1. A INSTRUÇÃO DO HUMANO ACIMA É A PRIORIDADE ABSOLUTA. Sobrepõe\n"
+            "   QUALQUER regra default (incluindo regras de BG_IMAGE, vocabulário,\n"
+            "   tom). Se o humano pediu pra trocar BG_IMAGE pra X, troca pra X\n"
+            "   mesmo que X não esteja no banco — escreve o caminho exato que\n"
+            "   ele pediu.\n"
+            "2. Aplique com CIRURGIA: só mude o que foi pedido. Mantém HEADLINE,\n"
+            "   LEAD, caption_md inalterados se a instrução foi sobre BG. Mantém\n"
+            "   BG inalterado se a instrução foi sobre texto.\n"
+            "3. Se a instrução cita pesquisa/contexto novo (ex: 'pesquise mais\n"
+            "   sobre X'), incorpore esse ângulo no LEAD/caption mesmo que\n"
+            "   contradiga o angle anterior. Confiança no que o humano sabe."
+        )
 
     parts.append(
         '\nDEVOLVA JSON único com este formato:\n'
