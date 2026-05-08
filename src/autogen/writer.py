@@ -132,21 +132,33 @@ def _build_user_prompt(
         parts.append(f"- evento_finalizado: {news_context.get('post_event','?')}")
         parts.append(
             "\nREGRAS OBRIGATÓRIAS PARA NEWS:\n"
-            "- HEADLINE — DESTAQUE LARANJA OBRIGATÓRIO: o template tem watermark\n"
-            "  'merge.' no topo (sem PILL). A HEADLINE é o protagonista visual.\n"
-            "  REGRA: SEMPRE envolva os NOMES PRÓPRIOS (atletas, dispositivos,\n"
-            "  marcas, eventos) em <span class=\"hl\">...</span> — eles vão pra\n"
-            "  cor laranja na arte. Exemplos:\n"
-            "    BOM: 'Google lança <span class=\"hl\">Fitbit Air</span>, wearable\n"
-            "         no formato pulseira'\n"
-            "    BOM: '<span class=\"hl\">Kipchoge</span> anuncia última maratona\n"
-            "         em Berlim'\n"
-            "    BOM: '<span class=\"hl\">WHOOP</span> 5.0 mede pressão arterial'\n"
-            "    RUIM (sem destaque): 'Google lança Fitbit Air, wearable no\n"
-            "         formato pulseira' — VOID, todo branco fica sem hierarquia.\n"
-            "  Se a notícia não tem nome próprio óbvio (ex: estudo genérico),\n"
-            "  destaque o CONCEITO-CHAVE (ex: '<span class=\"hl\">cafeína</span>\n"
-            "  melhora desempenho em 12%').\n"
+            "- HEADLINE — DESTAQUE LARANJA *OBRIGATÓRIO* (REGRA CRÍTICA):\n"
+            "  O template tem watermark 'merge.' no topo. A HEADLINE é o\n"
+            "  protagonista visual e PRECISA ter EXATAMENTE 1 trecho envolvido\n"
+            "  em <span class=\"hl\">...</span> que vai pra laranja na arte.\n"
+            "  SEM ESSE SPAN = HEADLINE INVÁLIDA → VOID. NÃO entregue brief\n"
+            "  sem o span. Quem destacar (ordem de prioridade):\n"
+            "    1. Nome de pessoa (atleta, treinador, cientista) → ex:\n"
+            "       '<span class=\"hl\">Kipchoge</span> anuncia última maratona'\n"
+            "    2. Nome de produto/dispositivo → ex:\n"
+            "       'Google lança <span class=\"hl\">Fitbit Air</span>, wearable...'\n"
+            "    3. Nome de marca/organização → ex:\n"
+            "       '<span class=\"hl\">WHOOP</span> 5.0 mede pressão arterial'\n"
+            "    4. Nome de evento/prova/local → ex:\n"
+            "       'Taper na <span class=\"hl\">Maratona POA</span>: o que cortar'\n"
+            "    5. Conceito-chave (só se NÃO houver nome próprio) → ex:\n"
+            "       '<span class=\"hl\">cafeína</span> melhora desempenho em 12%'\n"
+            "  EXEMPLO CONCRETO desta notícia: se título é 'Maratona Olympikus\n"
+            "  de Porto Alegre 2026...', a HEADLINE deve ter\n"
+            "  <span class=\"hl\">Maratona POA</span> ou <span class=\"hl\">Olympikus</span>.\n"
+            "  RUIM (sem destaque, todo branco): 'Google lança Fitbit Air,\n"
+            "  wearable no formato pulseira' — VOID. Refaça com span.\n"
+            "- ESPAÇOS (REGRA CRÍTICA): NUNCA junte palavras sem espaço entre\n"
+            "  elas. Cada palavra separada por exatamente 1 espaço. Erros como\n"
+            "  'provaprecisa', 'PortoAlegre.Faltando', 'taperpra' são VOID e\n"
+            "  invalidam o brief. Releia HEADLINE e LEAD palavra por palavra\n"
+            "  ANTES de devolver pra garantir que TODOS os espaços estão lá,\n"
+            "  inclusive depois de pontuação ('. ', ', ', ': ', '— ').\n"
             "- IDIOMA: TRADUZA TUDO pra português brasileiro. Mesmo que título/\n"
             "  summary venham em inglês (Outside, Runner's World, Velo, etc),\n"
             "  HEADLINE, LEAD e caption_md são SEMPRE em pt-BR. Mantém em inglês\n"
@@ -158,10 +170,27 @@ def _build_user_prompt(
             "  existe em português). Use 'ritmo' como alternativa quando fizer sentido.\n"
             "- Caption MAIS densa que post comum: 4-6 parágrafos curtos, com dados\n"
             "  concretos da notícia (números, atletas, organizações, datas).\n"
-            "- INCLUA 1 bloco de bullet points em destaque com os 3-5 pontos-chave\n"
-            "  da notícia. Formato dentro do caption_md (linha em branco antes/depois):\n"
+            "- INCLUA 1 bloco de bullet points com 3-5 pontos-chave da notícia.\n"
+            "  LABEL DO BLOCO — VARIE conforme o tipo de conteúdo (NUNCA use\n"
+            "  'Destaques:' como default fixo). Escolha 1 que case com o tom:\n"
+            "    * Lançamento de produto/anúncio → 'O que importa:' /\n"
+            "      'Os números:' / 'Especificações:'\n"
+            "    * Resultado de evento/prova → 'O que rolou:' /\n"
+            "      'Resultados:' / 'Pódio:'\n"
+            "    * Estudo/pesquisa científica → 'Os achados:' / 'O estudo\n"
+            "      em 4 pontos:' / 'O que a ciência diz:'\n"
+            "    * Treino/método/técnica → 'Como aplicar:' / 'O passo a passo:'\n"
+            "      / 'O protocolo:'\n"
+            "    * Pré-prova/prep → 'Pra fazer agora:' / 'Checklist:' /\n"
+            "      'Plano de ação:'\n"
+            "    * Tendência/análise → 'O cenário:' / 'Por que isso\n"
+            "      importa:' / 'Pontos críticos:'\n"
+            "  Pode improvisar OUTROS labels que façam sentido editorial. EVITE\n"
+            "  'Destaques:' a menos que seja LITERALMENTE um resumo de\n"
+            "  highlights (ex: melhores momentos de evento). Formato dentro\n"
+            "  do caption_md (linha em branco antes/depois do label):\n"
             "\n"
-            "      Destaques:\n"
+            "      <label_escolhido>:\n"
             "\n"
             "      - <ponto 1, com número/dado concreto>\n"
             "      - <ponto 2>\n"
@@ -265,6 +294,90 @@ def _build_user_prompt(
     return "\n".join(parts)
 
 
+_HL_RE = re.compile(r'<span\s+class=["\']hl["\']\s*>', re.IGNORECASE)
+# Palavras coladas: pontuação seguida de palavra "normal" (Maiúscula + 2+ lower).
+# Evita quebrar siglas tipo 'U.S.A.' ou 'B.O.' onde o próximo char é só 1 letra.
+_PUNCT_NOSPACE_RE = re.compile(r'([\.\,\:\;\!\?\—\–])([A-ZÀ-Ý][a-zà-ÿ]{2,})')
+# camelCase grudado: lower + UPPER (ex: 'PortoAlegre' → 'Porto Alegre')
+_CAMEL_GLUE_RE = re.compile(r'([a-zà-ÿ])([A-ZÀ-Ý])')
+
+_STOP_CAPS = {
+    "O", "A", "Os", "As", "Um", "Uma", "De", "Do", "Da", "Dos", "Das",
+    "No", "Na", "Nos", "Nas", "Em", "Para", "Pra", "Com", "Sem", "Por",
+    "E", "Ou", "Se", "Já", "Após", "Antes", "Sobre", "Como", "Quanto",
+    "O que", "A que",
+}
+
+
+def _fix_concatenations(text: str) -> str:
+    """Conserta palavras coladas óbvias (sem heurística agressiva)."""
+    if not text:
+        return text
+    text = _PUNCT_NOSPACE_RE.sub(r'\1 \2', text)
+    text = _CAMEL_GLUE_RE.sub(r'\1 \2', text)
+    return text
+
+
+def _autoinject_hl(headline: str, news_context: dict) -> str:
+    """Se HEADLINE de news não tem <span class='hl'>, envolve nome próprio óbvio.
+
+    Heurística em camadas:
+      1. Match 1-3 tokens capitalizados que aparecem na HEADLINE E no título.
+      2. Match 1 token isolado (nome próprio standalone) na HEADLINE.
+      3. Sigla tudo-maiúsculo (POA, UTMB, WHOOP, USA) com 3+ letras.
+    Devolve sem mudança se nada plausível encontrado.
+    """
+    if not headline or _HL_RE.search(headline):
+        return headline
+    plain_hl = re.sub(r"<[^>]+>", "", headline)
+    title = (news_context.get("title") or "")
+
+    # Camada 1: candidatos 1-3 tokens E candidatos 1 token isolado do TÍTULO
+    title_multi = re.findall(
+        r"\b[A-ZÀ-Ý][\wÀ-ÿ]+(?:\s+[A-ZÀ-Ý][\wÀ-ÿ]+){1,2}\b", title
+    )
+    title_single = re.findall(r"\b[A-ZÀ-Ý][\wÀ-ÿ]+\b", title)
+    title_caps = list(dict.fromkeys(title_multi + title_single))  # dedupe, preserva ordem
+    title_caps = [t for t in title_caps if t.split()[0] not in _STOP_CAPS]
+    title_caps.sort(key=len, reverse=True)  # prefere match mais longo
+    for cand in title_caps:
+        if cand in plain_hl:
+            return headline.replace(cand, f'<span class="hl">{cand}</span>', 1)
+
+    # Camada 2: 1º token Capitalizado da HEADLINE que não seja stopword
+    tokens = re.findall(r"\b[\wÀ-ÿ]+\b", plain_hl)
+    for tok in tokens:
+        if tok in _STOP_CAPS:
+            continue
+        if re.match(r"^[A-ZÀ-Ý][\wÀ-ÿ]+$", tok):
+            return headline.replace(tok, f'<span class="hl">{tok}</span>', 1)
+
+    # Camada 3: sigla tudo-maiúsculo (POA, UTMB, WHOOP) com 3+ letras
+    acronyms = re.findall(r"\b[A-Z]{3,}\b", plain_hl)
+    if acronyms:
+        return headline.replace(acronyms[0], f'<span class="hl">{acronyms[0]}</span>', 1)
+
+    return headline
+
+
+def _postprocess_news_brief(brief: dict, news_context: dict | None) -> None:
+    """Aplica auto-fixes em briefs de news. Modifica in-place."""
+    if not news_context:
+        return
+    vars_ = brief.get("vars", {})
+    if "HEADLINE" in vars_:
+        vars_["HEADLINE"] = _fix_concatenations(_autoinject_hl(vars_["HEADLINE"], news_context))
+    if "LEAD" in vars_:
+        vars_["LEAD"] = _fix_concatenations(vars_["LEAD"])
+    sv = brief.get("story_vars") or {}
+    if "HEADLINE" in sv:
+        sv["HEADLINE"] = _fix_concatenations(_autoinject_hl(sv["HEADLINE"], news_context))
+    if "LEAD" in sv:
+        sv["LEAD"] = _fix_concatenations(sv["LEAD"])
+    if "caption_md" in brief and isinstance(brief["caption_md"], str):
+        brief["caption_md"] = _fix_concatenations(brief["caption_md"])
+
+
 def write_brief(
     plan_entry: dict,
     *,
@@ -295,6 +408,7 @@ def write_brief(
             "HEADLINE": brief["vars"].get("HEADLINE", ""),
             "LEAD": brief["vars"].get("LEAD", ""),
         }
+    _postprocess_news_brief(brief, news_context)
     return brief
 
 
@@ -321,4 +435,5 @@ def regenerate_brief(
     )
     if not isinstance(brief, dict):
         raise ValueError(f"writer devolveu não-dict: {type(brief)}")
+    _postprocess_news_brief(brief, news_context)
     return brief

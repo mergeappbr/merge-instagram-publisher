@@ -92,13 +92,41 @@ ERROS A EVITAR no scene_prompt:
 - Cores sem contexto ("dark blue background") — VOID
 - Pedir TEXTO na imagem (qualquer "with the words..." / "title saying...") — VOID
 
-REGRA 3 — BR context:
+REGRA 3 — BR context (CRÍTICO pra autenticidade):
 Se a notícia menciona atleta BR, prova BR, marca BR (Olympikus, Track&Field,
-Centauro, Maratona do Rio, POA, SP), inclua "Brazilian" no SUBJECT do
-scene_prompt e marque br_context=true. Backdrop pode ser urbano BR
-("São Paulo skyline", "Rio coastline", "Porto Alegre orla").
+Centauro, Maratona do Rio, POA, SP, Asics Brasil, Mizuno BR), você DEVE:
+1. Incluir "Brazilian" explicitamente no SUBJECT do scene_prompt (ex:
+   "Brazilian male marathon runner", "Brazilian female cyclist")
+2. Inserir BACKDROP geográfico específico, NÃO genérico:
+   - Maratona POA / Porto Alegre → "Porto Alegre Guaíba waterfront with
+     Usina do Gasômetro silhouette in background, late afternoon golden hour"
+   - Maratona Rio → "Rio de Janeiro Copacabana coastline with Sugarloaf
+     mountain visible in background, sunrise light"
+   - Maratona SP → "São Paulo Avenida Paulista skyline at dawn, city
+     buildings in background"
+   - Trail BR (Sertões, Eco) → "Brazilian Cerrado red dirt trail with
+     dry vegetation, dramatic light"
+3. Marcar br_context=true
 
-REGRA 4 — entity:
+REGRA 4 — assertividade ASSUNTO/PRODUTO/EVENTO:
+A imagem PRECISA conversar com o tema EXATO da notícia. Não é genérica.
+- Se notícia é sobre um PRODUTO específico (ex: "Garmin Forerunner 970",
+  "Nike Vaporfly 4", "Apple Watch Ultra 3"): strategy=entity, busca foto
+  oficial. Se Wikipedia não tem, scene com nome do produto literal:
+  "Editorial photograph of athlete wearing Garmin Forerunner 970 close-up
+  on wrist, training context".
+- Se notícia é sobre um EVENTO específico (ex: "Maratona Olympikus de
+  Porto Alegre 2026", "Cocodona 250"): scene com indicações geográficas
+  e visuais específicas DAQUELE evento (terreno, clima, urbano vs trail,
+  época do ano).
+- Se notícia é sobre uma TÉCNICA/MÉTODO (ex: "taper", "zona 2",
+  "pliometria"): scene com atleta EXECUTANDO a técnica de forma
+  reconhecível visualmente (taper = corredor em pace fácil, leve;
+  zona 2 = trote sustentado relaxado; pliometria = saltos explosivos).
+- Se notícia é sobre RESULTADO ESPORTIVO: scene de atleta na ação que
+  define o resultado (chegada vitoriosa, sprint, climbing, podium).
+
+REGRA 5 — entity:
 Forma exata da página Wikipedia. Para PT, forma português
 ("Eliud Kipchoge", "Maratona do Rio de Janeiro"). Para evento/marca em
 inglês ("Enhanced Games", "UCI"), wiki_lang=en.

@@ -28,18 +28,31 @@ OUT_FEED = ROOT / "output" / "feed"
 OUT_STORY = ROOT / "output" / "stories"
 PARTIALS = ROOT / "brand" / "_partials.html"
 
-LOGO_SVG, ARROW_SVG = "", ""
+LOGO_SVG, ARROW_SVG, WORDMARK_SVG = "", "", ""
+
+# Wordmark oficial (logo completa = ícone laranja + 'merge.' branco) — usado
+# como watermark de news magazine. Inline no HTML pra evitar file://+sandbox.
+WORDMARK_SVG_PATH = ROOT / "brand" / "logos" / "svg" / "logo-completa.svg"
 
 
 def load_partials() -> None:
-    """Extrai os SVGs inline do _partials.html."""
-    global LOGO_SVG, ARROW_SVG
+    """Extrai os SVGs inline do _partials.html + carrega wordmark oficial."""
+    global LOGO_SVG, ARROW_SVG, WORDMARK_SVG
     raw = PARTIALS.read_text(encoding="utf-8")
     blocks = re.split(r"<!--\s*@(\w+)\s*-->", raw)
     # blocks: ['', 'LOGO_SVG', '<svg>...</svg>', 'ARROW_SVG', '<svg>...</svg>']
     parts = dict(zip(blocks[1::2], blocks[2::2]))
     LOGO_SVG = parts["LOGO_SVG"].strip()
     ARROW_SVG = parts["ARROW_SVG"].strip()
+    if WORDMARK_SVG_PATH.is_file():
+        # Inject class="brand-wordmark" pra CSS controlar tamanho
+        raw_wm = WORDMARK_SVG_PATH.read_text(encoding="utf-8").strip()
+        WORDMARK_SVG = re.sub(
+            r"<svg\b",
+            '<svg class="brand-wordmark"',
+            raw_wm,
+            count=1,
+        )
 
 
 _IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
@@ -254,6 +267,7 @@ def build_html(brief: dict, size: str) -> str:
         **size_classes,
         **base_vars,
         "LOGO": logo_html,
+        "WORDMARK": WORDMARK_SVG,
         "ARROW": arrow_html,
         "PRICE_TAG": price_tag_html,
         "STAT_KICKER_HTML": stat_kicker_html,
