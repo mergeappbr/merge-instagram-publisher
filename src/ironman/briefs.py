@@ -444,6 +444,7 @@ def build_results_briefs(race: dict, results: dict) -> list[dict]:
     else:
         headline = race["name"].lower() + "."
 
+    circle_inner, circle_dark_class = _circle_block(race)
     cover = {
         "id": base_id,
         "template": "im_results_cover",
@@ -452,6 +453,8 @@ def build_results_briefs(race: dict, results: dict) -> list[dict]:
         "vars": {
             "BG_IMAGE": race.get("bg_results_cover", ""),
             "EVENT_LOGO": race.get("logo", ""),
+            "CIRCLE_INNER": circle_inner,
+            "CIRCLE_DARK_CLASS": circle_dark_class,
             "HEADLINE": headline,
             "RACE_LOCATION": race.get("location", ""),
             "RACE_DATE": _date_label_pt(race_date),

@@ -1,19 +1,31 @@
 <!-- IRONMAN RESULTS COVER — capa do carrossel de resultados.
-     Fundo CLARO (foge do dark Merge), logo IM grande central, accent laranja.
-     Vars: EVENT_LOGO, RACE_NAME, RACE_LOCATION, RACE_DATE, SLIDE_TOTAL -->
+     Estilo magazine (mesmo design system do im_countdown):
+     foto full-bleed + overlay escuro + círculo flutuante com logo da prova +
+     headline GIGANTE no rodapé + meta com wordmark "merge.".
+
+     Vars: BG_IMAGE, CIRCLE_INNER, CIRCLE_DARK_CLASS, HEADLINE,
+           RACE_LOCATION, RACE_DATE, SLIDE_TOTAL.
+-->
 <style>
-  .im-rc-canvas {
-    background: linear-gradient(180deg, #F2F2F2 0%, #E8E8E8 50%, #DCDCDC 100%);
-    color: #0A0A0A;
-  }
   .im-rc-bg-photo {
     position: absolute;
     inset: 0;
     background-position: center;
     background-size: cover;
-    opacity: 0.16;
-    mix-blend-mode: multiply;
     z-index: 0;
+  }
+  .im-rc-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(10,10,10,0.30) 0%,
+      rgba(10,10,10,0.10) 22%,
+      rgba(10,10,10,0.06) 42%,
+      rgba(10,10,10,0.55) 70%,
+      rgba(10,10,10,0.96) 100%
+    );
+    z-index: 1;
   }
   .im-rc-block {
     position: relative;
@@ -21,131 +33,181 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 0;
   }
-  .im-rc-top {
+
+  /* CÍRCULO FLUTUANTE — logo da prova */
+  .im-rc-circle-row {
+    margin-top: 0;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    justify-content: flex-start;
   }
-  .im-rc-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 14px 26px;
-    background: #0A0A0A;
-    color: #FFFFFF;
-    border-radius: 999px;
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-  }
-  .im-rc-pill .dot {
-    width: 9px;
-    height: 9px;
+  .im-rc-circle {
+    width: 240px;
+    height: 240px;
     border-radius: 50%;
-    background: var(--orange);
-    margin-right: 14px;
-  }
-  .im-rc-counter {
-    font-family: var(--font-mono);
-    font-size: 20px;
-    font-weight: 600;
-    color: #6E6E6E;
-    letter-spacing: 0.06em;
-  }
-  .im-rc-logo-wrap {
-    flex: 1;
+    background: #FFFFFF;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: flex-start;
-    padding: 60px 0;
+    box-shadow:
+      0 24px 60px rgba(0,0,0,0.55),
+      0 0 0 6px rgba(255,255,255,0.12);
+    overflow: hidden;
+    padding: 28px;
   }
-  .im-rc-logo {
-    width: 320px;
-    max-height: 360px;
+  .canvas--story .im-rc-circle { width: 320px; height: 320px; padding: 38px; }
+  .im-rc-circle.is-dark {
+    background: #0A0A0A;
+    box-shadow:
+      0 24px 60px rgba(0,0,0,0.65),
+      0 0 0 6px rgba(255,255,255,0.18);
+  }
+  .im-rc-circle img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
     height: auto;
+    display: block;
     object-fit: contain;
-    filter: drop-shadow(0 12px 36px rgba(0,0,0,0.18));
   }
-  .canvas--story .im-rc-logo { width: 420px; max-height: 480px; }
-  .im-rc-divider {
-    width: 120px;
-    height: 6px;
-    background: var(--orange);
-    margin: 36px 0 28px;
-    border-radius: 3px;
-  }
-  .im-rc-race-name {
+  .im-rc-circle .pill-fallback {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 92px;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    color: var(--orange);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .im-rc-spacer { flex: 1; }
+
+  /* RODAPÉ: kicker + headline GIGANTE + meta */
+  .im-rc-foot-block {
+    position: relative;
+    z-index: 2;
+  }
+
+  .im-rc-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 22px;
+    background: rgba(10,10,10,0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.10);
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 0 0 32px;
+  }
+  .canvas--story .im-rc-kicker {
+    font-size: 26px;
+    padding: 14px 26px;
+    margin-bottom: 40px;
+  }
+  .im-rc-kicker .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .im-rc-kicker .label {
+    color: #FFFFFF;
+    font-weight: 800;
+  }
+  .im-rc-kicker .sep {
+    color: rgba(255,255,255,0.40);
+  }
+
+  .im-rc-headline {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 124px;
     line-height: 0.94;
     letter-spacing: -0.035em;
-    color: #0A0A0A;
-    text-transform: lowercase;
+    color: #FFFFFF;
     margin: 0;
-    max-width: 880px;
+    text-wrap: balance;
+    hyphens: manual;
+    text-transform: lowercase;
+    text-shadow: 0 4px 32px rgba(0,0,0,0.55);
   }
-  .canvas--story .im-rc-race-name { font-size: 124px; }
-  .im-rc-race-name .hl { color: var(--orange); }
+  .canvas--story .im-rc-headline { font-size: 156px; }
+  .im-rc-headline .hl { color: var(--orange); }
+
   .im-rc-meta {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 24px;
-    font-weight: 600;
-    color: #4A4A4A;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .canvas--story .im-rc-meta { font-size: 28px; }
-  .im-rc-foot {
+    margin-top: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 2px solid rgba(10,10,10,0.12);
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.18);
     font-family: var(--font-mono);
     font-size: 18px;
-    color: #6E6E6E;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: rgba(255,255,255,0.82);
   }
-  .im-rc-foot .handle { color: #0A0A0A; font-weight: 700; }
-  .im-rc-foot .swipe { color: var(--orange); font-weight: 700; }
-  .im-rc-foot .brand-mark { display: inline-flex; align-items: center; }
-  .im-rc-foot .brand-mark .brand-logo {
-    position: static; top: auto; left: auto;
-    width: 32px; height: auto; display: block;
+  .canvas--story .im-rc-meta { font-size: 22px; margin-top: 36px; padding-top: 22px; }
+  .im-rc-meta .meta-left { display: inline-flex; gap: 14px; align-items: center; }
+  .im-rc-meta .sep { color: rgba(255,255,255,0.40); }
+
+  .im-rc-wordmark {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: -0.03em;
+    color: #FFFFFF;
+    text-transform: lowercase;
+    line-height: 1;
+    display: inline-block;
   }
-  .canvas--story .im-rc-foot .brand-mark .brand-logo { width: 42px; }
+  .canvas--story .im-rc-wordmark { font-size: 40px; }
+  .im-rc-wordmark .dot {
+    color: var(--orange);
+  }
 </style>
 
-<div class="canvas canvas--{{SIZE}} im-rc-canvas">
+<div class="canvas canvas--{{SIZE}}">
   <div class="im-rc-bg-photo" style="background-image:url('{{BG_IMAGE}}');"></div>
+  <div class="im-rc-overlay"></div>
   <div class="im-rc-block">
-    <div class="im-rc-top">
-      <span class="im-rc-pill"><span class="dot"></span>resultados</span>
-      <span class="im-rc-counter">1/{{SLIDE_TOTAL}}</span>
-    </div>
-    <div class="im-rc-logo-wrap">
-      <img src="{{EVENT_LOGO}}" alt="" class="im-rc-logo">
-      <div class="im-rc-divider"></div>
-      <h1 class="im-rc-race-name">{{HEADLINE}}</h1>
-      <div class="im-rc-meta">
-        <span>{{RACE_LOCATION}}</span>
-        <span>{{RACE_DATE}}</span>
+
+    <!-- CÍRCULO flutuante com logo da prova -->
+    <div class="im-rc-circle-row">
+      <div class="im-rc-circle{{CIRCLE_DARK_CLASS}}">
+        {{CIRCLE_INNER}}
       </div>
     </div>
-    <div class="im-rc-foot">
-      <span class="brand-mark">{{LOGO}}</span>
-      <span class="swipe">top 10 brasileiros · m + f</span>
+
+    <div class="im-rc-spacer"></div>
+
+    <!-- RODAPÉ: kicker pill + headline GIGANTE + meta -->
+    <div class="im-rc-foot-block">
+      <span class="im-rc-kicker">
+        <span class="dot"></span>
+        <span class="label">resultados</span>
+        <span class="sep">·</span>
+        <span>top 10 brasileiros</span>
+      </span>
+      <h1 class="im-rc-headline">{{HEADLINE}}</h1>
+      <div class="im-rc-meta">
+        <span class="meta-left">
+          <span>{{RACE_LOCATION}}</span>
+          <span class="sep">·</span>
+          <span>{{RACE_DATE}}</span>
+          <span class="sep">·</span>
+          <span>1/{{SLIDE_TOTAL}}</span>
+        </span>
+        <span class="im-rc-wordmark">merge<span class="dot">.</span></span>
+      </div>
     </div>
   </div>
 </div>

@@ -6,6 +6,8 @@
   "vars": {
     "BG_IMAGE": "villarinho_race.jpg",
     "EVENT_LOGO": "IronFullLogo.png",
+    "CIRCLE_INNER": "<img src=\"file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/IronFullLogo.png\" alt=\"\">",
+    "CIRCLE_DARK_CLASS": "",
     "HEADLINE": "ironman <span class=\"hl\">brasil</span>.",
     "RACE_LOCATION": "Florianópolis · SC",
     "RACE_DATE": "31 de maio · 2026",
