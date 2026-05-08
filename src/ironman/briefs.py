@@ -297,9 +297,18 @@ def build_countdown_brief(race: dict, days: int) -> dict:
         )
         print(f"⚠ caption fallback ({race['id']}): {e!r}")
 
-    headline = f'faltam <span class="hl">{days} {_days_word(days)}</span> pra largada.'
+    # Headline NÃO repete o número de dias (já é protagonista no STAT gigante).
+    # Usa tagline motivacional por bucket de proximidade.
     if days == 1:
         headline = 'a prova é <span class="hl">amanhã</span>.'
+    elif days <= 7:
+        headline = '<span class="hl">semana da prova</span>. tudo já tá feito.'
+    elif days <= 15:
+        headline = 'afiação. <span class="hl">menos é mais</span> agora.'
+    elif days <= 30:
+        headline = '<span class="hl">taper</span> começa. recorta o supérfluo.'
+    else:
+        headline = 'bloco final. <span class="hl">consistência</span> &gt; volume.'
 
     brief = {
         "id": f"{race['id']}_t{days}",
