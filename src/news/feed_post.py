@@ -25,6 +25,7 @@ from pathlib import Path
 from alerts import notify
 from autogen import reviewer, runner as autogen_runner, writer
 from bot import api, r2_persist, state as bot_state
+from news import visual
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 POOL_FILE = ROOT / "output" / "news_pool.json"
@@ -135,6 +136,19 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
         brief.setdefault("vars", {})["BG_IMAGE"] = bg_override
         if "story_vars" in brief:
             brief["story_vars"]["BG_IMAGE"] = bg_override
+    else:
+        # Sem override → resolve bg inteligente (Wikipedia entity OR FLUX scene).
+        # Falha silenciosa: mantém o que writer escolheu de bg_pool.
+        bg_url = visual.resolve_bg_for_news(
+            aid=bid,
+            title=news_context["title"],
+            summary=news_context["summary"],
+            modality=plan_entry["modality"],
+        )
+        if bg_url:
+            brief.setdefault("vars", {})["BG_IMAGE"] = bg_url
+            if "story_vars" in brief:
+                brief["story_vars"]["BG_IMAGE"] = bg_url
 
     # NEWS sempre usa o template magazine novo (foto full-bleed + headline
     # gigante + footer com source · merge.). Override pós-writer pra não

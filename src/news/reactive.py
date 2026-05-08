@@ -17,6 +17,7 @@ from pathlib import Path
 from alerts import notify
 
 from autogen import calendar_io, reviewer, runner as autogen_runner, writer
+from news import visual
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 REACTIVE_STATE = ROOT / "output" / ".last_reactive_published.txt"
@@ -93,12 +94,23 @@ def trigger_reactive_post(item: dict) -> None:
             sv["PILL"] = "NEWS"
             sv.setdefault("SOURCE", vars_["SOURCE"])
             sv.setdefault("DATE_LABEL", vars_["DATE_LABEL"])
-        # bg_override do item (lançamento com foto oficial) tem precedência.
-        # Sem override, mantém o que writer escolheu de bg_pool.
+        # bg_override do item (lançamento com foto oficial) tem precedência;
+        # senão resolve via Wikipedia (entity) ou FLUX (scene).
         if item.get("bg_override"):
             vars_["BG_IMAGE"] = item["bg_override"]
             if "story_vars" in brief:
                 brief["story_vars"]["BG_IMAGE"] = item["bg_override"]
+        else:
+            bg_url = visual.resolve_bg_for_news(
+                aid=bid,
+                title=news_context["title"],
+                summary=news_context["summary"],
+                modality=plan_entry["modality"],
+            )
+            if bg_url:
+                vars_["BG_IMAGE"] = bg_url
+                if "story_vars" in brief:
+                    brief["story_vars"]["BG_IMAGE"] = bg_url
         review = reviewer.review(brief)
     except Exception as e:  # noqa: BLE001
         notify(
