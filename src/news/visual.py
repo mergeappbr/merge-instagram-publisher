@@ -71,8 +71,22 @@ REGRA 1 — ENTITY vs SCENE:
   estudo sobre HIIT", "polêmica regra ciclismo", "como evitar fadiga
   no km 35").
 
-REGRA 2 — scene_prompt (CRÍTICO — qualidade de capa de revista, 1ª geração):
-SEMPRE em inglês, formato photographer-grade estrito. Estrutura obrigatória
+REGRA 2 — scene_prompt (CRÍTICO — qualidade DOCUMENTAL, anti-cara-de-IA):
+
+PRINCÍPIO FUNDAMENTAL: a foto tem que parecer REAL, não gerada. Pense
+como fotojornalista cobrindo um evento real (Magnum, National Geographic,
+Outside, Bicycling). NÃO é stock photo, NÃO é hero pose centralizada,
+NÃO é portrait posado.
+
+PREFERÊNCIA POR SEM ROSTO HUMANO. A imagem deve focar em:
+  • Equipamento (tênis no asfalto, bike de perfil, watch no pulso, gel)
+  • Parte do corpo (panturrilhas subindo, mãos no guidão, pés no start)
+  • Silhueta / costas / 3/4 atrás
+  • Paisagem que conta a história (estrada subindo, pista curva, lane)
+  • Detalhe documental (suor na camisa, lama, número, tape, splits)
+Se rosto for inevitável, mostre de 3/4 atrás ou em sombra — NUNCA posed.
+
+SEMPRE em inglês, formato documental estrito. Estrutura obrigatória
 com TODAS as 8 camadas (em ordem):
 
   "Editorial sports photograph for magazine cover. Subject: [SUBJECT —
@@ -344,21 +358,39 @@ def _passes_quality_gate(img_bytes: Optional[bytes]) -> bool:
 
 
 _GEMINI_PROMPT_SUFFIX = (
-    "\n\n--- TECHNICAL SPECS ---\n"
-    "Aspect ratio: 9:16 portrait (1080x1920). "
-    "Subject MUST sit in the middle vertical third of the frame, with "
-    "generous negative space in the top third AND bottom third (will be "
-    "cropped to 4:5 for feed). "
-    "Render quality: 8K resolution, photorealistic, ultra-detailed skin "
-    "texture and fabric weave, sharp focus on eyes, natural film grain, "
-    "shot like a Sports Illustrated / Outside Magazine cover.\n\n"
+    "\n\n--- STYLE DIRECTIVE (CRITICAL) ---\n"
+    "Documentary editorial photography. Candid, journalistic, REAL — "
+    "as if shot by a Magnum / National Geographic / Outside Magazine "
+    "photographer covering a real event. NOT staged, NOT posed, NOT "
+    "stock photo. Think: real moment, real light, real grain.\n\n"
+    "--- FACE / HUMAN POLICY ---\n"
+    "STRONGLY PREFER no human faces in frame. Use instead:\n"
+    "  • Equipment close-up (shoes on asphalt, bike cockpit, watch on "
+    "wrist, gear laid out, hand on handlebar, gel sachet).\n"
+    "  • Back-view / silhouette / cropped body part (legs mid-stride, "
+    "calves climbing, hands gripping bars, feet at start line).\n"
+    "  • Landscape that tells the story (empty road climbing into "
+    "mountain, finish-line ribbon, track curve, pool lane).\n"
+    "  • Documentary detail (sweat on jersey, mud on calves, race bib "
+    "pinned, chalk on hands, splits paper).\n"
+    "If a face is unavoidable, show it from 3/4 back or in shadow — "
+    "NEVER a posed front-facing portrait.\n\n"
+    "--- TECHNICAL SPECS ---\n"
+    "Aspect ratio: 9:16 portrait (1080x1920). Subject in middle "
+    "vertical third, generous negative space top AND bottom (cropped "
+    "to 4:5 in feed). Real available light when possible (golden hour, "
+    "overcast, indoor ambient) — avoid obvious studio strobe unless "
+    "scene is product-only. Natural film grain, real depth of field "
+    "from real lens (not artificial blur), authentic color (not over-"
+    "saturated, not teal-orange overdose).\n\n"
     "--- HARD NEGATIVES (do NOT include) ---\n"
-    "no text, no captions, no headlines, no logos, no watermarks, no "
-    "brand marks, no signage with words, no AI artifacts, no plastic "
-    "skin, no waxy faces, no over-saturation, no HDR halos, no fused "
-    "fingers, no extra limbs, no mannequin look, no stock-photo cliché, "
-    "no centered front-facing pose unless specified, no cartoon, no "
-    "illustration, no 3D render, no CGI."
+    "NO text, NO captions, NO headlines, NO logos, NO watermarks, NO "
+    "brand marks, NO signage with words. NO AI artifacts, NO plastic "
+    "skin, NO waxy faces, NO over-smooth skin, NO uncanny eyes, NO "
+    "fused fingers, NO extra limbs, NO bent joints. NO mannequin look, "
+    "NO stock-photo cliché, NO over-saturated HDR, NO obvious CGI, "
+    "NO 3D render, NO illustration, NO cartoon. NO posed front-facing "
+    "portrait. NO symmetric centered hero pose."
 )
 
 
@@ -493,10 +525,48 @@ def resolve_bg_for_news(
     if os.environ.get("NEWS_VISUAL_DISABLED") == "1":
         return None
 
-    # Detector determinístico tem PRECEDÊNCIA absoluta — quando notícia
-    # menciona modelo específico de produto, foto deve ser hero close-up
-    # do produto, não atleta correndo. Só cai pro classifier se não achar.
+    # ─── CAMADA 0: Bank-first (foto REAL > IA) ────────────────────────
+    # Antes de qualquer classificador ou geração, tenta achar foto real
+    # local: curated (brand/images/) ou bank (Unsplash/Pexels pré-baixado)
+    # ou Diogo Villarinho (local-only). Se bater, pula IA totalmente.
     detected = _detect_product(title, summary)
+    product_model = detected[0] if detected else None
+    try:
+        from news import visual_bank
+        bank_hit = visual_bank.lookup(
+            title=title, summary=summary, modality=modality,
+            product_model=product_model,
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ visual_bank.lookup erro: {e!r}")
+        bank_hit = None
+    if bank_hit:
+        bank_path, bank_label = bank_hit
+        try:
+            bank_bytes = bank_path.read_bytes()
+        except OSError as e:
+            print(f"⚠ bank read falhou: {e!r}")
+            bank_bytes = None
+        if _passes_quality_gate(bank_bytes):
+            CACHE_DIR.mkdir(parents=True, exist_ok=True)
+            ext = bank_path.suffix.lower() if bank_path.suffix.lower() in (
+                ".jpg", ".jpeg", ".png", ".webp"
+            ) else ".jpg"
+            local = CACHE_DIR / f"{aid}{ext}"
+            local.write_bytes(bank_bytes)
+            print(f"↗ visual: {aid} ← {bank_label} ({local.name}, "
+                  f"{len(bank_bytes)//1024}KB)")
+            try:
+                from news.visual_report import log_generation
+                log_generation(aid=aid, source_label=bank_label,
+                               byte_size=len(bank_bytes))
+            except Exception as e:  # noqa: BLE001
+                print(f"⚠ visual.log_generation falhou: {e!r}")
+            return _upload_r2(local, f"{R2_PREFIX}/{aid}{ext}")
+        else:
+            print(f"↪ bank match {bank_label} falhou quality gate, segue IA")
+
+    # ─── CAMADA 1: Detector de produto → IA produto-cêntrico ──────────
     if detected:
         product_model, product_cat = detected
         print(f"↗ visual: produto detectado '{product_model}' ({product_cat})")
@@ -511,28 +581,27 @@ def resolve_bg_for_news(
     else:
         plan = _classify(title, summary, modality)
     if not plan:
-        # Fallback puro (classifier offline): prompt photographer-grade genérico
+        # Fallback puro (classifier offline): prompt documental sem rosto
         plan = {
             "strategy": "scene",
             "scene_prompt": (
-                f"Editorial sports photograph for magazine cover. "
-                f"Subject: professional {modality or 'endurance'} athlete, "
-                f"athletic build, technical apparel, intense focused expression. "
-                f"Action: peak effort moment in their discipline. "
-                f"Setting: real outdoor environment matching the sport. "
-                f"Time of day: late afternoon golden hour 17:30. "
-                f"Lighting: warm rim light from camera-right at 30°, "
-                f"key-to-fill ratio 3:1, dramatic golden glow. "
-                f"Camera: Sony A7R V. Lens: 85mm f/1.4 GM. "
-                f"Settings: 1/1250s ISO 400. "
-                f"Composition: rule of thirds, subject on right-third "
-                f"intersection, low-angle perspective. "
-                f"Color grading: Kodak Portra 400 warm editorial. "
-                f"Aesthetic: photorealistic, tack-sharp eyes, shallow depth "
-                f"of field with creamy bokeh, magazine cover composition, "
-                f"subject in middle vertical third, generous negative space "
-                f"top and bottom, no text, no logos, no AI artifacts, "
-                f"no plastic skin."
+                f"Documentary editorial photograph covering a "
+                f"{modality or 'endurance'} event. "
+                f"Subject: equipment and environment — NO face in frame. "
+                f"Show the gear, the surface, the place: e.g. running "
+                f"shoes mid-stride on asphalt seen from low angle, OR a "
+                f"silhouette from behind moving away into open road, OR "
+                f"hands gripping handlebar/start gantry detail. "
+                f"Setting: real outdoor location matching the sport. "
+                f"Time of day: late afternoon natural light. "
+                f"Lighting: real available light, warm and directional. "
+                f"Camera: Leica M11. Lens: 35mm f/2 documentary. "
+                f"Settings: 1/500s ISO 400, slight motion blur if action. "
+                f"Composition: candid, journalistic framing, rule of thirds. "
+                f"Color grading: Kodak Portra 400, naturally muted. "
+                f"Aesthetic: photorealistic, real grain, authentic moment, "
+                f"NOT staged, NOT posed, no face front-on, no logos, "
+                f"no AI artifacts, no plastic textures."
             ),
         }
 
@@ -566,23 +635,23 @@ def resolve_bg_for_news(
             # entity sem foto / quality gate falhou → scene gerada
             print(f"↪ visual: wiki '{plan['entity']}' sem foto válida, caindo pra scene")
             scene_prompt = plan.get("scene_prompt") or (
-                f"Editorial sports photograph for magazine cover. "
-                f"Subject: {plan['entity']} in their signature "
-                f"{modality or 'endurance'} discipline, professional athlete, "
-                f"intense focused expression, technical apparel and gear. "
-                f"Action: peak performance moment, body in dynamic motion. "
-                f"Setting: real environment iconic to this athlete/event. "
-                f"Time of day: late afternoon golden hour 17:30. "
-                f"Lighting: warm rim light from camera-right at 30°, "
-                f"key-to-fill ratio 3:1. "
-                f"Camera: Sony A7R V. Lens: 200mm f/2 GM. "
-                f"Settings: 1/2000s ISO 400 frozen motion. "
-                f"Composition: rule of thirds, low-angle hero shot. "
-                f"Color grading: Kodak Portra 400 warm editorial. "
-                f"Aesthetic: photorealistic, tack-sharp eyes, shallow depth "
-                f"of field, magazine cover composition, subject in middle "
-                f"vertical third, generous negative space top and bottom, "
-                f"no text, no logos, no AI artifacts, no plastic skin."
+                f"Documentary editorial photograph related to {plan['entity']} "
+                f"in {modality or 'endurance'} context. "
+                f"Subject: NO face in frame — show equipment, environment, "
+                f"or back-view/silhouette associated with this entity. "
+                f"E.g. signature gear close-up, iconic location empty, "
+                f"or athlete from behind moving into setting. "
+                f"Setting: real environment iconic to this entity/event. "
+                f"Time of day: late afternoon natural light. "
+                f"Lighting: real available light, warm directional. "
+                f"Camera: Leica SL3. Lens: 50mm f/1.4 Summilux. "
+                f"Settings: 1/1000s ISO 400. "
+                f"Composition: candid journalistic, rule of thirds, "
+                f"low-angle. "
+                f"Color grading: Kodak Portra 400 naturally muted. "
+                f"Aesthetic: photorealistic, real grain, authentic, "
+                f"not staged, not posed, no face front-on, no text, "
+                f"no logos, no AI artifacts, no plastic skin."
             )
             img_bytes, source_label = _try_scene(
                 scene_prompt, f"scene-fallback:{plan['entity']}:"
