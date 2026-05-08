@@ -236,6 +236,7 @@ def watch_once() -> dict:
 
     n_reactive = 0
     n_pooled = 0
+    rejected: list[dict] = []
     # Lazy import pra evitar ciclo
     from . import reactive as reactive_mod
 
@@ -253,17 +254,27 @@ def watch_once() -> dict:
             it["added_at"] = datetime.now(timezone.utc).isoformat()
             pool.append(it)
             n_pooled += 1
+        else:
+            # Score < 5: dropado. Guarda meta pra debug.
+            rejected.append({
+                "title": (it.get("title") or "")[:80],
+                "score": score,
+                "reasoning": (it.get("reasoning") or "")[:120],
+                "feed": it.get("feed_name", ""),
+            })
 
     pool.sort(key=lambda x: float(x.get("score", 0)), reverse=True)
     _save_pool(pool)
     _add_seen(new_hashes)
 
+    rejected.sort(key=lambda x: x["score"], reverse=True)
     return {
         "fetched": sum(1 for _ in feeds_module.FEEDS),
         "new": len(new_items),
         "scored": len(scored),
         "reactive": n_reactive,
         "pooled": n_pooled,
+        "rejected": rejected[:5],
     }
 
 

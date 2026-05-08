@@ -165,6 +165,7 @@ def _handle_message(msg: dict) -> None:
                 "/force_news — força watcher rodar agora\n"
                 "/force_stories — força dispatch de stories (ignora janela)\n"
                 "/force_news_feed — força 1 feed news post agora\n"
+                "/test_news_feed — testa pipeline com item BR sintético (sem pool)\n"
                 "/force_news_fitbit — TEMP: dispara news Fitbit Air vs WHOOP\n"
                 "/publish_now [slot] — publica brief news preso na esteira\n"
                 "/calendar_news — lista news pendentes no calendar\n"
@@ -188,6 +189,8 @@ def _handle_message(msg: dict) -> None:
             _force_stories(chat_id)
         elif text == "/force_news_feed":
             _force_news_feed(chat_id)
+        elif text == "/test_news_feed":
+            _test_news_feed(chat_id)
         elif text == "/force_news_fitbit":
             _force_news_fitbit(chat_id)
         elif text == "/publish_now" or text.startswith("/publish_now "):
@@ -374,11 +377,21 @@ def _force_news_watch(chat_id: int) -> None:
             chat_id=str(chat_id),
         )
         return
-    api.send_message(
+    msg = (
         f"✅ watcher · novos={stats.get('new',0)} scored={stats.get('scored',0)} "
-        f"reactive={stats.get('reactive',0)} pooled={stats.get('pooled',0)}",
-        chat_id=str(chat_id),
+        f"reactive={stats.get('reactive',0)} pooled={stats.get('pooled',0)}"
     )
+    rejected = stats.get("rejected") or []
+    if rejected:
+        msg += "\n\n<b>rejeitados (score &lt; 5)</b>"
+        for r in rejected:
+            msg += (
+                f"\n· {r['score']:.1f} — <i>{html.escape(r['feed'])}</i> · "
+                f"{html.escape(r['title'])}"
+            )
+            if r.get("reasoning"):
+                msg += f"\n  <code>{html.escape(r['reasoning'])}</code>"
+    api.send_message(msg, chat_id=str(chat_id))
 
 
 def _force_stories(chat_id: int) -> None:
@@ -442,6 +455,70 @@ def _force_news_feed(chat_id: int) -> None:
         api.send_message("✅ feed news preview enviado.", chat_id=str(chat_id))
     else:
         api.send_message("❌ feed news falhou (veja logs).", chat_id=str(chat_id))
+
+
+def _test_news_feed(chat_id: int) -> None:
+    """Item sintético BR pra testar template + visual.resolve_bg + reviewer.
+
+    Não depende de pool nem MIN_SCORE. Não usa bg_override → exercita
+    Pollinations FLUX / Wikipedia. Útil pra validar mudanças sem esperar
+    feed real entrar com score alto.
+    """
+    import hashlib
+    from datetime import datetime, timezone
+    api.send_message(
+        "⏳ teste com item sintético (Maratona POA)…",
+        chat_id=str(chat_id), silent=True,
+    )
+    try:
+        from news import feed_post
+    except Exception as e:  # noqa: BLE001
+        api.send_message(
+            f"⚠️ feed_post indisponível: {html.escape(str(e))}",
+            chat_id=str(chat_id),
+        )
+        return
+    title = (
+        "Maratona Olympikus de Porto Alegre 2026 abre inscrições com "
+        "expectativa de 12 mil corredores"
+    )
+    link = "https://test.merge.example/maratona-poa-2026"
+    feed_name = "Merge Test"
+    h = hashlib.sha1(("test|" + link + "|" + title).encode("utf-8")).hexdigest()
+    item = {
+        "feed_name": feed_name,
+        "category": "br_running",
+        "modalities": ["running"],
+        "feed_relevance": 0.9,
+        "title": title,
+        "link": link,
+        "summary": (
+            "A Maratona Olympikus de Porto Alegre 2026, marcada pra 31/05, "
+            "abre lote inicial com expectativa de 12 mil corredores entre "
+            "42K, 21K, 10K e 5K. Treinadores brasileiros recomendam reforço "
+            "de força nos últimos 60 dias e simulação de longão em ritmo de "
+            "prova. Provas urbanas no Brasil tem crescido 35% em participação "
+            "amador desde 2023 segundo a CBAt."
+        ),
+        "published_at": datetime.now(timezone.utc).isoformat(),
+        "hash": h,
+        "score": 9.0,
+        "post_event": False,
+        "viral_potential": 8,
+        "alignment": 9,
+        "primary_modality": "running",
+        "reasoning": "Sintético — testa template + visual.resolve_bg.",
+        "angle_suggestion": (
+            "Maratona POA abre inscrições. Foco em preparação dos amadores "
+            "(força + longão simulado) e crescimento do mercado BR."
+        ),
+        "added_at": datetime.now(timezone.utc).isoformat(),
+    }
+    ok = feed_post.dispatch_one(item, "test_synthetic")
+    if ok:
+        api.send_message("✅ teste enviado — confere o preview.", chat_id=str(chat_id))
+    else:
+        api.send_message("❌ teste falhou (veja logs Railway).", chat_id=str(chat_id))
 
 
 def _force_news_fitbit(chat_id: int) -> None:
