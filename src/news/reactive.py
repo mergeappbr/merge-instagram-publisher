@@ -86,11 +86,9 @@ def trigger_reactive_post(item: dict) -> None:
         # Lock template + vars do magazine (mesmo padrão do feed_post).
         brief["template"] = "news_magazine"
         vars_ = brief.setdefault("vars", {})
-        vars_["PILL"] = "NEWS"
         vars_["SOURCE"] = (item.get("feed_name") or news_context["source"] or "—").strip()
         if "story_vars" in brief:
             sv = brief["story_vars"]
-            sv["PILL"] = "NEWS"
             sv.setdefault("SOURCE", vars_["SOURCE"])
         # bg_override do item (lançamento com foto oficial) tem precedência;
         # senão resolve via Wikipedia (entity) ou FLUX (scene).

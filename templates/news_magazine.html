@@ -1,8 +1,8 @@
-<!-- NEWS MAGAZINE — feed post de notícia, estilo magazine The News.
-     Foto full-bleed + overlay forte + pill NEWS + headline GIGANTE +
-     lead curto + rodapé com source · merge. wordmark.
+<!-- NEWS MAGAZINE — feed post de notícia, formato TheNews.
+     Foto full-bleed + overlay forte + watermark "merge." centralizado no topo
+     + headline GIGANTE no rodapé + lead curto + source à esquerda.
 
-     Vars do writer: PILL (sempre "NEWS"), HEADLINE, LEAD, BG_IMAGE.
+     Vars do writer: HEADLINE, LEAD, BG_IMAGE.
      Vars adicionais (injetadas em feed_post._build_brief):
        SOURCE        — fonte da notícia (ex: "Velo · Outside")
 -->
@@ -36,37 +36,35 @@
     height: 100%;
   }
 
-  /* TOPO — pill NEWS · DATA */
-  .nm-pill {
-    align-self: flex-start;
+  /* TOPO — watermark merge. centralizado (estilo TheNews) */
+  .nm-top-mark {
+    align-self: center;
     display: inline-flex;
     align-items: center;
-    gap: 14px;
-    padding: 12px 22px;
-    background: var(--orange);
-    color: var(--orange-ink);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 56px;
+    letter-spacing: -0.03em;
+    color: #FFFFFF;
+    text-transform: lowercase;
+    line-height: 1;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.55);
   }
-  .canvas--story .nm-pill {
-    font-size: 26px;
-    padding: 14px 26px;
-    /* IG Stories tem ~250px de safe-area no topo (avatar/username overlay).
-       Canvas já tem padding-top de 100px. Empurra +150px pra pill cair
-       fora da área coberta pela UI do Instagram. */
+  .nm-top-mark .dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .canvas--story .nm-top-mark {
+    font-size: 64px;
+    /* IG Stories safe-area no topo (~250px). Canvas tem padding-top de 100px;
+       empurra +150px pra cair fora da UI do Instagram (avatar/username). */
     margin-top: 150px;
   }
-  .nm-pill .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--orange-ink);
-  }
+  .canvas--story .nm-top-mark .dot { width: 26px; height: 26px; }
   .nm-spacer { flex: 1; }
 
   /* RODAPÉ — headline + lead + meta */
@@ -104,10 +102,10 @@
   .canvas--story .nm-lead { font-size: 36px; max-width: 88%; }
   .nm-lead br + br { content: ""; }
 
-  /* META — source esquerda + wordmark merge. direita */
+  /* META — source à esquerda (TheNews tem 'via fonte' embaixo) */
   .nm-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding-top: 20px;
     border-top: 1px solid rgba(255,255,255,0.20);
@@ -121,19 +119,6 @@
   .nm-meta .nm-source { display: inline-flex; gap: 10px; align-items: center; }
   .nm-meta .nm-source .label { color: rgba(255,255,255,0.55); font-weight: 600; }
   .nm-meta .nm-source .name { color: #FFFFFF; font-weight: 700; }
-
-  .nm-wordmark {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 32px;
-    letter-spacing: -0.03em;
-    color: #FFFFFF;
-    text-transform: lowercase;
-    line-height: 1;
-    display: inline-block;
-  }
-  .canvas--story .nm-wordmark { font-size: 40px; }
-  .nm-wordmark .dot { color: var(--orange); }
 </style>
 
 <div class="canvas canvas--{{SIZE}}">
@@ -141,10 +126,10 @@
   <div class="nm-overlay"></div>
   <div class="nm-block">
 
-    <!-- pill NEWS -->
-    <span class="nm-pill">
+    <!-- TOPO: watermark merge. centralizado (estilo TheNews) -->
+    <span class="nm-top-mark">
       <span class="dot"></span>
-      <span>{{PILL}}</span>
+      <span>merge.</span>
     </span>
 
     <div class="nm-spacer"></div>
@@ -158,7 +143,6 @@
           <span class="label">via</span>
           <span class="name">{{SOURCE}}</span>
         </span>
-        <span class="nm-wordmark">merge<span class="dot">.</span></span>
       </div>
     </div>
   </div>

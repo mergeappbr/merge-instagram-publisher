@@ -159,16 +159,14 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
             bg_source = "visual.resolve_bg→None (fallback writer)"
     brief["_bg_debug"] = {"source": bg_source, "final": bg_final}
 
-    # NEWS sempre usa o template magazine novo (foto full-bleed + headline
-    # gigante + footer com source · merge.). Override pós-writer pra não
+    # NEWS sempre usa o template magazine (foto full-bleed + watermark merge.
+    # no topo + headline gigante no rodapé). Override pós-writer pra não
     # depender do LLM escolher template certo.
     brief["template"] = "news_magazine"
     vars_ = brief.setdefault("vars", {})
-    vars_["PILL"] = "NEWS"
     vars_["SOURCE"] = (item.get("feed_name") or news_context["source"] or "—").strip()
     if "story_vars" in brief:
         sv = brief["story_vars"]
-        sv["PILL"] = "NEWS"
         sv.setdefault("SOURCE", vars_["SOURCE"])
 
     review = reviewer.review(brief)
