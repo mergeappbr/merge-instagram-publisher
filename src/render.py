@@ -12,10 +12,12 @@ Uso:
 """
 from __future__ import annotations
 
+import base64
 import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse, unquote
 
 from playwright.sync_api import sync_playwright
 
@@ -41,6 +43,58 @@ def load_partials() -> None:
 
 
 _IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+
+
+def _mime_from_bytes(b: bytes) -> str:
+    """Detecta MIME por magic bytes. Default: jpeg."""
+    if b[:8] == b"\x89PNG\r\n\x1a\n":
+        return "image/png"
+    if b[:6] in (b"GIF87a", b"GIF89a"):
+        return "image/gif"
+    if b[:4] == b"RIFF" and b[8:12] == b"WEBP":
+        return "image/webp"
+    return "image/jpeg"
+
+
+def _bytes_to_data_uri(img_bytes: bytes) -> str:
+    mime = _mime_from_bytes(img_bytes)
+    b64 = base64.b64encode(img_bytes).decode("ascii")
+    return f"data:{mime};base64,{b64}"
+
+
+def _absolute_bg_to_data_uri(url: str) -> str | None:
+    """Converte http(s)://, file://, ou data: BG_IMAGE em data URI inline.
+
+    Garantia: imagem fica no HTML, sem depender de Chromium carregar
+    file:// (sandbox restrito) ou rede externa (timeouts) durante render.
+    Retorna None em falha — caller mantém URL original como fallback.
+    """
+    if url.startswith("data:"):
+        return url
+    if url.startswith("file://"):
+        try:
+            parsed = urlparse(url)
+            local_path = Path(unquote(parsed.path))
+            if not local_path.is_file():
+                print(f"⚠ render.bg: file:// não existe: {local_path}")
+                return None
+            return _bytes_to_data_uri(local_path.read_bytes())
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ render.bg: file:// erro {e!r}")
+            return None
+    if url.startswith(("http://", "https://")):
+        try:
+            import httpx  # local import: render também roda standalone
+            with httpx.Client(timeout=30, follow_redirects=True) as client:
+                r = client.get(url)
+                if r.status_code != 200:
+                    print(f"⚠ render.bg: HTTP {r.status_code} em {url[:80]}")
+                    return None
+                return _bytes_to_data_uri(r.content)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ render.bg: http erro {e!r}")
+            return None
+    return None
 
 
 def _resolve_image_path(rel: str) -> Path | None:
@@ -120,10 +174,12 @@ def build_html(brief: dict, size: str) -> str:
     # slug do _bank ('marathon_finish_line' → procura em _bank/<slug>/).
     bg_rel = base_vars.get("BG_IMAGE", "")
     if bg_rel:
-        # URL absoluta (http/https/file) já resolvida — ex: visual.resolve_bg_for_news
-        # devolveu URL pública do R2 ou file:// do cache local
-        if bg_rel.startswith(("http://", "https://", "file://")):
-            bg_image_url = bg_rel
+        # URL absoluta (http/https/file/data) já resolvida — ex: visual.resolve_bg_for_news
+        # devolveu URL pública do R2 ou file:// do cache local. Convertemos pra
+        # data URI inline pra evitar problemas de file:// + sandbox no Chromium.
+        if bg_rel.startswith(("http://", "https://", "file://", "data:")):
+            data_uri = _absolute_bg_to_data_uri(bg_rel)
+            bg_image_url = data_uri or bg_rel  # fallback: usa URL como veio
         else:
             bg_path = _resolve_image_path(bg_rel)
             bg_image_url = bg_path.as_uri() if bg_path else ""

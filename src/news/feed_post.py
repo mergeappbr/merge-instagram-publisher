@@ -205,7 +205,21 @@ def _send_preview(
     bg_dbg = brief.get("_bg_debug") or {}
     bg_source = bg_dbg.get("source", "—")
     bg_final = str(bg_dbg.get("final", "—"))
+    # Esquema da URL pra diagnóstico (file/https/data/none)
+    if bg_final.startswith("file://"):
+        bg_scheme = "file://"
+    elif bg_final.startswith("https://"):
+        bg_scheme = "https://"
+    elif bg_final.startswith("http://"):
+        bg_scheme = "http://"
+    elif bg_final.startswith("data:"):
+        bg_scheme = "data:"
+    elif bg_final in ("—", ""):
+        bg_scheme = "—"
+    else:
+        bg_scheme = "slug"
     bg_final_short = bg_final.split("/")[-1][:60] if bg_final else "—"
+    bg_source = f"{bg_source} [{bg_scheme}]"
     cap_lines = [
         f"📰 <b>FEED NEWS · {slot_label.upper()} · score {score}</b>",
         f"<i>{html.escape(item.get('feed_name','?'))}</i>",
