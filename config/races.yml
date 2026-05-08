@@ -106,11 +106,10 @@ races:
     # Logo: drope `MaratonaPOALogo.png` (ou .webp) em brand/.
     # Patrocinador Olympikus — naming rights desde 2022.
     logo: "MaratonaPOALogo.png"
+    # marathon.jpg = silhuetas correndo no nascer do sol urbano (default
+    # pra maratona de rua). Substituir por fotos POA-específicas quando tiver.
     bg_pool:
-      - villarinho_run.jpg
-      - villarinho_track.jpg
-      - villarinho_rain.jpg
-      - villarinho_woman_run.jpg
+      - marathon.jpg
     race_label_short: "POA · 31/05"
     kicker: "MARATONA POA · 31/05/26"
 
@@ -125,11 +124,10 @@ races:
     site: "https://www.maratonadorio.com.br"
     logo: "MaratonaRioLogo_white.png"   # arquivo já existe em brand/
     logo_on_dark: true                   # versão branca → card preto
+    # marathon.jpg = silhuetas correndo no nascer do sol urbano (default).
+    # IDEAL: substituir por foto da prova (largada Aterro, calçadão, Cristo).
     bg_pool:
-      - villarinho_run.jpg
-      - villarinho_track.jpg
-      - villarinho_smile.jpg
-      - villarinho_friends.jpg
+      - marathon.jpg
     race_label_short: "RIO · 07/06"
     kicker: "MARATONA DO RIO · 07/06/26"
 
@@ -144,9 +142,7 @@ races:
     # Logo: drope `NB42KLogo.png` em brand/. Logo NB padrão (N) também serve.
     logo: "NB42KLogo.png"
     bg_pool:
-      - villarinho_run.jpg
-      - villarinho_track.jpg
-      - villarinho_rain.jpg
+      - marathon.jpg
     race_label_short: "POA · 12/07"
     kicker: "NB 42K POA · 12/07/26"
 

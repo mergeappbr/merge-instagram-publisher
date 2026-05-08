@@ -62,11 +62,15 @@ CAPTION_TONE_BY_KIND = {
         "'natureza intocada' ou 'desafio'."
     ),
     "marathon": (
-        "Tom: corrida de rua, maratona 42km. Pode mencionar pace alvo (sub-3, "
-        "sub-3:30, sub-4, sub-5), corte da elite, BQ (Boston Qualifier), "
-        "negative split, taper, carb load, parcial 21km. World Athletics label "
-        "(gold/elite/heritage) quando fizer sentido. Vocabulário: 'pelotão de "
-        "elite', 'baliza', 'cut-off', 'PR' (personal record)."
+        "Tom: corrida de rua, maratona 42km. ACESSÍVEL — escreve pra quem corre "
+        "amador também, não só sub-3. Foca no EVENTO em si: percurso, largada, "
+        "expectativa de público, número de inscritos quando souber, atrações da "
+        "expo, clima esperado, traçado pela cidade. Pode mencionar pace alvo, "
+        "BQ (Boston Qualifier), parcial 21km, World Athletics label "
+        "(gold/elite/heritage) com naturalidade — mas SEM virar palestra técnica. "
+        "EVITE jargão obscuro: NUNCA use 'taper' ou 'carb load' sozinhos sem "
+        "explicação simples ('ajuste do volume na semana', 'estoque de carbo'). "
+        "Vocabulário: 'pelotão', 'baliza', 'cut-off', 'PR' (personal record)."
     ),
     "hyrox": (
         "Tom: hyrox / functional fitness racing. Formato fixo: 8x 1km de corrida "
@@ -88,17 +92,24 @@ Detalhes:
 
 {tone_block}
 
+FOCO DA COPY: o EVENTO em si — o que esperar, percurso pela cidade, atrações,
+público, estágio dos preparativos da organização e dos inscritos. NÃO pode ser
+uma aula sobre periodização/taper/carb load (jargão técnico que afasta leitor
+amador). Escreve pra quem ouviu falar da prova e quer saber como tá ficando.
+
 Estrutura obrigatória:
-1ª linha — gancho factual (não retórica). pode ser stat, número de dias, ou
-contexto de quem vai correr.
-2ª linha — stats concretos da prova (distância, formato, ou referência interna).
-3ª linha — CTA suave que NÃO seja "vai estar lá?" ou "quem vai?". Varie:
-"quem fechou kit", "quem tá no taper", "quem largou inscrição", "tá no plano?",
-"quem vai pra cidade?", etc — escolha 1 que faça sentido pro contexto.
+1ª linha — gancho factual sobre a prova ou a cidade. número de inscritos,
+trecho icônico do percurso, presença de elite, clima esperado. NÃO retórica.
+2ª linha — stat concreto OU contexto do estágio (preparativos, expo, kit
+disponível, baliza ainda aberta, fechamento de inscrição). Algo palpável.
+3ª linha — CTA suave que conecte com o LEITOR. Varie naturalmente:
+"quem vai correr?", "quem vai pra cidade ver?", "quem fechou inscrição?",
+"quem tá no plano?", "tá com kit?", etc.
 
 Regras duras:
 - NÃO usar hashtag. NÃO usar emoji. NÃO usar exclamação.
 - NÃO usar "imagina só", "você sabia", "fala galera", "olá pessoal".
+- NÃO usar 'taper' ou 'carb load' sem traduzir pra linguagem comum.
 - NÃO prometer resultado/treino. NÃO fazer claim médico.
 - Lowercase predominante (estilo TNS/OFitFeed). Nomes próprios mantém capitalização."""
 
@@ -298,17 +309,18 @@ def build_countdown_brief(race: dict, days: int) -> dict:
         print(f"⚠ caption fallback ({race['id']}): {e!r}")
 
     # Headline NÃO repete o número de dias (já é protagonista no STAT gigante).
-    # Usa tagline motivacional por bucket de proximidade.
+    # Foca no EVENTO (acessível pra qualquer leitor), não em jargão técnico.
+    location_short = race.get("location_short", "").lower() or "a cidade"
     if days == 1:
         headline = 'a prova é <span class="hl">amanhã</span>.'
     elif days <= 7:
-        headline = '<span class="hl">semana da prova</span>. tudo já tá feito.'
+        headline = f'<span class="hl">{location_short}</span> recebe a prova esta semana.'
     elif days <= 15:
-        headline = 'afiação. <span class="hl">menos é mais</span> agora.'
+        headline = f'<span class="hl">duas semanas</span> pra {location_short}.'
     elif days <= 30:
-        headline = '<span class="hl">taper</span> começa. recorta o supérfluo.'
+        headline = f'<span class="hl">um mês</span> pra largar em {location_short}.'
     else:
-        headline = 'bloco final. <span class="hl">consistência</span> &gt; volume.'
+        headline = f'a prova começa a tomar forma em <span class="hl">{location_short}</span>.'
 
     brief = {
         "id": f"{race['id']}_t{days}",
