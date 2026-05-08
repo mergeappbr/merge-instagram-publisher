@@ -36,6 +36,26 @@ PRICING = {
 REPORT_HOUR = 20  # domingo 20:00 BRT
 REPORT_WEEKDAY = 6  # 0=segunda ... 6=domingo (Python convention)
 
+USD_BRL_FALLBACK = 5.50  # usado se awesomeapi falhar
+
+
+def _fetch_usd_brl() -> float:
+    """Cotação USD→BRL via awesomeapi (free, sem auth, ~200ms).
+    Fallback pro valor fixo se rede falhar.
+    """
+    try:
+        import httpx
+        with httpx.Client(timeout=5) as client:
+            r = client.get("https://economia.awesomeapi.com.br/json/last/USD-BRL")
+            r.raise_for_status()
+            data = r.json()
+            bid = float(data["USDBRL"]["bid"])
+            if 1.0 < bid < 20.0:  # sanity check
+                return bid
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ visual_report.fx falhou: {e!r}")
+    return USD_BRL_FALLBACK
+
 
 def _engine_from_label(source_label: str) -> str:
     """Extrai engine ('gemini'|'flux'|'wiki'|'unknown') do source_label.
@@ -144,6 +164,14 @@ def _format_report(summary: dict) -> str:
     unk_n = counts.get("unknown", 0)
 
     gemini_cost = gemini_n * PRICING["gemini"]
+    fx = _fetch_usd_brl()
+    gemini_brl = gemini_cost * fx
+    cost_brl = cost * fx
+
+    def _brl(v: float) -> str:
+        # 'R$ 1.234,56' (locale-friendly sem dependência de locale)
+        s = f"{v:,.2f}"
+        return "R$ " + s.replace(",", "X").replace(".", ",").replace("X", ".")
 
     lines = [
         f"📊 <b>Merge · imagens · semana {period}</b>",
@@ -151,7 +179,7 @@ def _format_report(summary: dict) -> str:
         f"<b>Total:</b> {total} imagens",
         "",
         f"🟢 Gemini 2.5 Flash: <b>{gemini_n}</b> "
-        f"(~${gemini_cost:.2f})",
+        f"(~{_brl(gemini_brl)})",
         f"🟡 FLUX (free): <b>{flux_n}</b>",
         f"📚 Wikipedia: <b>{wiki_n}</b>",
     ]
@@ -160,7 +188,8 @@ def _format_report(summary: dict) -> str:
 
     lines += [
         "",
-        f"<b>Custo estimado:</b> ${cost:.2f} USD",
+        f"<b>Custo estimado:</b> {_brl(cost_brl)} "
+        f"<i>(${cost:.2f} · USD/BRL {fx:.2f})</i>",
     ]
     if mb:
         lines.append(f"<b>Tráfego:</b> {mb:.1f} MB")
