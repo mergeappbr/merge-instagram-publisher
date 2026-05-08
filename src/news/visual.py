@@ -30,6 +30,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import re
 import time
 import urllib.parse
 from pathlib import Path
@@ -183,6 +184,92 @@ Forma exata da página Wikipedia. Para PT, forma português
 ("Eliud Kipchoge", "Maratona do Rio de Janeiro"). Para evento/marca em
 inglês ("Enhanced Games", "UCI"), wiki_lang=en.
 """
+
+
+# ─── Detector determinístico de produto ───────────────────────────────
+# Lista de patterns de modelos específicos (tênis, relógios, gadgets).
+# Ordem importa: padrões mais específicos PRIMEIRO. Cada match retorna
+# (full_model_name, category) — usado pra montar prompt produto-cêntrico.
+_PRODUCT_PATTERNS = [
+    # — Tênis de corrida —
+    (r"\bAdizero\s+Adios\s+Pro\s+Evo\s*\d+\b",            "running shoe"),
+    (r"\bAdios\s+Pro\s+\d+\b",                            "running shoe"),
+    (r"\bAdizero\s+\w+(?:\s+\d+)?\b",                     "running shoe"),
+    (r"\bVaporfly\s+\d+\b",                               "running shoe"),
+    (r"\bAlphafly\s+\d+\b",                               "running shoe"),
+    (r"\bZoomX\s+\w+(?:\s+\d+)?\b",                       "running shoe"),
+    (r"\bPegasus\s+\d+\b",                                "running shoe"),
+    (r"\bStreakfly\s*\d*\b",                              "running shoe"),
+    (r"\bMetaspeed\s+\w+(?:\s+\w+)?\b",                   "running shoe"),
+    (r"\bGel-?Nimbus\s+\d+\b",                            "running shoe"),
+    (r"\bGel-?Kayano\s+\d+\b",                            "running shoe"),
+    (r"\bEndorphin\s+\w+\s*\d*\b",                        "running shoe"),
+    (r"\bRincon\s+\d+\b",                                 "running shoe"),
+    (r"\bRocket\s*X\s*\d+\b",                             "running shoe"),
+    (r"\bMach\s+X?\s*\d+\b",                              "running shoe"),
+    (r"\bClifton\s+\d+\b",                                "running shoe"),
+    (r"\bBondi\s+\d+\b",                                  "running shoe"),
+    (r"\bWave\s+\w+\s*\d*\b",                             "running shoe"),
+    (r"\bElio\s+\d+\b",                                   "running shoe"),
+    (r"\bCorre\s+\w+\s*\d*\b",                            "running shoe"),
+    # — Relógios / wearables —
+    (r"\bForerunner\s+\d{3,4}\b",                         "GPS watch"),
+    (r"\bFenix\s+\d+\b",                                  "GPS watch"),
+    (r"\bEpix\s+\w*\s*\d*\b",                             "GPS watch"),
+    (r"\bEnduro\s+\d*\b",                                 "GPS watch"),
+    (r"\bApple\s+Watch\s+(?:Ultra|Series)\s*\d*\b",       "smartwatch"),
+    (r"\bCoros\s+\w+\s*\d*\b",                            "GPS watch"),
+    (r"\bSuunto\s+\w+\s*\d*\b",                           "GPS watch"),
+    (r"\bPolar\s+\w+\s*\d*\b",                            "GPS watch"),
+    (r"\bWHOOP\s*\d*\b",                                  "fitness band"),
+    # — Bikes / componentes —
+    (r"\bDura-?Ace\s+\w*\s*\d*\b",                        "bike component"),
+    (r"\bRed\s+AXS\b",                                    "bike component"),
+    (r"\bSpeedmax\s+\w*\b",                               "TT bike"),
+]
+_PRODUCT_RES = [(re.compile(p, re.IGNORECASE), cat) for p, cat in _PRODUCT_PATTERNS]
+
+
+def _detect_product(title: str, summary: str) -> Optional[tuple[str, str]]:
+    """Procura modelo específico de produto. Devolve (model_name, category) ou None."""
+    text = f"{title} {summary}"
+    for rx, cat in _PRODUCT_RES:
+        m = rx.search(text)
+        if m:
+            # Normaliza espaços e capitalização do match
+            model = re.sub(r"\s+", " ", m.group(0).strip())
+            return model, cat
+    return None
+
+
+def _product_scene_prompt(model: str, category: str) -> str:
+    """Prompt produto-cêntrico de altíssima qualidade, hero close-up."""
+    return (
+        f"Editorial product photograph of the {model} {category}, hero "
+        f"close-up shot, magazine cover quality. "
+        f"Subject: a single {model} {category} as the absolute focal "
+        f"point, every material detail visible (mesh weave, foam texture, "
+        f"plate edges, laces, branding subtle). "
+        f"Composition: product centered horizontally, occupying the middle "
+        f"vertical third, dramatic three-quarter angle showing profile and "
+        f"top, slight tilt for dynamism. "
+        f"Setting: minimal dark gradient backdrop (deep charcoal #0a0a0a "
+        f"to soft graphite), no clutter, no athlete, no environmental "
+        f"distractions. "
+        f"Lighting: studio strobe key from camera-right at 45° creating "
+        f"soft specular highlights on materials, fill from large softbox "
+        f"camera-left at 1:4 ratio, rim light from behind to separate "
+        f"silhouette, gentle gradient on floor. "
+        f"Camera: Hasselblad X2D 100C medium format. "
+        f"Lens: 90mm f/2.5 macro at f/8 for full sharpness across product. "
+        f"Settings: 1/200s ISO 100, tethered tack-sharp focus. "
+        f"Color grading: clean neutral with slightly punched contrast, "
+        f"true material colors, accurate brand palette. "
+        f"Aesthetic: photorealistic, ultra-detailed materials, sharp "
+        f"focus across entire product, generous negative space top and "
+        f"bottom, no text, no logos beyond what's physically on the "
+        f"product, no AI artifacts, no plastic look."
+    )
 
 
 def _classify(title: str, summary: str, modality: str) -> Optional[dict]:
@@ -406,7 +493,23 @@ def resolve_bg_for_news(
     if os.environ.get("NEWS_VISUAL_DISABLED") == "1":
         return None
 
-    plan = _classify(title, summary, modality)
+    # Detector determinístico tem PRECEDÊNCIA absoluta — quando notícia
+    # menciona modelo específico de produto, foto deve ser hero close-up
+    # do produto, não atleta correndo. Só cai pro classifier se não achar.
+    detected = _detect_product(title, summary)
+    if detected:
+        product_model, product_cat = detected
+        print(f"↗ visual: produto detectado '{product_model}' ({product_cat})")
+        plan = {
+            "strategy": "entity",
+            "entity": product_model,
+            "wiki_lang": "en",
+            "scene_prompt": _product_scene_prompt(product_model, product_cat),
+            "br_context": False,
+            "_product_focus": True,
+        }
+    else:
+        plan = _classify(title, summary, modality)
     if not plan:
         # Fallback puro (classifier offline): prompt photographer-grade genérico
         plan = {

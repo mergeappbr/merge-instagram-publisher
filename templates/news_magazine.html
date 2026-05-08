@@ -36,27 +36,25 @@
     height: 100%;
   }
 
-  /* TOPO — wordmark merge. (asset oficial da marca) centralizado */
+  /* TOPO — watermark "merge." centralizado: 'merge' branco + '.' laranja */
   .nm-top-mark {
     align-self: center;
-    display: inline-flex;
-    align-items: center;
-    line-height: 0;
-    filter: drop-shadow(0 4px 24px rgba(0,0,0,0.55));
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 64px;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    text-transform: lowercase;
+    line-height: 1;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.55);
   }
-  .nm-top-mark .brand-wordmark {
-    /* logo-completa.svg viewBox 2028x359 → ratio 5.65:1
-       altura 64px → largura ~362px (feed) */
-    height: 64px;
-    width: auto;
-    display: block;
-  }
+  .nm-top-mark .dot { color: var(--orange); }
   .canvas--story .nm-top-mark {
+    font-size: 76px;
     /* IG Stories safe-area no topo (~250px). Canvas tem padding-top de 100px;
        empurra +150px pra cair fora da UI do Instagram (avatar/username). */
     margin-top: 150px;
   }
-  .canvas--story .nm-top-mark .brand-wordmark { height: 76px; }
   .nm-spacer { flex: 1; }
 
   /* RODAPÉ — headline + lead + meta */
@@ -118,8 +116,8 @@
   <div class="nm-overlay"></div>
   <div class="nm-block">
 
-    <!-- TOPO: wordmark oficial (asset de marca) centralizado -->
-    <span class="nm-top-mark">{{WORDMARK}}</span>
+    <!-- TOPO: watermark "merge." (estilo TheNews — texto + ponto laranja) -->
+    <span class="nm-top-mark">merge<span class="dot">.</span></span>
 
     <div class="nm-spacer"></div>
 
