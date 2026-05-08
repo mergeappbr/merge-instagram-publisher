@@ -1,27 +1,31 @@
-"""Resolução inteligente de bg pra news — gratuita e autônoma.
+"""Resolução inteligente de bg pra news — multi-tier com quality gate.
 
-Caminhos (todos free, zero billing):
+Estratégia (acertar na primeira geração):
 
-  1. Claude Sonnet classifica em ENTITY ou SCENE.
-     - ENTITY: notícia gira em torno de nome próprio com foto canônica
-       (Enhanced Games, UCI, Jan-Willem van Schip, Garmin Forerunner 965).
-     - SCENE: notícia descreve cena genérica que IA renderiza bem
-       (ciclista em ação aerodinâmica, corredor cruzando linha).
+  1. Claude Sonnet classifica em ENTITY ou SCENE com prompt fotográfico forte.
+     - ENTITY: nome próprio com foto canônica (atleta, evento, produto).
+     - SCENE: cena editorial que IA renderiza bem.
 
-  2. ENTITY → Wikipedia REST (pt → en) busca summary.originalimage
-     - api/rest_v1/page/summary/<title> devolve {originalimage:{source}}
-     - Usa imagem de Wikimedia Commons (CC, livre).
+  2. ENTITY → Wikipedia REST (pt → en) busca summary.originalimage.
+     - Filtra logos/SVG/imagens pequenas. Devolve só foto editorial.
 
-  3. SCENE → Pollinations.ai FLUX (grátis, sem key, sem rate hard)
-     - GET image.pollinations.ai/prompt/<encoded>?model=flux&width=1080&height=1350&nologo=true
-     - Devolve PNG/JPEG dos bytes diretos.
+  3. SCENE → engine primário com fallback:
+     - Se `GEMINI_API_KEY` setado: Gemini 2.5 Flash Image (paid, ~$0.04/img)
+       como primary; Pollinations FLUX como fallback se Gemini falhar.
+     - Sem key: Pollinations FLUX (free, sem fallback adicional).
 
-  4. Download → upload R2 → URL pública. Sobrevive redeploy Railway.
+  4. Quality gate: imagem precisa ter ≥50KB e magic bytes válidos.
+     Imagens muito pequenas geralmente são erro/abstract/text-only.
 
-Falha silenciosa: devolve None se nada funcionar, caller mantém bg do writer.
+  5. Download → upload R2 → URL pública. Sobrevive redeploy Railway.
+
+Falha silenciosa: devolve None se TODOS os caminhos falharem; caller
+mantém bg que o writer escolheu do banco.
 """
 from __future__ import annotations
 
+import base64
+import json
 import os
 import time
 import urllib.parse
@@ -29,6 +33,13 @@ from pathlib import Path
 from typing import Optional
 
 import httpx
+
+GEMINI_MODEL = "gemini-2.5-flash-image"
+GEMINI_ENDPOINT_TMPL = (
+    "https://generativelanguage.googleapis.com/v1beta/"
+    "models/{model}:generateContent?key={key}"
+)
+MIN_IMAGE_BYTES = 50 * 1024  # <50KB → provavelmente erro/abstract
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 CACHE_DIR = ROOT / "output" / "feed" / "_news_bg"
@@ -40,15 +51,57 @@ Devolva JSON com:
 {
   "strategy": "entity" | "scene",
   "entity": "<nome canônico da entidade pra buscar na Wikipedia>" (só se strategy=entity),
-  "scene_prompt": "<descrição editorial em inglês pra IA gerar foto>" (só se strategy=scene),
-  "wiki_lang": "pt" | "en" (pt primeiro se entidade brasileira/lusófona)
+  "scene_prompt": "<descrição fotográfica em inglês pra IA gerar foto>" (só se strategy=scene),
+  "wiki_lang": "pt" | "en" (pt primeiro se entidade brasileira/lusófona),
+  "br_context": true | false (se a notícia tem ângulo Brasil — atleta, prova, marca BR)
 }
 
-Regras:
-- ENTITY quando há nome próprio CANÔNICO (atleta famoso, evento batizado, produto modelo, organização) que tem página de Wikipedia provável. Ex: "Enhanced Games", "UCI", "Ironman Brasil", "Garmin Forerunner 965", "Eliud Kipchoge".
-- SCENE quando notícia é sobre conceito/tendência/cena ampla. Ex: "tendência de cafeína em ultra", "novo estudo sobre HIIT", "polêmica regra ciclismo".
-- scene_prompt: SEMPRE em inglês, formato editorial: SUBJECT + ACTION + LIGHTING + STYLE + COMPOSITION. Ex: "Professional cyclist in aerodynamic time-trial position on road, cinematic side angle, golden hour lighting, shallow depth of field, magazine editorial". MAX 200 chars. SEM TEXTO na imagem. Negative space na parte inferior pra overlay.
-- entity: forma exata da página Wikipedia. Para PT, use a forma português ("Eliud Kipchoge"). Para evento/marca em inglês ("Enhanced Games"), pode ficar wiki_lang=en.
+REGRA 1 — ENTITY vs SCENE:
+- ENTITY: nome próprio CANÔNICO com Wikipedia provável: atleta famoso
+  ("Eliud Kipchoge", "Tadej Pogačar", "Magdalena Boulet"), evento batizado
+  ("Enhanced Games", "Ironman World Championship", "UTMB", "Maratona do Rio"),
+  produto modelo específico ("Garmin Forerunner 965", "Apple Watch Ultra 2"),
+  organização ("UCI", "World Athletics", "CBAt").
+- SCENE: tudo mais — estudos, tendências, conceitos, debates, lançamentos
+  sem nome próprio único forte ("estudo sobre cafeína em ultra", "novo
+  estudo sobre HIIT", "polêmica regra ciclismo", "como evitar fadiga
+  no km 35").
+
+REGRA 2 — scene_prompt (CRÍTICO pra acertar na 1ª geração):
+SEMPRE em inglês, formato fotográfico estrito:
+
+  "Editorial photograph of [SUBJECT] [ACTION], [SETTING], [LIGHTING],
+  [COMPOSITION], shot on [LENS], shallow depth of field, magazine cover
+  composition, negative space at bottom, no text, no logos, photorealistic"
+
+Exemplos do que QUERO:
+- "Editorial photograph of a Brazilian marathon runner pushing through
+  fatigue at km 35 on urban asphalt, late afternoon golden light,
+  determined expression, side profile, shot on 85mm f/1.8, shallow
+  depth of field, magazine cover composition, negative space at bottom,
+  no text, no logos, photorealistic"
+- "Editorial photograph of professional cyclist in aerodynamic time-trial
+  position on coastal road, sunrise backlight, motion blur on wheels,
+  shot on 70-200mm f/2.8, magazine cover composition, negative space at
+  bottom, no text, no logos, photorealistic"
+
+ERROS A EVITAR no scene_prompt:
+- Abstrato/conceitual ("the concept of resilience") — VOID
+- Sem subject específico ("sport scene") — VOID
+- Sem lighting ("a runner") — VOID
+- Cores sem contexto ("dark blue background") — VOID
+- Pedir TEXTO na imagem (qualquer "with the words..." / "title saying...") — VOID
+
+REGRA 3 — BR context:
+Se a notícia menciona atleta BR, prova BR, marca BR (Olympikus, Track&Field,
+Centauro, Maratona do Rio, POA, SP), inclua "Brazilian" no SUBJECT do
+scene_prompt e marque br_context=true. Backdrop pode ser urbano BR
+("São Paulo skyline", "Rio coastline", "Porto Alegre orla").
+
+REGRA 4 — entity:
+Forma exata da página Wikipedia. Para PT, forma português
+("Eliud Kipchoge", "Maratona do Rio de Janeiro"). Para evento/marca em
+inglês ("Enhanced Games", "UCI"), wiki_lang=en.
 """
 
 
@@ -105,6 +158,55 @@ def _fetch_wikipedia_image(entity: str, lang: str = "pt") -> Optional[bytes]:
             print(f"⚠ visual.wiki[{lg}] '{entity}': {e!r}")
             continue
     return None
+
+
+def _passes_quality_gate(img_bytes: Optional[bytes]) -> bool:
+    """Tamanho mínimo + magic bytes válidos. Filtra erro/abstract/text-only."""
+    if not img_bytes or len(img_bytes) < MIN_IMAGE_BYTES:
+        return False
+    head = img_bytes[:12]
+    if head[:8] == b"\x89PNG\r\n\x1a\n":
+        return True
+    if head[:3] == b"\xff\xd8\xff":  # JPEG
+        return True
+    if head[:6] in (b"GIF87a", b"GIF89a"):
+        return True
+    if head[:4] == b"RIFF" and head[8:12] == b"WEBP":
+        return True
+    return False
+
+
+def _fetch_gemini_image(prompt: str) -> Optional[bytes]:
+    """Gera via Gemini 2.5 Flash Image (paid). Retorna None silenciosamente em falha."""
+    key = os.environ.get("GEMINI_API_KEY")
+    if not key:
+        return None
+    url = GEMINI_ENDPOINT_TMPL.format(model=GEMINI_MODEL, key=key)
+    full_prompt = prompt + "\n\nAspect ratio: 4:5 portrait."
+    body = {
+        "contents": [{"parts": [{"text": full_prompt}]}],
+        "generationConfig": {"responseModalities": ["IMAGE"]},
+    }
+    try:
+        with httpx.Client(timeout=120) as client:
+            r = client.post(url, json=body, headers={"Content-Type": "application/json"})
+            if r.status_code != 200:
+                snippet = r.text[:200]
+                print(f"⚠ visual.gemini HTTP {r.status_code}: {snippet}")
+                return None
+            resp = r.json()
+        for cand in resp.get("candidates", []):
+            for part in cand.get("content", {}).get("parts", []):
+                inline = part.get("inlineData") or part.get("inline_data")
+                if inline and inline.get("data"):
+                    img = base64.b64decode(inline["data"])
+                    print(f"✓ visual: gemini {GEMINI_MODEL} → {len(img)//1024}KB")
+                    return img
+        print("⚠ visual.gemini: resposta sem imagem")
+        return None
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ visual.gemini falhou: {e!r}")
+        return None
 
 
 def _fetch_pollinations(prompt: str) -> Optional[bytes]:
@@ -182,25 +284,42 @@ def resolve_bg_for_news(
 
     img_bytes: Optional[bytes] = None
     source_label = ""
+    has_gemini = bool(os.environ.get("GEMINI_API_KEY"))
+
+    def _try_scene(prompt: str, label_prefix: str) -> tuple[Optional[bytes], str]:
+        """Gemini → Pollinations, com quality gate em cada um."""
+        if has_gemini:
+            b = _fetch_gemini_image(prompt)
+            if _passes_quality_gate(b):
+                return b, f"{label_prefix}gemini"
+            print("↪ visual: gemini falhou/qualidade ruim, fallback FLUX")
+        b = _fetch_pollinations(prompt)
+        if _passes_quality_gate(b):
+            return b, f"{label_prefix}flux"
+        return None, f"{label_prefix}none"
 
     if plan.get("strategy") == "entity" and plan.get("entity"):
-        img_bytes = _fetch_wikipedia_image(
+        wiki_bytes = _fetch_wikipedia_image(
             plan["entity"], lang=plan.get("wiki_lang", "pt")
         )
-        source_label = f"wiki:{plan['entity']}"
-        if not img_bytes:
-            # entity sem foto → cai pra scene gerada
-            print(f"↪ visual: wiki sem foto pra '{plan['entity']}', caindo pra FLUX")
+        if _passes_quality_gate(wiki_bytes):
+            img_bytes = wiki_bytes
+            source_label = f"wiki:{plan['entity']}"
+        else:
+            # entity sem foto / quality gate falhou → scene gerada
+            print(f"↪ visual: wiki '{plan['entity']}' sem foto válida, caindo pra scene")
             scene_prompt = plan.get("scene_prompt") or (
-                f"Editorial photography about {plan['entity']}, "
-                f"{modality or 'endurance'} context, cinematic, magazine style"
+                f"Editorial photograph of {plan['entity']}, "
+                f"{modality or 'endurance'} context, cinematic golden hour, "
+                f"shallow depth of field, magazine cover composition, "
+                f"negative space at bottom, no text, no logos, photorealistic"
             )
-            img_bytes = _fetch_pollinations(scene_prompt)
-            source_label = f"flux-fallback:{plan['entity']}"
+            img_bytes, source_label = _try_scene(
+                scene_prompt, f"scene-fallback:{plan['entity']}:"
+            )
 
     elif plan.get("scene_prompt"):
-        img_bytes = _fetch_pollinations(plan["scene_prompt"])
-        source_label = "flux"
+        img_bytes, source_label = _try_scene(plan["scene_prompt"], "scene:")
 
     if not img_bytes:
         return None
