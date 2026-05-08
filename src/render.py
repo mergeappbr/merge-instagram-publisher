@@ -120,8 +120,13 @@ def build_html(brief: dict, size: str) -> str:
     # slug do _bank ('marathon_finish_line' → procura em _bank/<slug>/).
     bg_rel = base_vars.get("BG_IMAGE", "")
     if bg_rel:
-        bg_path = _resolve_image_path(bg_rel)
-        bg_image_url = bg_path.as_uri() if bg_path else ""
+        # URL absoluta (http/https/file) já resolvida — ex: visual.resolve_bg_for_news
+        # devolveu URL pública do R2 ou file:// do cache local
+        if bg_rel.startswith(("http://", "https://", "file://")):
+            bg_image_url = bg_rel
+        else:
+            bg_path = _resolve_image_path(bg_rel)
+            bg_image_url = bg_path.as_uri() if bg_path else ""
     else:
         bg_image_url = ""
 

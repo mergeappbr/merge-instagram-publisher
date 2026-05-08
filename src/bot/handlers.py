@@ -479,8 +479,8 @@ def _test_news_feed(chat_id: int) -> None:
         )
         return
     title = (
-        "Maratona Olympikus de Porto Alegre 2026 abre inscrições com "
-        "expectativa de 12 mil corredores"
+        "Maratona Olympikus de Porto Alegre 2026 confirma 12 mil inscritos "
+        "a 23 dias da prova"
     )
     link = "https://test.merge.example/maratona-poa-2026"
     feed_name = "Merge Test"
@@ -493,12 +493,13 @@ def _test_news_feed(chat_id: int) -> None:
         "title": title,
         "link": link,
         "summary": (
-            "A Maratona Olympikus de Porto Alegre 2026, marcada pra 31/05, "
-            "abre lote inicial com expectativa de 12 mil corredores entre "
-            "42K, 21K, 10K e 5K. Treinadores brasileiros recomendam reforço "
-            "de força nos últimos 60 dias e simulação de longão em ritmo de "
-            "prova. Provas urbanas no Brasil tem crescido 35% em participação "
-            "amador desde 2023 segundo a CBAt."
+            "A Maratona Olympikus de Porto Alegre 2026, no dia 31/05, fecha "
+            "12 mil inscritos entre 42K, 21K, 10K e 5K com lotes esgotados. "
+            "Faltando 3 semanas pra largada, treinadores brasileiros entram "
+            "na fase de taper — redução de volume mantendo intensidade — e "
+            "recomendam último longão em ritmo de prova até 14 dias antes. "
+            "Provas urbanas no Brasil cresceram 35% em participação amador "
+            "desde 2023, segundo a CBAt."
         ),
         "published_at": datetime.now(timezone.utc).isoformat(),
         "hash": h,
@@ -509,8 +510,8 @@ def _test_news_feed(chat_id: int) -> None:
         "primary_modality": "running",
         "reasoning": "Sintético — testa template + visual.resolve_bg.",
         "angle_suggestion": (
-            "Maratona POA abre inscrições. Foco em preparação dos amadores "
-            "(força + longão simulado) e crescimento do mercado BR."
+            "Taper a 23 dias da Maratona POA: o que cortar, o que manter e "
+            "o último longão em ritmo de prova."
         ),
         "added_at": datetime.now(timezone.utc).isoformat(),
     }
