@@ -50,14 +50,20 @@ races:
     kind: mtb
     location: "Nova Lima · MG"
     location_short: "NOVA LIMA"
+    location_dative: "em Nova Lima"
     date: "2026-05-22"      # primeiro dia
     date_end: "2026-05-24"
     site: "https://sertoes.com"
     logo: "SertoesLogo.webp"
     logo_on_dark: true            # logo branca → card preto pra aparecer
     bg_pool:
+      - SertoesMTB.jpeg
+      - SertoesMTB2.jpg
+      - SertoesMTB3.jpg
+      - SertoesMTB4.jpg
+      - SertoesMTB5.jpg
+      - SertoesMTB6.webp
       - villarinho_mtb_trail.jpg
-      - villarinho_bike_motion.jpg
     race_label_short: "NOVA LIMA · 22/05"
     kicker: "SERTÕES MTB · 22-24/05"
 
@@ -105,15 +111,12 @@ races:
     date: "2026-05-31"
     site: "https://maratonadeportoalegre.com.br"
     logo: "MaratonaPOALogo.png"
-    # Pool: marathon.jpg + 5 fotos do banco _bank (chegada/percurso urbano).
-    # Idealmente trocar por fotos da prova quando ficarem disponíveis.
+    # Pool: fotos específicas da prova (subidas pelo user em 08/05/26)
     bg_pool:
-      - marathon.jpg
-      - _bank/marathon_finish_line/pexels/3518952.jpg
-      - _bank/marathon_finish_line/pexels/17982930.jpg
-      - _bank/marathon_finish_line/pexels/29837388.jpg
-      - _bank/marathon_finish_line/unsplash/bLpwpZ2E_80.jpg
-      - _bank/marathon_finish_line/unsplash/pPYKExEwlkc.jpg
+      - MaratonaPOANB42K.jpg
+      - MaratonaPOANB42K.webp
+      - MaratonaPOANB42K2.webp
+      - MaratonaPOANB42K3.jpg
     race_label_short: "POA · 31/05"
     kicker: "MARATONA POA · 31/05/26"
 
@@ -129,18 +132,15 @@ races:
     site: "https://www.maratonadorio.com.br"
     logo: "MaratonaRioLogo_white.png"
     logo_on_dark: true
-    # Pool: marathon.jpg (silhuetas urbanas) + 5 fotos do banco _bank com
-    # cenas de chegada/percurso urbano. 3518952.jpg é foto BR (atleta com
-    # bandeira SP — perfeita pra maratona BR).
-    # IDEAL: subir 5+ fotos da Maratona do Rio (Aterro, calçadão, Cristo,
-    # largada) em brand/images/ pra substituir gradativamente.
+    # Pool: fotos específicas da Maratona do Rio (subidas pelo user em 08/05/26).
+    # Não usar avif (renderer só aceita .jpg/.jpeg/.png/.webp).
     bg_pool:
-      - marathon.jpg
-      - _bank/marathon_finish_line/pexels/3518952.jpg
-      - _bank/marathon_finish_line/pexels/17982930.jpg
-      - _bank/marathon_finish_line/pexels/29837388.jpg
-      - _bank/marathon_finish_line/unsplash/bLpwpZ2E_80.jpg
-      - _bank/marathon_finish_line/unsplash/pPYKExEwlkc.jpg
+      - MaratonaRio.webp
+      - MaratonaRio2.webp
+      - MaratonaRio4.png
+      - MaratonaRio5.jpg
+      - MaratonaRio6.jpg
+      - MaratonaRioAdidas.jpeg
     race_label_short: "RIO · 07/06"
     kicker: "MARATONA DO RIO · 07/06/26"
 
@@ -155,13 +155,12 @@ races:
     # Logo: drope `NB42KLogo.png` em brand/. Logo NB padrão (N) também serve.
     location_dative: "em Porto Alegre"
     logo: "NB42KLogo.png"
+    # Pool: compartilha fotos com Maratona POA (mesma cidade, percursos similares)
     bg_pool:
-      - marathon.jpg
-      - _bank/marathon_finish_line/pexels/3518952.jpg
-      - _bank/marathon_finish_line/pexels/17982963.jpg
-      - _bank/marathon_finish_line/pexels/30061216.jpg
-      - _bank/marathon_finish_line/unsplash/_mCw0lhLEoo.jpg
-      - _bank/marathon_finish_line/unsplash/vJvjWwYfPEk.jpg
+      - MaratonaPOANB42K.jpg
+      - MaratonaPOANB42K.webp
+      - MaratonaPOANB42K2.webp
+      - MaratonaPOANB42K3.jpg
     race_label_short: "POA · 12/07"
     kicker: "NB 42K POA · 12/07/26"
 

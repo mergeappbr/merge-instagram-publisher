@@ -1,5 +1,12 @@
-<!-- COUNTDOWN — número gigante de dias + título da prova + handle.
-     Vars: KICKER, DAYS, DAYS_UNIT, HEADLINE, LEAD, RACE_LABEL, EVENT_LOGO (opcional) -->
+<!-- COUNTDOWN — estilo magazine "the news":
+     foto hero full-bleed + watermark Merge centralizado no topo +
+     bolha circular flutuante com logo da prova + headline GIGANTE no rodapé.
+
+     Vars: KICKER, DAYS, DAYS_UNIT, HEADLINE, LEAD, RACE_LABEL,
+           EVENT_LOGO (opcional, resolvido em url() pelo render.py).
+     LOGO_BLOCK ainda chega (legado), mas não usamos: o logo da prova
+     vai pra .im-cd-circle. Mantido aqui pra compat com briefs antigos.
+-->
 <style>
   .im-cd-bg-photo {
     position: absolute;
@@ -8,14 +15,18 @@
     background-size: cover;
     z-index: 0;
   }
+  /* Overlay magazine: leve no topo (fotomata respira) +
+     forte no rodapé (legibilidade do título gigante). */
   .im-cd-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
-      100deg,
-      rgba(10,10,10,0.94) 0%,
-      rgba(10,10,10,0.82) 45%,
-      rgba(10,10,10,0.55) 100%
+      180deg,
+      rgba(10,10,10,0.55) 0%,
+      rgba(10,10,10,0.18) 22%,
+      rgba(10,10,10,0.10) 42%,
+      rgba(10,10,10,0.55) 70%,
+      rgba(10,10,10,0.94) 100%
     );
     z-index: 1;
   }
@@ -26,152 +37,185 @@
     flex-direction: column;
     height: 100%;
   }
-  .im-cd-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-  }
-  .im-cd-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 22px;
-    background: rgba(10,10,10,0.78);
-    border: 1.5px solid rgba(255,255,255,0.14);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-  .im-cd-kicker .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--orange);
-  }
-  .im-cd-logo-card {
-    background: #FFFFFF;
-    border-radius: 18px;
-    padding: 22px 30px;
-    display: inline-flex;
-    align-items: center;
-    box-shadow: 0 10px 32px rgba(0,0,0,0.45);
-  }
-  .im-cd-logo-card.is-dark {
-    background: #0A0A0A;
-    border: 2px solid rgba(255,255,255,0.22);
-  }
-  .im-cd-logo-card img {
-    height: 100px;
-    width: auto;
-    display: block;
-  }
-  .canvas--story .im-cd-logo-card img { height: 130px; }
-  .canvas--story .im-cd-logo-card { padding: 28px 38px; border-radius: 22px; }
-  .im-cd-event-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 18px 30px;
-    background: var(--orange);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 800;
-    color: #0a0a0a;
-    letter-spacing: 0.20em;
-    text-transform: uppercase;
-  }
-  .im-cd-stage {
-    flex: 1;
+
+  /* TOPO — watermark Merge centralizado (substitui "the news") */
+  .im-cd-watermark {
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: flex-start;
+    gap: 14px;
+    margin: 0 auto;
   }
-  .im-cd-num {
+  .im-cd-watermark .glyph {
+    width: 64px;
+    height: auto;
+  }
+  .canvas--story .im-cd-watermark .glyph { width: 80px; }
+  .im-cd-watermark .word {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 520px;
-    line-height: 0.84;
-    letter-spacing: -0.06em;
-    color: var(--orange);
-    text-transform: lowercase;
-    text-shadow: 0 8px 60px rgba(255,105,0,0.25);
+    font-size: 44px;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    line-height: 1;
   }
-  .canvas--story .im-cd-num { font-size: 640px; }
-  .im-cd-num .unit {
-    font-size: 0.16em;
-    color: var(--ink-soft);
-    margin-left: 18px;
-    letter-spacing: 0;
-    vertical-align: top;
-    font-weight: 600;
+  .canvas--story .im-cd-watermark .word { font-size: 56px; }
+
+  /* CÍRCULO FLUTUANTE — logo da prova ou pill com sigla */
+  .im-cd-circle-row {
+    margin-top: 56px;
+    display: flex;
+    justify-content: flex-start;
+  }
+  .canvas--story .im-cd-circle-row { margin-top: 80px; }
+  .im-cd-circle {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 24px 60px rgba(0,0,0,0.55),
+      0 0 0 6px rgba(255,255,255,0.12);
+    overflow: hidden;
+    padding: 32px;
+  }
+  .canvas--story .im-cd-circle { width: 360px; height: 360px; padding: 42px; }
+  .im-cd-circle.is-dark {
+    background: #0A0A0A;
+    box-shadow:
+      0 24px 60px rgba(0,0,0,0.65),
+      0 0 0 6px rgba(255,255,255,0.18);
+  }
+  .im-cd-circle img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  .im-cd-circle .pill-fallback {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 40px;
+    letter-spacing: -0.02em;
+    color: var(--orange);
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* SPACER pra empurrar o headline pro rodapé */
+  .im-cd-spacer { flex: 1; }
+
+  /* HEADLINE gigante embaixo, estilo capa "the news" */
+  .im-cd-foot-block {
+    position: relative;
+    z-index: 2;
   }
   .im-cd-headline {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 92px;
-    line-height: 0.96;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin: 40px 0 0;
-    max-width: 880px;
+    font-size: 124px;
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    color: #FFFFFF;
+    margin: 0;
+    text-wrap: balance;
+    hyphens: manual;
   }
-  .canvas--story .im-cd-headline { font-size: 116px; }
+  .canvas--story .im-cd-headline { font-size: 156px; }
   .im-cd-headline .hl { color: var(--orange); }
-  .im-cd-lead {
-    font-family: var(--font-body);
-    font-size: 30px;
-    line-height: 1.42;
-    color: var(--ink-soft);
-    margin: 28px 0 0;
-    max-width: 820px;
+
+  /* Kicker pequeno acima do headline (substitui o lead técnico) */
+  .im-cd-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin: 0 0 28px;
   }
-  .canvas--story .im-cd-lead { font-size: 36px; }
-  .im-cd-foot {
+  .canvas--story .im-cd-kicker { font-size: 26px; margin-bottom: 36px; }
+  .im-cd-kicker .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  .im-cd-kicker .days {
+    color: #FFFFFF;
+    font-weight: 800;
+  }
+
+  /* Subkicker discreto abaixo do headline com data + handle */
+  .im-cd-meta {
+    margin-top: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 32px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.10);
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,0.18);
     font-family: var(--font-mono);
     font-size: 18px;
-    letter-spacing: 0.10em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: rgba(255,255,255,0.78);
   }
-  .canvas--story .im-cd-foot { font-size: 22px; }
-  .im-cd-foot .handle { color: var(--ink-soft); font-weight: 700; }
-  .im-cd-foot .race { color: var(--orange); font-weight: 700; }
-  .im-cd-foot .brand-mark { display: inline-flex; align-items: center; }
-  .im-cd-foot .brand-mark .brand-logo {
-    position: static; top: auto; left: auto;
-    width: 32px; height: auto; display: block;
-  }
-  .canvas--story .im-cd-foot .brand-mark .brand-logo { width: 42px; }
+  .canvas--story .im-cd-meta { font-size: 22px; margin-top: 36px; padding-top: 22px; }
+  .im-cd-meta .race { color: var(--orange); font-weight: 700; }
 </style>
 
 <div class="canvas canvas--{{SIZE}}">
   <div class="im-cd-bg-photo" style="background-image:url('{{BG_IMAGE}}');"></div>
   <div class="im-cd-overlay"></div>
   <div class="im-cd-block">
-    <div class="im-cd-top">
-      <span class="im-cd-kicker"><span class="dot"></span>{{KICKER}}</span>
-      {{LOGO_BLOCK}}
+
+    <!-- TOPO: watermark Merge centralizado (substitui logo TNS) -->
+    <div class="im-cd-watermark">
+      <svg class="glyph" viewBox="0 0 510 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="mergeOrangeCD" x1="255" y1="0" x2="255" y2="460" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#FF6900"/>
+            <stop offset="0.6" stop-color="#F54900"/>
+            <stop offset="1" stop-color="#CA3500"/>
+          </linearGradient>
+        </defs>
+        <path d="M494.577 0.416C504.415 0.416 510.563 11.067 505.643 19.587L429.625 151.214H494.577C504.415 151.214 510.563 161.864 505.643 170.384L404.593 345.354C386.329 376.98 352.582 396.461 316.06 396.461H172.574C167.352 396.461 162.168 397.326 157.228 399.02C146.432 402.726 137.341 410.211 131.633 420.097L131.041 421.126C117.524 444.538 92.543 458.96 65.510 458.96H0L41.578 386.945C61.374 352.656 92.511 326.347 129.622 312.553C148.587 305.502 168.658 301.892 188.892 301.892H304.149C310.759 300.001 316.930 296.682 322.192 292.096C326.130 288.667 329.473 284.609 332.082 280.088L351.888 245.782H172.574C167.352 245.782 162.168 246.647 157.228 248.342C146.432 252.046 137.341 259.534 131.633 269.419L131.041 270.448C117.524 293.860 92.543 308.282 65.510 308.282H0L0.069 308.162H0L41.578 236.147C61.374 201.858 92.511 175.549 129.622 161.755C148.587 154.704 168.658 151.094 188.892 151.094H304.149C310.759 149.203 316.930 145.884 322.192 141.299C326.130 137.870 329.473 133.811 332.082 129.290L351.888 94.984H172.574C167.352 94.984 162.168 95.849 157.228 97.543C146.432 101.250 137.341 108.736 131.633 118.621L131.041 119.650C117.524 143.062 92.543 157.484 65.510 157.484H0L41.578 85.469C61.374 51.180 92.511 24.871 129.622 11.077C148.587 4.026 168.658 0.416 188.892 0.416H494.577Z" fill="url(#mergeOrangeCD)"/>
+      </svg>
+      <span class="word">merge</span>
     </div>
-    <div class="im-cd-stage">
-      <div class="im-cd-num">{{DAYS}}<span class="unit">{{DAYS_UNIT}}</span></div>
+
+    <!-- CÍRCULO flutuante com logo da prova (estilo bolha do FitBit no TNS) -->
+    <div class="im-cd-circle-row">
+      <div class="im-cd-circle{{CIRCLE_DARK_CLASS}}">
+        {{CIRCLE_INNER}}
+      </div>
+    </div>
+
+    <div class="im-cd-spacer"></div>
+
+    <!-- RODAPÉ: kicker T-N + headline GIGANTE + meta -->
+    <div class="im-cd-foot-block">
+      <div class="im-cd-kicker">
+        <span class="dot"></span>
+        <span class="days">{{DAYS}} {{DAYS_UNIT}}</span>
+        <span>·</span>
+        <span>countdown</span>
+      </div>
       <h1 class="im-cd-headline">{{HEADLINE}}</h1>
-      <p class="im-cd-lead">{{LEAD}}</p>
-    </div>
-    <div class="im-cd-foot">
-      <span class="brand-mark">{{LOGO}}</span>
-      <span class="race">{{RACE_LABEL}}</span>
+      <div class="im-cd-meta">
+        <span>{{KICKER}}</span>
+        <span class="race">@mergeapp.wellness</span>
+      </div>
     </div>
   </div>
 </div>

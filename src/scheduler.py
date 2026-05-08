@@ -364,6 +364,21 @@ def _maybe_ironman_tracker(now: datetime) -> None:
         print(f"⚠ ironman tracker erro: {e!r}")
 
 
+def _maybe_photo_reminder(now: datetime) -> None:
+    """Diário ~09h BRT — alerta sobre races T-35..T-30 com bg_pool insuficiente
+    de fotos específicas, pra dar tempo de subir fotos antes do countdown.
+    Cooldown interno (7d) evita spam."""
+    if now.hour < SUMMARY_HOUR:
+        return
+    try:
+        from ironman.photo_reminder import maybe_alert
+        n = maybe_alert(now)
+        if n:
+            print(f"photo_reminder · {n} alert(s) enviado(s)")
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ photo reminder erro: {e!r}")
+
+
 def _maybe_autogen(now: datetime) -> None:
     """Gatilha geração de briefs quando runway < threshold."""
     info = runway_info(now)
@@ -390,6 +405,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_stories(now)
         _maybe_competitors_digest(now)
         _maybe_ironman_tracker(now)
+        _maybe_photo_reminder(now)
         _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:

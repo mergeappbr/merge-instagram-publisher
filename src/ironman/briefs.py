@@ -131,12 +131,8 @@ def _short_date_pt(d: date) -> str:
 
 
 def _logo_block_html(race: dict) -> str:
-    """Constrói o HTML do canto superior direito do template im_countdown.
-
-    - Race com logo configurado E arquivo presente em brand/ → logo card.
-      Card branco por padrão; quando `logo_on_dark: true` no yaml (logo é
-      branca/clara), card vira preto pra logo aparecer.
-    - Caso contrário → pill laranja com sigla curta da prova (location + data).
+    """Legado: card retangular com logo da prova. Mantido pra compat com
+    templates antigos (im_results_*). Novo im_countdown usa _circle_block().
     """
     logo_file = race.get("logo")
     if logo_file:
@@ -144,10 +140,29 @@ def _logo_block_html(race: dict) -> str:
         if path.exists():
             cls = "im-cd-logo-card is-dark" if race.get("logo_on_dark") else "im-cd-logo-card"
             return f'<div class="{cls}"><img src="{path.as_uri()}" alt=""></div>'
-        # Logo declarada mas arquivo ausente — log e fallback.
         print(f"⚠ logo {logo_file!r} declarada em races.yml mas ausente em brand/")
     label = race.get("race_label_short") or race.get("location_short") or race.get("name", "")
     return f'<span class="im-cd-event-pill">{label}</span>'
+
+
+def _circle_block(race: dict) -> tuple[str, str]:
+    """Retorna (CIRCLE_INNER_HTML, CIRCLE_DARK_CLASS_SUFFIX) pro novo
+    template magazine. Círculo branco contém logo da prova; quando logo
+    é branca/clara (logo_on_dark), círculo vira preto.
+
+    Fallback: pill com sigla da prova (sem logo).
+    """
+    logo_file = race.get("logo")
+    if logo_file:
+        path = (ROOT / "brand" / logo_file).resolve()
+        if path.exists():
+            dark_suffix = " is-dark" if race.get("logo_on_dark") else ""
+            inner = f'<img src="{path.as_uri()}" alt="">'
+            return inner, dark_suffix
+        print(f"⚠ logo {logo_file!r} ausente em brand/")
+    sigla = race.get("location_short") or race.get("name", "").upper()[:8]
+    inner = f'<span class="pill-fallback">{sigla}</span>'
+    return inner, ""
 
 
 # ----- background rotation (60d cooldown) -----
@@ -308,21 +323,22 @@ def build_countdown_brief(race: dict, days: int) -> dict:
         )
         print(f"⚠ caption fallback ({race['id']}): {e!r}")
 
-    # Headline NÃO repete o número de dias (já é protagonista no STAT gigante).
-    # Foca no EVENTO. Usa location_dative pra preposição correta:
-    # "no Rio de Janeiro", "em Porto Alegre", "em Nova Lima". Se yaml não
-    # define, fallback usa location.
+    # Headline foca no EVENTO. Não repete número de dias (kicker T-N já carrega
+    # essa info). Usa location_dative pra preposição correta:
+    # "no Rio de Janeiro", "em Porto Alegre", "em Nova Lima".
     loc_dative = race.get("location_dative") or f"em {race.get('location', '').split('·')[0].strip()}"
     if days == 1:
         headline = 'a prova é <span class="hl">amanhã</span>.'
     elif days <= 7:
         headline = f'a prova chega <span class="hl">{loc_dative}</span> esta semana.'
     elif days <= 15:
-        headline = f'<span class="hl">duas semanas</span> pra largar {loc_dative}.'
+        headline = f'preparativos finais <span class="hl">{loc_dative}</span>.'
     elif days <= 30:
-        headline = f'<span class="hl">um mês</span> para largar {loc_dative}.'
+        headline = f'a reta começa <span class="hl">{loc_dative}</span>.'
     else:
         headline = f'a prova começa a tomar forma <span class="hl">{loc_dative}</span>.'
+
+    circle_inner, circle_dark_class = _circle_block(race)
 
     brief = {
         "id": f"{race['id']}_t{days}",
@@ -330,7 +346,11 @@ def build_countdown_brief(race: dict, days: int) -> dict:
         "pillar": "ironman" if kind == "ironman" else "endurance",
         "title": f"{race['name']} · T-{days}",
         "vars": {
+            # Legado (não usado pelo template magazine, mantido pra compat):
             "LOGO_BLOCK": _logo_block_html(race),
+            # Novo template magazine:
+            "CIRCLE_INNER": circle_inner,
+            "CIRCLE_DARK_CLASS": circle_dark_class,
             "BG_IMAGE": _pick_bg(race),
             "EVENT_LOGO": race.get("logo", ""),
             "KICKER": race.get("kicker", race["name"].upper()),

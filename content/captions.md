@@ -1086,3 +1086,15 @@ Agachamento (4×6, peso pesado, descanso 2min): desce até paralelo, joelho na l
 Salva e leva pra próxima sessão.
 
 ---
+
+
+---
+
+## maratona_rio_2026_t30 · Maratona do Rio · T-30
+**Hook do post:** 30 dias pra largada da Maratona do Rio.
+
+30 dias pra largada da Maratona do Rio. percurso clássico passa pelo Aterro do Flamengo, Copacabana e Ipanema com Cristo e Pão de Açúcar de moldura — uma das maratonas mais cênicas do mundo.
+
+selo World Athletics Heritage, uma das duas no Brasil ao lado de São Paulo. clima de junho ajuda: temperaturas amenas, baixa umidade, vento da praia. expo e retirada de kit acontecem na Marina da Glória nos dias que antecedem a prova.
+
+quem fechou inscrição? quem vai pra cidade ver?

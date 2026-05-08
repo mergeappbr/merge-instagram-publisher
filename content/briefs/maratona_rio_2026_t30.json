@@ -1,0 +1,19 @@
+{
+  "id": "maratona_rio_2026_t30",
+  "template": "im_countdown",
+  "pillar": "endurance",
+  "title": "Maratona do Rio · T-30",
+  "vars": {
+    "LOGO_BLOCK": "<div class=\"im-cd-logo-card is-dark\"><img src=\"file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/MaratonaRioLogo_white.png\" alt=\"\"></div>",
+    "CIRCLE_INNER": "<img src=\"file:///Users/pedrowanderleyalmeida/Desktop/Merge/brand/MaratonaRioLogo_white.png\" alt=\"\">",
+    "CIRCLE_DARK_CLASS": " is-dark",
+    "BG_IMAGE": "MaratonaRio4.png",
+    "EVENT_LOGO": "MaratonaRioLogo_white.png",
+    "KICKER": "MARATONA DO RIO · 07/06/26",
+    "DAYS": "30",
+    "DAYS_UNIT": "dias",
+    "HEADLINE": "a reta começa <span class=\"hl\">no Rio de Janeiro</span>.",
+    "LEAD": "42,195 km · Rio, 07/06. quem tá no taper?",
+    "RACE_LABEL": "RIO · 07/06"
+  }
+}
