@@ -221,11 +221,15 @@ def on_race_countdown_approve(approval: dict) -> None:
     race = approval.get("race", {})
     days = approval.get("days", 0)
     note = f"T-{days} · {race.get('name','?')}"[:60]
+    # Countdown não entra na esteira: vai no próximo HH:00 livre HOJE
+    # (9h-21h). Esse é o timing certo — Tdays é sensível a janela do dia.
+    when = calendar_io.next_free_round_hour()
     row = calendar_io.insert_at_first_free(
         post_id=brief["id"],
         fmt="static",
         theme="ironman" if race.get("kind") == "ironman" else "endurance",
         note=note,
+        when=when,
     )
     notify(
         f"✅ <b>countdown aprovado</b> · <code>{html.escape(brief['id'])}</code>\n"

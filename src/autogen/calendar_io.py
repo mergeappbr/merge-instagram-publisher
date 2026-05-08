@@ -131,6 +131,48 @@ def next_free_slots(n: int, *, now: datetime | None = None) -> list[datetime]:
     return free
 
 
+def next_free_round_hour(
+    now: datetime | None = None,
+    *,
+    start_hour: int = 9,
+    end_hour: int = 21,
+) -> datetime:
+    """Próximo HH:00 livre HOJE entre start_hour e end_hour. Se passou
+    do end_hour ou nada livre hoje, vai pra start_hour de amanhã.
+
+    Usado por countdowns de prova (T-30, T-15, T-7, T-1) — devem postar
+    no mesmo dia em horário cheio, não entrar na esteira de slots padrão.
+    """
+    now = now or datetime.now()
+    rows = load_calendar()
+    used: set[str] = set()
+    for r in rows:
+        try:
+            when = datetime.strptime(r["scheduled_at"], "%Y-%m-%d %H:%M")
+        except (KeyError, ValueError):
+            continue
+        used.add(when.strftime("%Y-%m-%d %H:%M"))
+
+    # Tenta cada hora cheia hoje a partir da próxima (now.hour + 1)
+    candidate = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
+    while candidate.date() == now.date() and candidate.hour <= end_hour:
+        if candidate.hour >= start_hour:
+            key = candidate.strftime("%Y-%m-%d %H:%M")
+            if key not in used:
+                return candidate
+        candidate += timedelta(hours=1)
+
+    # Hoje cheio ou tarde demais — vai pra start_hour de amanhã
+    tomorrow = (now + timedelta(days=1)).replace(
+        hour=start_hour, minute=0, second=0, microsecond=0
+    )
+    while True:
+        key = tomorrow.strftime("%Y-%m-%d %H:%M")
+        if key not in used:
+            return tomorrow
+        tomorrow += timedelta(hours=1)
+
+
 def next_slot_index() -> int:
     rows = load_calendar()
     if not rows:

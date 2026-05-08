@@ -594,15 +594,15 @@ def _produce_news_by_hash(hash_prefix: str, chat_id: int | None = None) -> bool:
     return feed_post.dispatch_one(item, "ranking_pick")
 
 
-def _list_pending_news_rows() -> list[dict]:
-    """Lê calendar.csv e retorna rows de news (theme=news) ainda não publicadas."""
+def _list_pending_rows(themes: tuple[str, ...] | None = None) -> list[dict]:
+    """Lê calendar.csv e retorna rows ainda não publicadas. Filtra por themes
+    se fornecido (ex: ('news',) ou ('news','endurance','ironman'))."""
     import csv
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent.parent
     cal = root / "content" / "calendar.csv"
     if not cal.exists():
         return []
-    # Importa lazy pra evitar ciclo
     from scheduler import published_post_ids, load_skipped, _norm
     done = published_post_ids()
     skipped = load_skipped()
@@ -610,13 +610,19 @@ def _list_pending_news_rows() -> list[dict]:
         rows = list(csv.DictReader(f))
     pending = []
     for r in rows:
-        if (r.get("theme") or "").strip() != "news":
+        theme = (r.get("theme") or "").strip()
+        if themes is not None and theme not in themes:
             continue
         nid = _norm(r.get("post_id", ""))
         if nid in done or nid in skipped:
             continue
         pending.append(r)
     return pending
+
+
+def _list_pending_news_rows() -> list[dict]:
+    """Compat: news pendentes (usado por /calendar_news)."""
+    return _list_pending_rows(themes=("news",))
 
 
 def _list_calendar_news(chat_id: int) -> None:
@@ -638,19 +644,24 @@ def _list_calendar_news(chat_id: int) -> None:
 
 
 def _publish_now(chat_id: int, arg: str | None) -> None:
-    """Move scheduled_at de uma row de news pra agora — próximo tick publica.
+    """Reposiciona scheduled_at de uma row pendente.
 
-    Sem args: se exatamente 1 news pendente, move ela. Se 0/múltiplas, lista.
-    Com slot: move aquele slot específico.
+    - Rows com theme=endurance/ironman (countdown de prova): vai pro próximo
+      HH:00 livre HOJE (9h-21h). Posts T-30/T-15/T-7/T-1 são sensíveis a
+      janela do dia, não entram na esteira regular.
+    - Demais rows (news, etc): vai pra agora — próximo tick publica.
+
+    Sem args: se exatamente 1 row pendente (news+countdown), move ela.
+    Com slot/post_id: move aquele específico.
     """
     import csv
     from datetime import datetime
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent.parent
     cal = root / "content" / "calendar.csv"
-    pending = _list_pending_news_rows()
+    pending = _list_pending_rows(themes=("news", "endurance", "ironman"))
     if not pending:
-        api.send_message("📅 nenhuma news pendente.", chat_id=str(chat_id))
+        api.send_message("📅 nenhuma row pendente (news/countdown).", chat_id=str(chat_id))
         return
     target = None
     if arg:
@@ -660,7 +671,7 @@ def _publish_now(chat_id: int, arg: str | None) -> None:
                 break
         if target is None:
             api.send_message(
-                f"⚠️ slot/id <code>{html.escape(arg)}</code> não está em news pendentes. "
+                f"⚠️ slot/id <code>{html.escape(arg)}</code> não está em pendentes. "
                 f"Rode <code>/calendar_news</code>.",
                 chat_id=str(chat_id),
             )
@@ -668,17 +679,28 @@ def _publish_now(chat_id: int, arg: str | None) -> None:
     else:
         if len(pending) > 1:
             api.send_message(
-                f"⚠️ {len(pending)} news pendentes. Use <code>/calendar_news</code> "
-                f"e depois <code>/publish_now &lt;slot&gt;</code>.",
+                f"⚠️ {len(pending)} rows pendentes. Use <code>/calendar_news</code> "
+                f"e depois <code>/publish_now &lt;slot|post_id&gt;</code>.",
                 chat_id=str(chat_id),
             )
             return
         target = pending[0]
-    # Reescreve calendar.csv com scheduled_at=now pro target
+
+    # Decide nova data: countdown → próximo HH:00 livre hoje; news → agora.
+    theme = (target.get("theme") or "").strip()
+    is_countdown = theme in ("endurance", "ironman")
+    if is_countdown:
+        from autogen import calendar_io
+        new_dt = calendar_io.next_free_round_hour()
+        mode_label = "próximo HH:00 livre"
+    else:
+        new_dt = datetime.now()
+        mode_label = "agora (próximo tick)"
+    new_when = new_dt.strftime("%Y-%m-%d %H:%M")
+
     with cal.open(encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
         fieldnames = rows[0].keys() if rows else []
-    new_when = datetime.now().strftime("%Y-%m-%d %H:%M")
     for r in rows:
         if r["slot"] == target["slot"] and r["post_id"] == target["post_id"]:
             r["scheduled_at"] = new_when
@@ -689,8 +711,8 @@ def _publish_now(chat_id: int, arg: str | None) -> None:
         w.writerows(rows)
     api.send_message(
         f"🚀 slot <code>{html.escape(target['slot'])}</code> "
-        f"(<code>{html.escape(target['post_id'][:40])}</code>) movido pra "
-        f"<code>{html.escape(new_when)}</code>. Próximo tick (≤1min) publica.",
+        f"(<code>{html.escape(target['post_id'][:40])}</code> · {html.escape(theme)}) "
+        f"reposicionado: <code>{html.escape(new_when)}</code> ({mode_label}).",
         chat_id=str(chat_id),
     )
 
