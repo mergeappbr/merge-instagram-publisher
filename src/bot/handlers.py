@@ -164,8 +164,11 @@ def _handle_message(msg: dict) -> None:
             _list_pending(chat_id)
         elif text == "/races":
             _list_races(chat_id)
-        elif text.startswith("/race "):
-            race_id = text[len("/race "):].strip()
+        elif text.startswith("/race ") or text.startswith("/race_"):
+            # Aceita "/race <id>" e "/race_<id>" (clicando no link da
+            # mensagem /races, Telegram manda como underscore).
+            sep = " " if text.startswith("/race ") else "_"
+            race_id = text[len(f"/race{sep}"):].strip()
             _force_race_countdown(chat_id, race_id)
         elif text == "/news":
             _news_status(chat_id)
