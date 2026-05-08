@@ -82,6 +82,23 @@ def trigger_reactive_post(item: dict) -> None:
     try:
         brief = writer.write_brief(plan_entry, news_context=news_context)
         brief["id"] = bid
+        # Lock template + vars do magazine (mesmo padrão do feed_post).
+        brief["template"] = "news_magazine"
+        vars_ = brief.setdefault("vars", {})
+        vars_["PILL"] = "NEWS"
+        vars_["SOURCE"] = (item.get("feed_name") or news_context["source"] or "—").strip()
+        vars_["DATE_LABEL"] = datetime.now().strftime("%d/%m")
+        if "story_vars" in brief:
+            sv = brief["story_vars"]
+            sv["PILL"] = "NEWS"
+            sv.setdefault("SOURCE", vars_["SOURCE"])
+            sv.setdefault("DATE_LABEL", vars_["DATE_LABEL"])
+        # bg_override do item (lançamento com foto oficial) tem precedência.
+        # Sem override, mantém o que writer escolheu de bg_pool.
+        if item.get("bg_override"):
+            vars_["BG_IMAGE"] = item["bg_override"]
+            if "story_vars" in brief:
+                brief["story_vars"]["BG_IMAGE"] = item["bg_override"]
         review = reviewer.review(brief)
     except Exception as e:  # noqa: BLE001
         notify(
