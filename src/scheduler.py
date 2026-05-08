@@ -379,6 +379,15 @@ def _maybe_photo_reminder(now: datetime) -> None:
         print(f"⚠ photo reminder erro: {e!r}")
 
 
+def _maybe_r2_cleanup(now: datetime) -> None:
+    """Diário — apaga objetos R2 antigos pra ficar dentro do free tier (10GB)."""
+    try:
+        from r2_cleanup import maybe_run as r2_cleanup_maybe_run
+        r2_cleanup_maybe_run(now)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ r2_cleanup erro: {e!r}")
+
+
 def _maybe_autogen(now: datetime) -> None:
     """Gatilha geração de briefs quando runway < threshold."""
     info = runway_info(now)
@@ -406,6 +415,7 @@ def tick(dry_run: bool = False) -> int:
         _maybe_competitors_digest(now)
         _maybe_ironman_tracker(now)
         _maybe_photo_reminder(now)
+        _maybe_r2_cleanup(now)
         _maybe_autogen(now)
     due = find_due_slots(now)
     if not due:
