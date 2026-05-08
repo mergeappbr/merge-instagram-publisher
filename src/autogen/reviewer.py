@@ -32,6 +32,16 @@ PROIBIDAS = [
     r"\bquerido leitor\b",
     r"\bolá pessoal\b",
     r"\bfala galera\b",
+    # CTAs de "story bait" — Merge não oferece esses serviços (sem link nos
+    # destaques, sem swipe up, sem link na bio direcionando pra matéria).
+    # News sempre aponta pro próprio post no feed.
+    r"\blink nos destaques\b",
+    r"\blink no destaque\b",
+    r"\bnos destaques\b",
+    r"\blink na bio\b",
+    r"\bswipe up\b",
+    r"\barrasta pra cima\b",
+    r"\barraste pra cima\b",
 ]
 
 CLAIM_RISCO = [

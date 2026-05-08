@@ -178,6 +178,13 @@ def _build_user_prompt(
             "  abrir cada ponto num slide próprio. Se carousel_cover, devolva\n"
             "  carousel_slides com 3-4 slides (cada um {PILL,HEADLINE,LEAD}).\n"
             "- Tom: direto, OFitFeed / The News (TNS) — sem floreio.\n"
+            "- STORY LEAD (em story_vars.LEAD): NUNCA use 'link nos destaques',\n"
+            "  'link na bio', 'swipe up', 'arrasta pra cima', 'matéria completa\n"
+            "  no destaque'. Merge NÃO oferece esses serviços. O fechamento de\n"
+            "  story de news SEMPRE aponta pro próprio post no feed. Use:\n"
+            "  'matéria completa no feed', 'post no feed pra ver tudo',\n"
+            "  'detalhes no post fixo'. Pode também ser uma pergunta direta\n"
+            "  sem CTA ('quanto isso muda seu treino?').\n"
         )
 
     parts.append(f"\nTEMPLATES DISPONÍVEIS: {', '.join(templates)}")
@@ -235,7 +242,7 @@ def _build_user_prompt(
         '  "story_vars": {\n'
         '    "PILL": "<reaproveita ou simplifica>",\n'
         '    "HEADLINE": "<versão pra story, geralmente mais curta/perguntativa>",\n'
-        '    "LEAD": "<lead pra story; pode ter call to action de DM/enquete>"\n'
+        '    "LEAD": "<lead pra story; CTA pode ser DM/enquete OU pergunta seca; em news, aponta pro post no feed (NUNCA destaques/bio/swipe)>"\n'
         '  },\n'
         '  "caption_md": "<caption em markdown plano: 1ª linha = hook, depois corpo separado por linha em branco, CTA final>",\n'
         '  "carousel_slides": [<APENAS se template=carousel_cover, lista de 3-4 slides com {PILL,HEADLINE,LEAD}>]\n'

@@ -88,18 +88,20 @@ def trigger_reactive_post(item: dict) -> None:
         vars_ = brief.setdefault("vars", {})
         vars_["PILL"] = "NEWS"
         vars_["SOURCE"] = (item.get("feed_name") or news_context["source"] or "—").strip()
-        vars_["DATE_LABEL"] = datetime.now().strftime("%d/%m")
         if "story_vars" in brief:
             sv = brief["story_vars"]
             sv["PILL"] = "NEWS"
             sv.setdefault("SOURCE", vars_["SOURCE"])
-            sv.setdefault("DATE_LABEL", vars_["DATE_LABEL"])
         # bg_override do item (lançamento com foto oficial) tem precedência;
         # senão resolve via Wikipedia (entity) ou FLUX (scene).
+        bg_source = "writer-default"
+        bg_final = vars_.get("BG_IMAGE", "—")
         if item.get("bg_override"):
             vars_["BG_IMAGE"] = item["bg_override"]
             if "story_vars" in brief:
                 brief["story_vars"]["BG_IMAGE"] = item["bg_override"]
+            bg_source = "override"
+            bg_final = item["bg_override"]
         else:
             bg_url = visual.resolve_bg_for_news(
                 aid=bid,
@@ -111,6 +113,11 @@ def trigger_reactive_post(item: dict) -> None:
                 vars_["BG_IMAGE"] = bg_url
                 if "story_vars" in brief:
                     brief["story_vars"]["BG_IMAGE"] = bg_url
+                bg_source = "visual.resolve_bg"
+                bg_final = bg_url
+            else:
+                bg_source = "visual.resolve_bg→None (fallback writer)"
+        brief["_bg_debug"] = {"source": bg_source, "final": bg_final}
         review = reviewer.review(brief)
     except Exception as e:  # noqa: BLE001
         notify(

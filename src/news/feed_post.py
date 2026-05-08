@@ -132,10 +132,14 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
     # story_vars) sobrescrevendo o que o writer escolheu. Útil pra notícias
     # com foto oficial dedicada (ex: lançamento Fitbit Air).
     bg_override = item.get("bg_override")
+    bg_source = "writer-default"  # debug label exibido no preview
+    bg_final = brief.get("vars", {}).get("BG_IMAGE", "—")
     if bg_override:
         brief.setdefault("vars", {})["BG_IMAGE"] = bg_override
         if "story_vars" in brief:
             brief["story_vars"]["BG_IMAGE"] = bg_override
+        bg_source = "override"
+        bg_final = bg_override
     else:
         # Sem override → resolve bg inteligente (Wikipedia entity OR FLUX scene).
         # Falha silenciosa: mantém o que writer escolheu de bg_pool.
@@ -149,6 +153,11 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
             brief.setdefault("vars", {})["BG_IMAGE"] = bg_url
             if "story_vars" in brief:
                 brief["story_vars"]["BG_IMAGE"] = bg_url
+            bg_source = "visual.resolve_bg"
+            bg_final = bg_url
+        else:
+            bg_source = "visual.resolve_bg→None (fallback writer)"
+    brief["_bg_debug"] = {"source": bg_source, "final": bg_final}
 
     # NEWS sempre usa o template magazine novo (foto full-bleed + headline
     # gigante + footer com source · merge.). Override pós-writer pra não
@@ -157,12 +166,10 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
     vars_ = brief.setdefault("vars", {})
     vars_["PILL"] = "NEWS"
     vars_["SOURCE"] = (item.get("feed_name") or news_context["source"] or "—").strip()
-    vars_["DATE_LABEL"] = datetime.now().strftime("%d/%m")
     if "story_vars" in brief:
         sv = brief["story_vars"]
         sv["PILL"] = "NEWS"
         sv.setdefault("SOURCE", vars_["SOURCE"])
-        sv.setdefault("DATE_LABEL", vars_["DATE_LABEL"])
 
     review = reviewer.review(brief)
     return brief, plan_entry, review
@@ -195,6 +202,10 @@ def _send_preview(
     # Photo caption: só metadata curta (ARTE + score). Legenda completa vai
     # numa mensagem de texto separada logo depois (Telegram caption tem cap
     # de 1024, texto vai até 4096 — caption_md inteira cabe sem truncar).
+    bg_dbg = brief.get("_bg_debug") or {}
+    bg_source = bg_dbg.get("source", "—")
+    bg_final = str(bg_dbg.get("final", "—"))
+    bg_final_short = bg_final.split("/")[-1][:60] if bg_final else "—"
     cap_lines = [
         f"📰 <b>FEED NEWS · {slot_label.upper()} · score {score}</b>",
         f"<i>{html.escape(item.get('feed_name','?'))}</i>",
@@ -202,6 +213,8 @@ def _send_preview(
         "",
         f"sched: {html.escape(plan_entry.get('scheduled_at','?'))} · "
         f"template {html.escape(brief.get('template','?'))}",
+        f"BG: <code>{html.escape(bg_source)}</code> → "
+        f"<code>{html.escape(bg_final_short)}</code>",
         "",
         f"<b>ARTE</b>",
         f"HEAD: {html.escape(head_plain)[:200]}",

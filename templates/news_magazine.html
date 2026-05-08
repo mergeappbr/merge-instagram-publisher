@@ -5,7 +5,6 @@
      Vars do writer: PILL (sempre "NEWS"), HEADLINE, LEAD, BG_IMAGE.
      Vars adicionais (injetadas em feed_post._build_brief):
        SOURCE        — fonte da notícia (ex: "Velo · Outside")
-       DATE_LABEL    — data curta (ex: "08/05")
 -->
 <style>
   .nm-bg-photo {
@@ -57,6 +56,10 @@
   .canvas--story .nm-pill {
     font-size: 26px;
     padding: 14px 26px;
+    /* IG Stories tem ~250px de safe-area no topo (avatar/username overlay).
+       Canvas já tem padding-top de 100px. Empurra +150px pra pill cair
+       fora da área coberta pela UI do Instagram. */
+    margin-top: 150px;
   }
   .nm-pill .dot {
     width: 10px;
@@ -64,15 +67,6 @@
     border-radius: 50%;
     background: var(--orange-ink);
   }
-  .nm-pill .sep {
-    color: rgba(10,10,10,0.45);
-    font-weight: 700;
-  }
-  .nm-pill .date {
-    color: var(--orange-ink);
-    font-weight: 700;
-  }
-
   .nm-spacer { flex: 1; }
 
   /* RODAPÉ — headline + lead + meta */
@@ -147,12 +141,10 @@
   <div class="nm-overlay"></div>
   <div class="nm-block">
 
-    <!-- pill NEWS · DATA -->
+    <!-- pill NEWS -->
     <span class="nm-pill">
       <span class="dot"></span>
       <span>{{PILL}}</span>
-      <span class="sep">·</span>
-      <span class="date">{{DATE_LABEL}}</span>
     </span>
 
     <div class="nm-spacer"></div>
