@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 
 from alerts import notify
-from autogen import reviewer, runner as autogen_runner, writer
+from autogen import lang_guard, reviewer, runner as autogen_runner, writer
 from bot import api, r2_persist, state as bot_state
 from news import visual
 
@@ -70,6 +70,19 @@ def _pick_top_unused() -> dict | None:
         return None
     pending.sort(key=lambda x: float(x.get("score", 0)), reverse=True)
     return pending[0]
+
+
+def _pick_top_unused_n(n: int) -> list[dict]:
+    """Top-N candidatos pra shortlist (não rende, só lista)."""
+    pool = _load_pool()
+    pending = [
+        p for p in pool
+        if not p.get("used_in_feed")
+        and not p.get("used_in_story")
+        and float(p.get("score", 0)) >= MIN_SCORE
+    ]
+    pending.sort(key=lambda x: float(x.get("score", 0)), reverse=True)
+    return pending[:n]
 
 
 def _mark_used_in_feed(item_hash: str) -> None:
@@ -128,6 +141,12 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
     }
     brief = writer.write_brief(plan_entry, news_context=news_context)
     brief["id"] = bid
+    # Language guard: writer ocasionalmente devolve trechos em inglês quando
+    # a fonte é inglesa. Detecta + traduz via Gemini Flash. Fail-silent.
+    try:
+        lang_guard.ensure_portuguese(brief)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ lang_guard.ensure_portuguese erro: {e!r}")
     # Override de BG — quando o item traz `bg_override`, força no brief (e no
     # story_vars) sobrescrevendo o que o writer escolheu. Útil pra notícias
     # com foto oficial dedicada (ex: lançamento Fitbit Air).
@@ -236,7 +255,8 @@ def _send_preview(
     if len(photo_caption) > 1024:
         photo_caption = photo_caption[:1020] + "..."
 
-    api.send_photo_file(str(feed_png), caption=photo_caption)
+    # send_document_file: arquivo pixel-perfect, sem letterbox/compressão do Telegram.
+    api.send_document_file(str(feed_png), caption=photo_caption)
 
     # Mensagem 2: legenda completa (cap_md) + review + botões
     cap_text_lines = [f"<b>LEGENDA COMPLETA</b> ({len(caption)} chars)", ""]
@@ -297,6 +317,15 @@ def dispatch_one(item: dict, slot_label: str) -> bool:
     # Marca como usado já no dispatch (evita stories pegar o mesmo)
     _mark_used_in_feed(item.get("hash", ""))
 
+    # Commit do claim do R2 photo pool — se a CAMADA 0 do visual.py serviu
+    # uma foto do pool, agora marcamos como used (deleta R2, cooldown 45d).
+    # Idempotente: se não houve claim, retorna False silencioso.
+    try:
+        from news import r2_photo_pool
+        r2_photo_pool.commit_claim(aid)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ r2_photo_pool.commit_claim erro: {e!r}")
+
     _send_preview(brief, plan_entry, review, aid, item, slot_label)
 
     # Backup do approval JSON + PNG em R2 — sobrevive a redeploy do Railway.
@@ -308,7 +337,14 @@ def dispatch_one(item: dict, slot_label: str) -> bool:
 
 
 def maybe_dispatch(now: datetime) -> int:
-    """Dispara feed news se for janela e ainda não rodou hoje. Retorna 1 se ok."""
+    """Slot 2x/dia: envia SHORTLIST top-3 text-only pro Telegram.
+
+    Editor clica 🎨 Produzir no item escolhido → reusa action `produce_news`
+    do handlers.py que dispara `dispatch_one` (render + preview document).
+    Evita queimar writer+reviewer+render+Gemini em item que vai ser rejeitado.
+
+    Retorna nº de itens no shortlist.
+    """
     state_file = _slot_state_file(now)
     if state_file is None:
         return 0
@@ -316,11 +352,10 @@ def maybe_dispatch(now: datetime) -> int:
     if state_file.exists() and state_file.read_text(encoding="utf-8").strip() == today:
         return 0
 
-    item = _pick_top_unused()
+    items = _pick_top_unused_n(3)
     slot_label = "manha" if state_file == STATE_MORNING else "tarde"
 
-    if item is None:
-        # Marca o slot mesmo sem item pra não tentar de novo no mesmo dia.
+    if not items:
         state_file.parent.mkdir(parents=True, exist_ok=True)
         state_file.write_text(today, encoding="utf-8")
         notify(
@@ -329,9 +364,34 @@ def maybe_dispatch(now: datetime) -> int:
         )
         return 0
 
+    header = (
+        f"📰 <b>FEED NEWS · SHORTLIST {now.strftime('%d/%m %Hh')}</b>\n"
+        f"<i>slot {slot_label} · top {len(items)} score≥{MIN_SCORE} · clica 🎨 pra produzir</i>"
+    )
+    api.send_message(header, silent=True)
     sent = 0
-    if dispatch_one(item, slot_label):
-        sent = 1
+    for i, item in enumerate(items, start=1):
+        title = item.get("title", "?")[:160]
+        src = item.get("feed_name", "?")
+        score = float(item.get("score", 0))
+        modality = (item.get("primary_modality") or "?").lower()
+        angle = (item.get("angle_suggestion") or "")[:200]
+        link = item.get("link", "")
+        h = item.get("hash", "")
+        msg = (
+            f"<b>#{i} · score {score:.1f}</b> · <i>{html.escape(src)}</i> · "
+            f"<code>{html.escape(modality)}</code>\n"
+            f"<b>{html.escape(title)}</b>"
+        )
+        if angle:
+            msg += f"\n💡 <i>{html.escape(angle)}</i>"
+        if link:
+            msg += f"\n🔗 {html.escape(link)}"
+        kb = api.inline_keyboard([
+            [("🎨 Produzir", f"produce_news:{h[:32]}")],
+        ])
+        api.send_message(msg, reply_markup=kb, silent=True)
+        sent += 1
 
     state_file.parent.mkdir(parents=True, exist_ok=True)
     state_file.write_text(today, encoding="utf-8")

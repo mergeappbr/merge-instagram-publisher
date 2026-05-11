@@ -73,6 +73,32 @@ def _handle_callback(cb: dict) -> None:
             )
         return
 
+    # produce_story: gera arte de story a partir de hash do pool.
+    if action == "produce_story":
+        api.answer_callback(cb_id, "gerando story…")
+        _disable_buttons(msg, status="gerando story 🎨")
+        try:
+            from news.stories import produce_story_by_hash
+            produce_story_by_hash(aid, chat_id=chat_id)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ produce_story falhou: {e!r}")
+            api.send_message(
+                f"⚠️ falha ao gerar story: {html.escape(str(e)[:200])}",
+                chat_id=str(chat_id) if chat_id else None,
+            )
+        return
+
+    # skip_story: marca item como usado sem renderizar nada.
+    if action == "skip_story":
+        api.answer_callback(cb_id, "pulado")
+        _disable_buttons(msg, status="pulado ⏭️")
+        try:
+            from news.stories import skip_story_by_hash
+            skip_story_by_hash(aid)
+        except Exception as e:  # noqa: BLE001
+            print(f"⚠ skip_story falhou: {e!r}")
+        return
+
     approval = state.read_approval(aid)
     if approval is None:
         # Fallback: tenta restaurar do R2 (Railway ephemeral fs derruba

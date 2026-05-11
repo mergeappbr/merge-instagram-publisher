@@ -160,7 +160,103 @@ def _preview_story(brief: dict, approval_id: str, item: dict) -> None:
             [("✅ Publicar", f"approve:{approval_id}"), ("❌ Pular", f"reject:{approval_id}")],
         ]
     )
-    api.send_photo_file(str(story_png), caption=cap, reply_markup=keyboard)
+    # send_document_file: sem letterbox/compressão do Telegram — preview pixel-perfect
+    api.send_document_file(str(story_png), caption=cap, reply_markup=keyboard)
+
+
+def _send_story_shortlist(items: list[dict], slot_label: str) -> int:
+    """Manda shortlist de stories candidatos pro Telegram SEM renderizar arte.
+
+    Cada item vira uma mensagem texto com botão 🎨 Produzir story que, ao ser
+    clicado, dispara `produce_story_by_hash` → renderiza + envia preview real.
+
+    Evita queimar render/Gemini em itens que o editor não vai aprovar.
+    """
+    if not items:
+        return 0
+    header = (
+        f"📱 <b>STORIES · SHORTLIST {datetime.now().strftime('%d/%m %Hh')}</b>\n"
+        f"<i>slot {slot_label} · clica 🎨 pra gerar arte do escolhido</i>"
+    )
+    api.send_message(header, silent=True)
+
+    sent = 0
+    for i, item in enumerate(items, start=1):
+        title = item.get("title", "?")[:160]
+        src = item.get("feed_name", "?")
+        score = item.get("score", 0)
+        modality = (item.get("primary_modality") or "?").lower()
+        link = item.get("link", "")
+        h = item.get("hash", "")
+        msg = (
+            f"<b>#{i} · score {float(score):.1f}</b> · <i>{html.escape(src)}</i> · "
+            f"<code>{html.escape(modality)}</code>\n"
+            f"<b>{html.escape(title)}</b>"
+        )
+        summary = (item.get("summary") or "").strip()
+        if summary:
+            msg += f"\n<i>{html.escape(summary[:240])}</i>"
+        if link:
+            msg += f"\n🔗 {html.escape(link)}"
+        kb = api.inline_keyboard([
+            [("🎨 Produzir story", f"produce_story:{h[:32]}"),
+             ("⏭️ Pular", f"skip_story:{h[:32]}")],
+        ])
+        api.send_message(msg, reply_markup=kb, silent=True)
+        sent += 1
+    return sent
+
+
+def produce_story_by_hash(hash_prefix: str, chat_id: int | None = None) -> bool:
+    """Acha item no pool por prefixo de hash, renderiza story e envia preview.
+
+    Chamado pelo callback `produce_story:<hash>` em bot/handlers.py.
+    Retorna True se preview foi enviado.
+    """
+    pool = _load_pool()
+    item = next(
+        (p for p in pool if (p.get("hash") or "").startswith(hash_prefix)),
+        None,
+    )
+    if item is None:
+        api.send_message(
+            f"⚠️ item <code>{html.escape(hash_prefix)}</code> não está no pool.",
+            chat_id=str(chat_id) if chat_id else None,
+        )
+        return False
+    if item.get("used_in_story") or item.get("used_in_feed"):
+        api.send_message(
+            f"⚠️ item <code>{html.escape(hash_prefix)}</code> já foi usado.",
+            chat_id=str(chat_id) if chat_id else None,
+        )
+        return False
+    api.send_message(
+        f"⏳ gerando story: <i>{html.escape(item.get('title','?')[:80])}</i>",
+        chat_id=str(chat_id) if chat_id else None,
+        silent=True,
+    )
+    try:
+        brief = _make_story_brief(item)
+        _save_brief_json(brief)
+        if not _render_story_only(brief["id"]):
+            notify(f"⚠️ render falhou em story <code>{html.escape(brief['id'])}</code>")
+            return False
+        aid = _create_approval(brief, item)
+        _preview_story(brief, aid, item)
+        return True
+    except Exception as e:  # noqa: BLE001
+        notify(f"⚠️ produce_story falhou: <code>{html.escape(str(e)[:200])}</code>")
+        return False
+
+
+def skip_story_by_hash(hash_prefix: str) -> None:
+    """Marca item como usado pra não reaparecer. Chamado por skip_story callback."""
+    pool = _load_pool()
+    for p in pool:
+        if (p.get("hash") or "").startswith(hash_prefix):
+            p["used_in_story"] = True
+            p["used_at"] = datetime.now().isoformat(timespec="seconds")
+    _save_pool(pool)
 
 
 def _create_approval(brief: dict, item: dict) -> str:
@@ -251,7 +347,13 @@ def _slot_state_file(now: datetime) -> Path | None:
 
 
 def maybe_dispatch(now: datetime) -> int:
-    """Dispara stories se for janela. Retorna nº de previews enviados."""
+    """Slot 2x/dia: envia SHORTLIST text-only pro Telegram, sem renderizar arte.
+
+    Editor clica 🎨 Produzir story no item escolhido — só aí roda render +
+    Gemini + send_document. Evita queimar custo/quota em itens rejeitados.
+
+    Retorna nº de itens no shortlist (não nº de stories publicados).
+    """
     state_file = _slot_state_file(now)
     if state_file is None:
         return 0
@@ -260,28 +362,17 @@ def maybe_dispatch(now: datetime) -> int:
         return 0
 
     items = _next_unused_from_pool(STORIES_PER_RUN)
+    slot_label = "tarde" if state_file == STORY_STATE_AFTERNOON else "manha"
     if not items:
-        # marca o slot mesmo sem items pra não tentar de novo no mesmo dia
         state_file.parent.mkdir(parents=True, exist_ok=True)
         state_file.write_text(today, encoding="utf-8")
         notify(
-            f"📱 stories slot {now.strftime('%H:%M')} · pool vazio (sem notícia score≥5 nas últimas {36}h)",
+            f"📱 stories slot {now.strftime('%H:%M')} · pool vazio (sem notícia score≥5 nas últimas 36h)",
             silent=True,
         )
         return 0
 
-    sent = 0
-    for item in items:
-        try:
-            brief = _make_story_brief(item)
-            _save_brief_json(brief)
-            if not _render_story_only(brief["id"]):
-                continue
-            aid = _create_approval(brief, item)
-            _preview_story(brief, aid, item)
-            sent += 1
-        except Exception as e:  # noqa: BLE001
-            notify(f"⚠️ story falhou: <code>{html.escape(str(e)[:200])}</code>")
+    sent = _send_story_shortlist(items, slot_label)
 
     state_file.parent.mkdir(parents=True, exist_ok=True)
     state_file.write_text(today, encoding="utf-8")

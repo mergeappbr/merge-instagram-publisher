@@ -121,6 +121,48 @@ def send_photo_file(
     return r.json()
 
 
+def send_document_file(
+    doc_path: str,
+    *,
+    caption: str | None = None,
+    chat_id: str | None = None,
+    reply_markup: dict | None = None,
+    silent: bool = False,
+) -> dict:
+    """Upload de arquivo local como document (sem compressão/letterbox do Telegram).
+
+    Usado pros previews finais onde precisão visual importa — Telegram trata
+    document como arquivo: thumbnail consistente, sem auto-crop, full-res.
+    """
+    if not BOT_TOKEN:
+        return {}
+    data: dict[str, Any] = {
+        "chat_id": chat_id or CHAT_ID,
+        "parse_mode": "HTML",
+        "disable_notification": "true" if silent else "false",
+    }
+    if caption:
+        data["caption"] = caption
+    if reply_markup is not None:
+        import json as _json
+        data["reply_markup"] = _json.dumps(reply_markup)
+    try:
+        with open(doc_path, "rb") as f:
+            r = httpx.post(
+                f"{API_BASE}/bot{BOT_TOKEN}/sendDocument",
+                data=data,
+                files={"document": f},
+                timeout=90.0,
+            )
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ telegram.sendDocument upload exception: {e!r}")
+        return {}
+    if r.status_code != 200:
+        print(f"⚠ telegram.sendDocument upload {r.status_code}: {r.text[:200]}")
+        return {}
+    return r.json()
+
+
 def send_carousel_preview(
     photo_paths: list[str],
     *,
