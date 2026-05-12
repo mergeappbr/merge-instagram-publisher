@@ -526,22 +526,45 @@ def resolve_bg_for_news(
         return None
 
     # ─── CAMADA 0: Bank-first (foto REAL > IA) ────────────────────────
-    # Antes de qualquer classificador ou geração, tenta achar foto real
-    # local: curated (brand/images/) ou bank (Unsplash/Pexels pré-baixado)
-    # ou Diogo Villarinho (local-only). Se bater, pula IA totalmente.
+    # Antes de qualquer classificador ou geração, tenta achar foto real:
+    #   curated (brand/images/) → bank (Unsplash/Pexels) → R2 pool semântico.
+    # Se bater, pula IA totalmente. R2 pool faz semantic match, NÃO sortição.
     detected = _detect_product(title, summary)
     product_model = detected[0] if detected else None
     try:
         from news import visual_bank
-        bank_hit = visual_bank.lookup(
+        bank_hit = visual_bank.lookup_with_pool(
             title=title, summary=summary, modality=modality,
             product_model=product_model,
         )
     except Exception as e:  # noqa: BLE001
-        print(f"⚠ visual_bank.lookup erro: {e!r}")
+        print(f"⚠ visual_bank.lookup_with_pool erro: {e!r}")
         bank_hit = None
-    if bank_hit:
-        bank_path, bank_label = bank_hit
+
+    if bank_hit and bank_hit.get("kind") == "r2pool":
+        # Pool R2: já temos URL pública. Claim a foto pro aid (commit no
+        # dispatch). Sem read_bytes, sem upload — só registra log e retorna URL.
+        url = bank_hit.get("url") or ""
+        sha = bank_hit.get("sha") or ""
+        bank_label = bank_hit.get("label", "r2pool:?")
+        if url and sha:
+            try:
+                from news import r2_photo_pool
+                r2_photo_pool.claim(aid, sha)
+            except Exception as e:  # noqa: BLE001
+                print(f"⚠ r2_photo_pool.claim erro: {e!r}")
+            print(f"↗ visual: {aid} ← {bank_label} (R2 pool)")
+            try:
+                from news.visual_report import log_generation
+                log_generation(aid=aid, source_label=bank_label, byte_size=0)
+            except Exception as e:  # noqa: BLE001
+                print(f"⚠ visual.log_generation falhou: {e!r}")
+            return url
+        # url/sha vazio é bug no pool — cai pra IA
+
+    if bank_hit and bank_hit.get("kind") == "local":
+        bank_path: Path = bank_hit["path"]
+        bank_label = bank_hit.get("label", "local:?")
         try:
             bank_bytes = bank_path.read_bytes()
         except OSError as e:

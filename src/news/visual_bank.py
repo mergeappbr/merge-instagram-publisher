@@ -1,16 +1,22 @@
 """Lookup local de imagens REAIS antes de cair em IA.
 
-Duas fontes:
+Três fontes (em ordem):
   1. brand/images/*.{jpg,png,webp,jpeg} — curated por Pedro (produtos
      específicos, fotos oficiais de eventos: AdiosPro4, MaratonaRio,
      MaratonaPOA, Sertoes, IronMan, EvoSL, Camisetas).
   2. brand/images/_bank/<category>/{unsplash,pexels}/*.jpg — pré-baixado
      via image_bank.py, categorizado por slug (marathon_finish_line,
      trail_running_effort, swimmer_pool, track_sprint, etc).
+  3. R2 photo pool (Diogo Villarinho bank, 5GB) — selecionado e indexado
+     semanticamente via Vision (`r2_photo_pool.lookup_for_news`).
+     150 fotos top-quality, rotação com cooldown 45d, refill automático.
 
 Filosofia: foto real é SEMPRE melhor que IA. Bank-first; IA só é último
 recurso quando nada bate. Isso elimina cara-de-IA, mãos esquisitas,
 proporções erradas.
+
+NUNCA sortição: a camada R2 pool faz semantic match (sport+scene+gear vs
+keywords da notícia) e ranqueia por qualidade + relevância + recência.
 """
 from __future__ import annotations
 
@@ -149,40 +155,14 @@ def _lookup_bank(modality: str, title: str, summary: str) -> Optional[tuple[Path
     return None
 
 
-def _list_diogo_bank() -> list[Path]:
-    """Lista fotos do banco pessoal Diogo (root + Fotos Extras, recursivo
-    leve). Skip subpastas que claramente não são fotos do atleta
-    ('merge-mobile-screens-v2' contém screenshots do app)."""
-    if not DIOGO_BANK_DIR.is_dir():
-        return []
-    SKIP_DIRS = {"merge-mobile-screens-v2"}
-    out: list[Path] = []
-    for f in DIOGO_BANK_DIR.iterdir():
-        if f.is_file() and f.suffix.lower() in IMG_EXTS:
-            out.append(f)
-        elif f.is_dir() and f.name not in SKIP_DIRS:
-            for sub in f.iterdir():
-                if sub.is_file() and sub.suffix.lower() in IMG_EXTS:
-                    out.append(sub)
-    return out
-
-
-def _lookup_diogo(modality: str, title: str, summary: str) -> Optional[Path]:
-    """Fallback aleatório do banco pessoal pra modalidades cobertas.
-    Só dispara se modalidade bate (swim/triathlon/ironman). Filenames
-    são genéricos, então é roleta — mas é foto REAL, alta qualidade."""
-    mod_lower = (modality or "").lower()
-    text = f"{title} {summary}".lower()
-    matches_modality = (
-        any(m in mod_lower for m in DIOGO_MODALITIES)
-        or any(m in text for m in DIOGO_MODALITIES)
-    )
-    if not matches_modality:
+def _lookup_r2_pool(title: str, summary: str, modality: str) -> Optional[dict]:
+    """Pool R2 com semantic matching (NÃO sortição). Ver r2_photo_pool.py."""
+    try:
+        from news import r2_photo_pool
+        return r2_photo_pool.lookup_for_news(title, summary, modality)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ r2_photo_pool.lookup_for_news erro: {e!r}")
         return None
-    files = _list_diogo_bank()
-    if not files:
-        return None
-    return random.choice(files)
 
 
 def lookup(
@@ -193,8 +173,14 @@ def lookup(
 ) -> Optional[tuple[Path, str]]:
     """Tenta achar foto REAL pra essa notícia.
 
-    Retorna (caminho_local, label_pra_log) ou None.
-    label: 'curated:<filename>' / 'bank:<cat>:<filename>' / 'diogo:<filename>'.
+    Retorna (caminho_local_OU_url, label_pra_log) ou None.
+    label: 'curated:<filename>' / 'bank:<cat>:<filename>' /
+           'r2pool:<theme>:<sha8>'.
+
+    Nota: pra r2pool a primeira tupla vem como Path("file://<URL>") no campo
+    `path` interno, mas o caller (`visual.resolve_bg_for_news`) só lê via
+    `read_bytes` quando é local. Pra R2 pool retornamos um sentinela especial
+    que `visual.py` detecta — ver overload em visual.py:CAMADA 0.
     """
     # Camada 1: curated (fotos oficiais com nome descritivo)
     p = _lookup_curated(title, summary, product_model)
@@ -205,8 +191,81 @@ def lookup(
     if hit:
         path, cat = hit
         return path, f"bank:{cat}:{path.name}"
-    # Camada 3: Diogo Villarinho (local-only, modalidades natação/triatlo)
-    p = _lookup_diogo(modality, title, summary)
+    # Camada 3: R2 photo pool (semantic, NÃO random) — devolve URL R2 já pronta
+    return None
+
+
+def _lookup_asset_finder(title: str, summary: str) -> Optional[tuple[Path, str, dict]]:
+    """Gemini-powered: extrai entidade produto → busca foto oficial → valida.
+    Fail-silent: qualquer erro de rede/quota retorna None.
+
+    Retorna (path_local, label, meta) ou None.
+    meta = {"entity": ..., "vision": ..., "url": ...} pra logging/template hint.
+    """
+    try:
+        from news import asset_finder
+        result = asset_finder.find_official_image(title, summary)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ asset_finder erro: {e!r}")
+        return None
+    if not result:
+        return None
+    path = result.get("path")
+    if not isinstance(path, Path) or not path.exists():
+        return None
+    name = result.get("entity", {}).get("name", "auto")
+    label = f"asset_finder:{name}"
+    return path, label, result
+
+
+def lookup_with_pool(
+    title: str,
+    summary: str,
+    modality: str,
+    product_model: Optional[str] = None,
+) -> Optional[dict]:
+    """Wrapper que adiciona R2 pool e asset_finder. Retorna dict unificado:
+      {"kind": "local", "path": Path, "label": str, "meta": dict?}
+      OR
+      {"kind": "r2pool", "url": str, "sha": str, "label": str, "ext": str}
+      OR None.
+
+    Ordem de preferência:
+      1. Curated (brand/images/*) — hand-picked Pedro.
+      2. asset_finder — auto-find foto OFICIAL via Gemini grounded search +
+         Vision validation. Cache em brand/images/_auto/. Só dispara pra
+         produtos específicos com confidence ≥ 0.7.
+      3. Bank por categoria — stock Unsplash/Pexels.
+      4. R2 pool — Diogo Villarinho bank, semantic match.
+    """
+    # Camada 1: curated (fotos oficiais hand-picked com filename descritivo)
+    p = _lookup_curated(title, summary, product_model)
     if p:
-        return p, f"diogo:{p.name}"
+        return {"kind": "local", "path": p, "label": f"curated:{p.name}"}
+
+    # Camada 1.5: asset_finder — Gemini autônomo pra produtos não-curated
+    af = _lookup_asset_finder(title, summary)
+    if af:
+        path, label, meta = af
+        return {"kind": "local", "path": path, "label": label, "meta": meta}
+
+    # Camada 2: bank por categoria (stock pré-baixado)
+    hit = _lookup_bank(modality, title, summary)
+    if hit:
+        path, cat = hit
+        return {"kind": "local", "path": path, "label": f"bank:{cat}:{path.name}"}
+
+    # Camada 3: R2 pool semântico
+    entry = _lookup_r2_pool(title, summary, modality)
+    if entry:
+        sha = entry.get("sha", "")
+        theme = entry.get("theme", "")
+        ext = Path(entry.get("key", "")).suffix or ".jpg"
+        return {
+            "kind": "r2pool",
+            "url": entry.get("url", ""),
+            "sha": sha,
+            "ext": ext,
+            "label": f"r2pool:{theme}:{sha[:8]}",
+        }
     return None
