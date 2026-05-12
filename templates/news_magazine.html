@@ -1,8 +1,10 @@
 <!-- NEWS MAGAZINE — feed post de notícia, formato TheNews.
-     Foto full-bleed + overlay forte + watermark "merge." centralizado no topo
-     + headline GIGANTE no rodapé + lead curto + source à esquerda.
+     Foto full-bleed + overlay forte com peso central.
+     Watermark "merge." centralizado no topo.
+     HEADLINE + subtítulo de 1 frase centralizados verticalmente.
+     "via FONTE" centralizado no rodapé (TheNews-style).
 
-     Vars do writer: HEADLINE, LEAD, BG_IMAGE.
+     Vars do writer: HEADLINE, LEAD (1 frase), BG_IMAGE.
      Vars adicionais (injetadas em feed_post._build_brief):
        SOURCE        — fonte da notícia (ex: "Velo · Outside")
 -->
@@ -14,17 +16,19 @@
     background-size: cover;
     z-index: 0;
   }
-  /* Overlay forte (news prioriza legibilidade total) */
+  /* Overlay com peso na faixa central — firma legibilidade do bloco
+     HEADLINE+LEAD sem apagar a foto nas bordas. */
   .nm-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
       180deg,
-      rgba(10,10,10,0.55) 0%,
-      rgba(10,10,10,0.35) 25%,
-      rgba(10,10,10,0.30) 45%,
-      rgba(10,10,10,0.65) 65%,
-      rgba(10,10,10,0.96) 100%
+      rgba(10,10,10,0.58) 0%,
+      rgba(10,10,10,0.48) 16%,
+      rgba(10,10,10,0.78) 36%,
+      rgba(10,10,10,0.84) 58%,
+      rgba(10,10,10,0.66) 80%,
+      rgba(10,10,10,0.92) 100%
     );
     z-index: 1;
   }
@@ -37,11 +41,14 @@
   }
 
   /* TOPO — watermark "merge." centralizado: 'merge' branco + '.' laranja */
+  .nm-top {
+    display: flex;
+    justify-content: center;
+  }
   .nm-top-mark {
-    align-self: center;
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 64px;
+    font-size: 56px;
     letter-spacing: -0.04em;
     color: #FFFFFF;
     text-transform: lowercase;
@@ -50,23 +57,25 @@
   }
   .nm-top-mark .dot { color: var(--orange); }
   .canvas--story .nm-top-mark {
-    font-size: 76px;
-    /* IG Stories safe-area no topo (~250px). Canvas tem padding-top de 100px;
-       empurra +150px pra cair fora da UI do Instagram (avatar/username). */
+    font-size: 68px;
+    /* IG Stories safe-area: empurra pra fora da UI do Instagram. */
     margin-top: 150px;
   }
-  .nm-spacer { flex: 1; }
 
-  /* RODAPÉ — headline + lead + meta */
-  .nm-foot-block {
-    position: relative;
-    z-index: 2;
+  /* CENTRO — HEADLINE + subtítulo curto, centralizados na vertical */
+  .nm-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 
   .nm-headline {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 104px;
+    font-size: 108px;
     line-height: 0.94;
     letter-spacing: -0.035em;
     color: #FFFFFF;
@@ -74,41 +83,42 @@
     text-wrap: balance;
     hyphens: manual;
     text-shadow: 0 4px 32px rgba(0,0,0,0.55);
+    max-width: 100%;
   }
-  .canvas--story .nm-headline { font-size: 132px; margin-bottom: 36px; }
+  .canvas--story .nm-headline { font-size: 136px; margin-bottom: 32px; }
   .nm-headline .hl { color: var(--orange); }
 
   .nm-lead {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 30px;
+    font-size: 32px;
     line-height: 1.32;
     letter-spacing: -0.012em;
     color: rgba(255,255,255,0.92);
-    margin: 0 0 28px;
-    max-width: 92%;
+    margin: 0;
+    max-width: 82%;
     text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+    text-wrap: balance;
   }
-  .canvas--story .nm-lead { font-size: 36px; max-width: 88%; }
-  .nm-lead br + br { content: ""; }
+  .canvas--story .nm-lead { font-size: 38px; max-width: 80%; }
 
-  /* META — source à esquerda (TheNews tem 'via fonte' embaixo) */
-  .nm-meta {
+  /* RODAPÉ — fonte (centralizado, identidade TheNews) */
+  .nm-foot {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.20);
+    border-top: 1px solid rgba(255,255,255,0.18);
     font-family: var(--font-mono);
     font-size: 18px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.82);
   }
-  .canvas--story .nm-meta { font-size: 22px; padding-top: 24px; }
-  .nm-meta .nm-source { display: inline-flex; gap: 10px; align-items: center; }
-  .nm-meta .nm-source .label { color: rgba(255,255,255,0.55); font-weight: 600; }
-  .nm-meta .nm-source .name { color: #FFFFFF; font-weight: 700; }
+  .canvas--story .nm-foot { font-size: 22px; padding-top: 24px; }
+  .nm-foot .nm-source { display: inline-flex; gap: 10px; align-items: center; }
+  .nm-foot .nm-source .label { color: rgba(255,255,255,0.55); font-weight: 600; }
+  .nm-foot .nm-source .name { color: #FFFFFF; font-weight: 700; }
 </style>
 
 <div class="canvas canvas--{{SIZE}}">
@@ -116,21 +126,23 @@
   <div class="nm-overlay"></div>
   <div class="nm-block">
 
-    <!-- TOPO: watermark "merge." (estilo TheNews — texto + ponto laranja) -->
-    <span class="nm-top-mark">merge<span class="dot">.</span></span>
+    <!-- TOPO: watermark merge. -->
+    <div class="nm-top">
+      <span class="nm-top-mark">merge<span class="dot">.</span></span>
+    </div>
 
-    <div class="nm-spacer"></div>
-
-    <!-- HEADLINE + LEAD + META -->
-    <div class="nm-foot-block">
+    <!-- CENTRO: HEADLINE + subtítulo (1 frase) -->
+    <div class="nm-center">
       <h1 class="nm-headline">{{HEADLINE}}</h1>
       <p class="nm-lead">{{LEAD}}</p>
-      <div class="nm-meta">
-        <span class="nm-source">
-          <span class="label">via</span>
-          <span class="name">{{SOURCE}}</span>
-        </span>
-      </div>
+    </div>
+
+    <!-- RODAPÉ: via FONTE -->
+    <div class="nm-foot">
+      <span class="nm-source">
+        <span class="label">via</span>
+        <span class="name">{{SOURCE}}</span>
+      </span>
     </div>
   </div>
 </div>

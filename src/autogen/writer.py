@@ -41,6 +41,10 @@ FORMATO DA ARTE (HEADLINE + LEAD):
                  "o longão é onde <span class="hl">a cabeça</span> ganha massa"
 - LEAD: até 3 linhas, separadas por <br> quando faz lista; usa <br><br> entre parágrafos
   Em arte de stat: deixa o número GIGANTE; o lead complementa em 1 frase
+  Em NEWS (template=news_magazine): LEAD é UMA frase curta, máx ~110 chars,
+  SEM <br>, SEM listas. Função: contextualizar o headline em 1 linha. A
+  fundo vai pro caption_md. Exemplo bom: "Geometria revisada e peso menor
+  miram triathletas mais leves." Exemplo RUIM: lead com 3 linhas + <br>.
 
 FORMATO DA LEGENDA (caption_md) — REGRAS RÍGIDAS:
 - Hook do post (1ª frase): repete/expande a headline
@@ -360,6 +364,27 @@ def _autoinject_hl(headline: str, news_context: dict) -> str:
     return headline
 
 
+def _shrink_lead_to_one_sentence(lead: str, max_chars: int = 140) -> str:
+    """News_magazine pede LEAD de 1 frase curta. Remove <br>, pega só a 1ª
+    frase (corte em '. ', '? ', '! ') e trunca em max_chars (palavra inteira).
+    """
+    if not lead:
+        return lead
+    # Remove tags <br> / <br/> / <br />
+    s = re.sub(r"<br\s*/?>", " ", lead, flags=re.IGNORECASE)
+    # Colapsa espaços
+    s = re.sub(r"\s+", " ", s).strip()
+    # Primeira frase
+    m = re.search(r"(.+?[.!?])(\s|$)", s)
+    if m:
+        s = m.group(1).strip()
+    # Trunca em palavra inteira
+    if len(s) > max_chars:
+        cut = s[:max_chars].rsplit(" ", 1)[0].rstrip(",;:—-")
+        s = cut + "…"
+    return s
+
+
 def _postprocess_news_brief(brief: dict, news_context: dict | None) -> None:
     """Aplica auto-fixes em briefs de news. Modifica in-place."""
     if not news_context:
@@ -376,6 +401,12 @@ def _postprocess_news_brief(brief: dict, news_context: dict | None) -> None:
         sv["LEAD"] = _fix_concatenations(sv["LEAD"])
     if "caption_md" in brief and isinstance(brief["caption_md"], str):
         brief["caption_md"] = _fix_concatenations(brief["caption_md"])
+    # news_magazine: LEAD precisa ser 1 frase curta (diagramação centralizada).
+    # Aplica só no template news_magazine — feed_post seta isso ANTES do reviewer,
+    # mas no fluxo writer→postprocess o template ainda não foi forçado, então
+    # detectamos por news_context presente (já é sinal de news).
+    if "LEAD" in vars_:
+        vars_["LEAD"] = _shrink_lead_to_one_sentence(vars_["LEAD"])
 
 
 def write_brief(
