@@ -193,15 +193,22 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
     # (capa com headline + LEAD, usando a foto hero como BG). Slides 2-N =
     # news_photo (foto limpa + watermark merge. canto inferior direito).
     # Sem 2ª foto válida → segue post estático. Falha silenciosa.
+    multi_n = 0
+    multi_err = ""
     try:
         from news import asset_finder
         multi = asset_finder.find_official_images_multi(
             news_context["title"], news_context["summary"], max_n=5
         )
+        multi_n = len(multi.get("photos") or []) if multi else 0
     except Exception as e:  # noqa: BLE001
         print(f"⚠ asset_finder.find_official_images_multi erro: {e!r}")
         multi = None
-    if multi and len(multi.get("photos") or []) >= 2:
+        multi_err = type(e).__name__
+    brief["_bg_debug"]["multi_n"] = multi_n
+    if multi_err:
+        brief["_bg_debug"]["multi_err"] = multi_err
+    if multi and multi_n >= 2:
         photos = multi["photos"]
         # Hero (slide 1) — prioriza shot_type=hero, senão a 1ª
         hero_idx = 0
@@ -272,6 +279,14 @@ def _send_preview(
         bg_scheme = "slug"
     bg_final_short = bg_final.split("/")[-1][:60] if bg_final else "—"
     bg_source = f"{bg_source} [{bg_scheme}]"
+    multi_n = bg_dbg.get("multi_n", 0)
+    multi_err = bg_dbg.get("multi_err", "")
+    if multi_n >= 2:
+        multi_line = f"📸 carrossel · {multi_n} fotos via asset_finder"
+    elif multi_n == 1:
+        multi_line = "📸 estático · asset_finder achou só 1 foto (carrossel precisa ≥2)"
+    else:
+        multi_line = f"📸 estático · asset_finder=0 fotos{f' ({multi_err})' if multi_err else ''}"
     cap_lines = [
         f"📰 <b>FEED NEWS · {slot_label.upper()} · score {score}</b>",
         f"<i>{html.escape(item.get('feed_name','?'))}</i>",
@@ -281,6 +296,7 @@ def _send_preview(
         f"template {html.escape(brief.get('template','?'))}",
         f"BG: <code>{html.escape(bg_source)}</code> → "
         f"<code>{html.escape(bg_final_short)}</code>",
+        multi_line,
         "",
         f"<b>ARTE</b>",
         f"HEAD: {html.escape(head_plain)[:200]}",
