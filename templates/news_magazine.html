@@ -91,16 +91,20 @@
   .nm-lead {
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 32px;
+    font-size: 30px;
     line-height: 1.32;
     letter-spacing: -0.012em;
     color: rgba(255,255,255,0.92);
     margin: 0;
-    max-width: 82%;
+    max-width: 88%;
     text-shadow: 0 2px 16px rgba(0,0,0,0.5);
     text-wrap: balance;
+    /* Defesa: limita à altura máxima de 3 linhas; corta silenciosamente
+       sem reticências caso o postprocess falhe e algo passe. */
+    max-height: calc(1.32em * 3);
+    overflow: hidden;
   }
-  .canvas--story .nm-lead { font-size: 38px; max-width: 80%; }
+  .canvas--story .nm-lead { font-size: 36px; max-width: 84%; }
 
   /* RODAPÉ — fonte (centralizado, identidade TheNews) */
   .nm-foot {

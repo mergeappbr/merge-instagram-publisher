@@ -41,10 +41,14 @@ FORMATO DA ARTE (HEADLINE + LEAD):
                  "o longão é onde <span class="hl">a cabeça</span> ganha massa"
 - LEAD: até 3 linhas, separadas por <br> quando faz lista; usa <br><br> entre parágrafos
   Em arte de stat: deixa o número GIGANTE; o lead complementa em 1 frase
-  Em NEWS (template=news_magazine): LEAD é UMA frase curta, máx ~110 chars,
-  SEM <br>, SEM listas. Função: contextualizar o headline em 1 linha. A
-  fundo vai pro caption_md. Exemplo bom: "Geometria revisada e peso menor
-  miram triathletas mais leves." Exemplo RUIM: lead com 3 linhas + <br>.
+  Em NEWS (template=news_magazine): LEAD é UMA frase curta, MÁX 90 chars
+  (~12 palavras), SEM <br>, SEM listas, SEM reticências, terminando em ponto.
+  Função: contextualizar o headline em 1 linha que CABE no card centralizado.
+  A fundo vai pro caption_md. Exemplo BOM: "Geometria revisada e peso menor
+  miram triathletas mais leves." (78 chars). Exemplo RUIM: "A Cervélo
+  atualizou a Aspero e a quinta geração chega com foco direto em triathletas
+  que querem uma bike versátil sem abrir mão de aero." (>140 chars, vai
+  estourar a caixa).
 
 FORMATO DA LEGENDA (caption_md) — REGRAS RÍGIDAS:
 - Hook do post (1ª frase): repete/expande a headline
@@ -364,25 +368,37 @@ def _autoinject_hl(headline: str, news_context: dict) -> str:
     return headline
 
 
-def _shrink_lead_to_one_sentence(lead: str, max_chars: int = 140) -> str:
-    """News_magazine pede LEAD de 1 frase curta. Remove <br>, pega só a 1ª
-    frase (corte em '. ', '? ', '! ') e trunca em max_chars (palavra inteira).
+def _shrink_lead_to_one_sentence(lead: str, max_chars: int = 95) -> str:
+    """News_magazine pede LEAD de 1 frase curta que CABE no card centralizado.
+    NUNCA usa reticências — Pedro odeia. Estratégia em camadas:
+      1. Remove <br>, colapsa espaços.
+      2. Se há ponto final no meio, corta na 1ª frase completa.
+      3. Se a frase resultante ainda > max_chars, busca uma vírgula/quebra
+         natural ANTES do limite e corta ali, fechando com ponto.
+      4. Último recurso: corta na última palavra inteira antes do limite e
+         fecha com ponto.
+    Resultado sempre termina com ponto/!/? e nunca com "…".
     """
     if not lead:
         return lead
-    # Remove tags <br> / <br/> / <br />
     s = re.sub(r"<br\s*/?>", " ", lead, flags=re.IGNORECASE)
-    # Colapsa espaços
     s = re.sub(r"\s+", " ", s).strip()
-    # Primeira frase
+    # Camada 1: primeira frase completa
     m = re.search(r"(.+?[.!?])(\s|$)", s)
-    if m:
-        s = m.group(1).strip()
-    # Trunca em palavra inteira
-    if len(s) > max_chars:
-        cut = s[:max_chars].rsplit(" ", 1)[0].rstrip(",;:—-")
-        s = cut + "…"
-    return s
+    if m and len(m.group(1)) <= max_chars:
+        return m.group(1).strip()
+    # Camada 2: corta numa vírgula/ponto-vírgula/travessão antes do limite
+    head = s[:max_chars]
+    for sep in [", ", "; ", " — ", " – "]:
+        idx = head.rfind(sep)
+        if idx >= max_chars * 0.5:  # vírgula precisa estar na 2ª metade
+            cut = head[:idx].rstrip(",;:—- ")
+            return cut + "."
+    # Camada 3: corta na última palavra inteira
+    cut = head.rsplit(" ", 1)[0].rstrip(",;:—- ")
+    if not cut.endswith((".", "!", "?")):
+        cut += "."
+    return cut
 
 
 def _postprocess_news_brief(brief: dict, news_context: dict | None) -> None:
