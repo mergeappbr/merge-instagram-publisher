@@ -290,8 +290,29 @@ def _send_preview(
     if len(photo_caption) > 1024:
         photo_caption = photo_caption[:1020] + "..."
 
-    # send_document_file: arquivo pixel-perfect, sem letterbox/compressão do Telegram.
-    api.send_document_file(str(feed_png), caption=photo_caption)
+    # Slides do carrossel (capa + extras .2.png .. .N.png). publish.py vai
+    # subir tudo nessa ordem. Manda TODOS os slides como document pra revisão.
+    feed_dir = feed_png.parent
+    bid = brief["id"]
+    slides = [feed_png]
+    i = 2
+    while True:
+        extra = feed_dir / f"{bid}.{i}.png"
+        if not extra.exists():
+            break
+        slides.append(extra)
+        i += 1
+    total = len(slides)
+    # Capa: caption completa de metadata. Demais: só "slide N/M" silencioso.
+    for idx, slide_path in enumerate(slides, start=1):
+        if idx == 1:
+            api.send_document_file(str(slide_path), caption=photo_caption)
+        else:
+            api.send_document_file(
+                str(slide_path),
+                caption=f"slide {idx}/{total}",
+                silent=True,
+            )
 
     # Mensagem 2: legenda completa (cap_md) + review + botões
     cap_text_lines = [f"<b>LEGENDA COMPLETA</b> ({len(caption)} chars)", ""]

@@ -42,13 +42,19 @@ FORMATO DA ARTE (HEADLINE + LEAD):
 - LEAD: até 3 linhas, separadas por <br> quando faz lista; usa <br><br> entre parágrafos
   Em arte de stat: deixa o número GIGANTE; o lead complementa em 1 frase
   Em NEWS (template=news_magazine): LEAD é UMA frase curta, MÁX 90 chars
-  (~12 palavras), SEM <br>, SEM listas, SEM reticências, terminando em ponto.
-  Função: contextualizar o headline em 1 linha que CABE no card centralizado.
-  A fundo vai pro caption_md. Exemplo BOM: "Geometria revisada e peso menor
-  miram triathletas mais leves." (78 chars). Exemplo RUIM: "A Cervélo
-  atualizou a Aspero e a quinta geração chega com foco direto em triathletas
-  que querem uma bike versátil sem abrir mão de aero." (>140 chars, vai
-  estourar a caixa).
+  (~12 palavras), SEM <br>, SEM listas, SEM reticências, terminando em ponto
+  e com SENTIDO COMPLETO. Função: contextualizar o headline em 1 linha que
+  CABE no card centralizado. A fundo vai pro caption_md.
+  REGRA CRÍTICA: a frase NUNCA pode terminar em palavra "aberta"
+  (preposição/artigo/conjunção como "em.", "de.", "com.", "para.", "que.",
+  "e.", "a.", "o.", "no.", "na."). Sempre conta as palavras: 12 no máximo.
+  Se não couber a ideia inteira em 90 chars, REESCREVE com outras palavras
+  até caber — NÃO escreve frase longa esperando truncagem.
+  Exemplo BOM: "Geometria revisada e peso menor miram triathletas mais
+  leves." (78 chars, fecha em adjetivo).
+  Exemplo PROIBIDO: "Cervélo atualizou a Aspero e a quinta geração chega
+  com geometria revisada e foco direto em." (89 chars mas termina em "em.",
+  sem sentido — RECUSE essa construção).
 
 FORMATO DA LEGENDA (caption_md) — REGRAS RÍGIDAS:
 - Hook do post (1ª frase): repete/expande a headline
@@ -368,16 +374,55 @@ def _autoinject_hl(headline: str, news_context: dict) -> str:
     return headline
 
 
+# Palavras "abertas" — se a frase termina com uma dessas, ela está
+# gramaticalmente quebrada (preposição/artigo/conjunção pendente).
+_OPEN_TAIL = {
+    # Preposições essenciais e acidentais
+    "a", "ao", "aos", "à", "às", "de", "do", "da", "dos", "das",
+    "em", "no", "na", "nos", "nas", "num", "numa", "nuns", "numas",
+    "com", "para", "pra", "pro", "por", "pelo", "pela", "pelos", "pelas",
+    "sem", "sob", "sobre", "ante", "após", "até", "contra", "desde",
+    "entre", "perante", "segundo", "trás",
+    # Artigos
+    "o", "os", "as", "um", "uma", "uns", "umas",
+    # Conjunções e pronomes relativos comuns
+    "e", "ou", "mas", "porém", "que", "se", "como", "quando", "onde",
+    "porque", "pois", "cujo", "cuja", "qual", "quais", "quem",
+}
+
+
+def _ends_open(text: str) -> bool:
+    """True se a última palavra (antes da pontuação) é gramaticalmente aberta."""
+    if not text:
+        return False
+    bare = text.rstrip(".!?…").rstrip()
+    last = bare.rsplit(" ", 1)[-1].lower().rstrip(",;:")
+    return last in _OPEN_TAIL
+
+
+def _trim_open_tail(text: str) -> str:
+    """Recua a frase enquanto terminar em palavra aberta, fechando com ponto.
+    Se zerar tudo, retorna string vazia."""
+    while text and _ends_open(text):
+        bare = text.rstrip(".!?…").rstrip(",;:- ").rstrip()
+        if " " not in bare:
+            return ""
+        text = bare.rsplit(" ", 1)[0].rstrip(",;:— -")
+        if not text.endswith((".", "!", "?")):
+            text += "."
+    return text
+
+
 def _shrink_lead_to_one_sentence(lead: str, max_chars: int = 95) -> str:
-    """News_magazine pede LEAD de 1 frase curta que CABE no card centralizado.
-    NUNCA usa reticências — Pedro odeia. Estratégia em camadas:
+    """News_magazine pede LEAD de 1 frase curta que CABE e tem SENTIDO.
+    NUNCA reticências, NUNCA terminar em palavra aberta (em/de/com/que/...).
+    Estratégia em camadas, sempre fechando com ponto:
       1. Remove <br>, colapsa espaços.
-      2. Se há ponto final no meio, corta na 1ª frase completa.
-      3. Se a frase resultante ainda > max_chars, busca uma vírgula/quebra
-         natural ANTES do limite e corta ali, fechando com ponto.
-      4. Último recurso: corta na última palavra inteira antes do limite e
-         fecha com ponto.
-    Resultado sempre termina com ponto/!/? e nunca com "…".
+      2. 1ª frase completa do texto (cap em .!?).
+      3. Se > max_chars, corta em vírgula/travessão antes do limite.
+      4. Último recurso: corta na última palavra e recua se ficar aberta.
+    Se nenhuma camada produzir frase coerente em max_chars, retorna "" pra
+    sinalizar que o caller precisa regenerar via LLM.
     """
     if not lead:
         return lead
@@ -385,20 +430,53 @@ def _shrink_lead_to_one_sentence(lead: str, max_chars: int = 95) -> str:
     s = re.sub(r"\s+", " ", s).strip()
     # Camada 1: primeira frase completa
     m = re.search(r"(.+?[.!?])(\s|$)", s)
-    if m and len(m.group(1)) <= max_chars:
+    if m and len(m.group(1)) <= max_chars and not _ends_open(m.group(1)):
         return m.group(1).strip()
-    # Camada 2: corta numa vírgula/ponto-vírgula/travessão antes do limite
+    # Camada 2: corta em vírgula/ponto-vírgula/travessão antes do limite
     head = s[:max_chars]
     for sep in [", ", "; ", " — ", " – "]:
         idx = head.rfind(sep)
-        if idx >= max_chars * 0.5:  # vírgula precisa estar na 2ª metade
+        if idx >= max_chars * 0.5:
             cut = head[:idx].rstrip(",;:—- ")
-            return cut + "."
-    # Camada 3: corta na última palavra inteira
+            cut = _trim_open_tail(cut + ".")
+            if cut:
+                return cut
+    # Camada 3: corta na última palavra, recua se ficar terminando aberta
     cut = head.rsplit(" ", 1)[0].rstrip(",;:—- ")
     if not cut.endswith((".", "!", "?")):
         cut += "."
-    return cut
+    cut = _trim_open_tail(cut)
+    return cut  # pode ser "" → caller regenera via LLM
+
+
+def _regen_lead_via_llm(headline: str, summary: str, max_chars: int = 90) -> str:
+    """Pede ao LLM uma frase de subtítulo curta + completa. Fallback robusto
+    quando o postprocess determinístico não consegue salvar a frase original.
+    Devolve "" em caso de falha (não bloqueia render — caller deixa lead curto).
+    """
+    plain_head = re.sub(r"<[^>]+>", "", headline or "").strip()
+    sys_msg = (
+        "Você reescreve subtítulos curtos pra cards Merge (endurance / wellness). "
+        "Sempre em português brasileiro, voz Merge (direta, técnica, sem clichê). "
+        f"OBRIGATÓRIO: 1 frase, máx {max_chars} caracteres, terminando em ponto, "
+        "com sentido completo. Sem aspas, sem emojis, sem reticências, sem listas. "
+        "Não repita literalmente a headline — complementa o contexto."
+    )
+    user_msg = (
+        f"HEADLINE: {plain_head}\n"
+        f"CONTEXTO: {summary[:400]}\n\n"
+        f"Devolva APENAS a frase do subtítulo (1 linha, ≤{max_chars} chars)."
+    )
+    try:
+        from llm import complete
+        out = complete(system=sys_msg, user=user_msg, fast=True, max_tokens=120, temperature=0.4)
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ _regen_lead_via_llm erro: {e!r}")
+        return ""
+    out = re.sub(r"\s+", " ", (out or "").strip().strip('"').strip("'")).strip()
+    # Aplica o shrink determinístico no resultado pra garantir tamanho + sentido
+    out = _shrink_lead_to_one_sentence(out, max_chars=max_chars + 5)
+    return out
 
 
 def _postprocess_news_brief(brief: dict, news_context: dict | None) -> None:
@@ -417,12 +495,21 @@ def _postprocess_news_brief(brief: dict, news_context: dict | None) -> None:
         sv["LEAD"] = _fix_concatenations(sv["LEAD"])
     if "caption_md" in brief and isinstance(brief["caption_md"], str):
         brief["caption_md"] = _fix_concatenations(brief["caption_md"])
-    # news_magazine: LEAD precisa ser 1 frase curta (diagramação centralizada).
-    # Aplica só no template news_magazine — feed_post seta isso ANTES do reviewer,
-    # mas no fluxo writer→postprocess o template ainda não foi forçado, então
-    # detectamos por news_context presente (já é sinal de news).
+    # news_magazine: LEAD precisa ser 1 frase curta E com sentido. Postprocess
+    # em 2 etapas: shrink determinístico (corte limpo, sem terminar aberto);
+    # se mesmo assim não restar nada utilizável, regen via LLM (1 call rápido).
     if "LEAD" in vars_:
-        vars_["LEAD"] = _shrink_lead_to_one_sentence(vars_["LEAD"])
+        original = vars_["LEAD"]
+        cut = _shrink_lead_to_one_sentence(original)
+        if not cut:
+            cut = _regen_lead_via_llm(
+                vars_.get("HEADLINE", ""), news_context.get("summary", "")
+            )
+        if not cut:
+            # Último fallback: corte simples sem cuidado semântico. Cabe
+            # visualmente; pode ficar levemente seco mas não crash.
+            cut = _shrink_lead_to_one_sentence(original, max_chars=80) or "—"
+        vars_["LEAD"] = cut
 
 
 def write_brief(

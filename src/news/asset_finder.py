@@ -319,6 +319,28 @@ def _download_image(url: str) -> Optional[bytes]:
         return None
 
 
+def _ahash(img_bytes: bytes) -> Optional[int]:
+    """Average hash perceptual 8x8 → int 64-bit. Robusto a resize/recompress;
+    duas fotos perceptualmente iguais terão Hamming ≤ 5. Falha silenciosa
+    (retorna None) se PIL não conseguir abrir o byte stream."""
+    try:
+        from io import BytesIO
+        from PIL import Image
+        im = Image.open(BytesIO(img_bytes)).convert("L").resize((8, 8), Image.LANCZOS)
+        px = list(im.getdata())
+        avg = sum(px) / len(px)
+        bits = 0
+        for v in px:
+            bits = (bits << 1) | (1 if v >= avg else 0)
+        return bits
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _hamming(a: int, b: int) -> int:
+    return bin(a ^ b).count("1")
+
+
 def _validate_image(img_bytes: bytes, mime: str, entity: dict) -> Optional[dict]:
     """Gemini Vision valida: é o produto EXATO + qualidade editorial.
 
@@ -493,11 +515,28 @@ def find_official_images_multi(
          and p.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")]
     )
     if cached_paths:
-        print(f"✓ asset_finder: cache hit {len(cached_paths)} foto(s) pra '{name}'")
-        return {
-            "entity": entity,
-            "photos": [{"path": p, "vision": None, "url": "cache"} for p in cached_paths],
-        }
+        # Dedupe perceptual também no cache (caches antigos podem ter duplicatas
+        # do tempo em que não havia aHash).
+        deduped: list[Path] = []
+        seen_phash_cache: list[int] = []
+        for p in cached_paths:
+            try:
+                data = p.read_bytes()
+            except OSError:
+                continue
+            ph = _ahash(data)
+            if ph is not None and any(_hamming(ph, h) <= 5 for h in seen_phash_cache):
+                print(f"  ↪ cache: pulando duplicata perceptual {p.name}")
+                continue
+            deduped.append(p)
+            if ph is not None:
+                seen_phash_cache.append(ph)
+        print(f"✓ asset_finder: cache hit {len(deduped)}/{len(cached_paths)} foto(s) pra '{name}'")
+        if deduped:
+            return {
+                "entity": entity,
+                "photos": [{"path": p, "vision": None, "url": "cache"} for p in deduped],
+            }
 
     urls = _find_image_urls(entity)
     if not urls:
@@ -507,11 +546,24 @@ def find_official_images_multi(
 
     accepted: list[dict] = []
     seen_angles: set[str] = set()
+    seen_sha: set[str] = set()
+    seen_phash: list[int] = []  # aHash 64-bit; compara via Hamming
     for url in urls:
         if len(accepted) >= max_n:
             break
         img = _download_image(url)
         if not img:
+            continue
+        # Dedupe 1: hash exato (cobre re-download da mesma URL/cache CDN)
+        import hashlib
+        sha = hashlib.sha256(img).hexdigest()
+        if sha in seen_sha:
+            print(f"  ↪ pulando duplicata SHA exata")
+            continue
+        # Dedupe 2: aHash perceptual (cobre resize/recompress da mesma foto)
+        phash = _ahash(img)
+        if phash is not None and any(_hamming(phash, h) <= 5 for h in seen_phash):
+            print(f"  ↪ pulando duplicata perceptual (aHash)")
             continue
         mime = _mime_from_bytes(img)
         vision = _validate_image(img, mime, entity)
@@ -527,6 +579,9 @@ def find_official_images_multi(
             print(f"  ↪ pulando duplicata de ângulo {angle_key}")
             continue
         seen_angles.add(angle_key)
+        seen_sha.add(sha)
+        if phash is not None:
+            seen_phash.append(phash)
         ext = _ext_from_mime(mime)
         idx = len(accepted) + 1
         local = AUTO_DIR / f"{slug}__{idx:02d}{ext}"
