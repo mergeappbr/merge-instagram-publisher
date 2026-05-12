@@ -1,0 +1,55 @@
+<!-- NEWS PHOTO — slide 2..N de carrossel de notícia.
+     Foto full-bleed + watermark merge. canto inferior direito.
+     Sem texto, sem overlay pesado — deixa a foto respirar.
+
+     Vars: BG_IMAGE.
+-->
+<style>
+  .np-bg-photo {
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    background-color: #0a0a0a;
+    z-index: 0;
+  }
+  /* Overlay sutil só na faixa inferior pra dar contraste ao watermark.
+     Topo e meio livres pra foto. */
+  .np-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(10,10,10,0.00) 0%,
+      rgba(10,10,10,0.00) 65%,
+      rgba(10,10,10,0.55) 100%
+    );
+    z-index: 1;
+  }
+  .np-watermark {
+    position: absolute;
+    z-index: 2;
+    bottom: 40px;
+    right: 44px;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 38px;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    text-transform: lowercase;
+    line-height: 1;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.55);
+  }
+  .np-watermark .dot { color: var(--orange); }
+  .canvas--story .np-watermark {
+    font-size: 48px;
+    bottom: 200px;  /* IG Stories safe-area bottom (~250px) */
+    right: 56px;
+  }
+</style>
+
+<div class="canvas canvas--{{SIZE}}">
+  <div class="np-bg-photo" style="background-image:url('{{BG_IMAGE}}');"></div>
+  <div class="np-overlay"></div>
+  <span class="np-watermark">merge<span class="dot">.</span></span>
+</div>

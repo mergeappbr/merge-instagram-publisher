@@ -188,6 +188,41 @@ def _build_brief(item: dict, slot_label: str) -> tuple[dict, dict, dict]:
         sv = brief["story_vars"]
         sv.setdefault("SOURCE", vars_["SOURCE"])
 
+    # Carrossel multi-foto: quando asset_finder achar 2+ fotos validadas do
+    # mesmo produto, vira post de carrossel. Slide 1 = news_magazine atual
+    # (capa com headline + LEAD, usando a foto hero como BG). Slides 2-N =
+    # news_photo (foto limpa + watermark merge. canto inferior direito).
+    # Sem 2ª foto válida → segue post estático. Falha silenciosa.
+    try:
+        from news import asset_finder
+        multi = asset_finder.find_official_images_multi(
+            news_context["title"], news_context["summary"], max_n=5
+        )
+    except Exception as e:  # noqa: BLE001
+        print(f"⚠ asset_finder.find_official_images_multi erro: {e!r}")
+        multi = None
+    if multi and len(multi.get("photos") or []) >= 2:
+        photos = multi["photos"]
+        # Hero (slide 1) — prioriza shot_type=hero, senão a 1ª
+        hero_idx = 0
+        for i, p in enumerate(photos):
+            vision = p.get("vision") or {}
+            if vision.get("shot_type") == "hero":
+                hero_idx = i
+                break
+        hero = photos[hero_idx]
+        hero_uri = Path(hero["path"]).as_uri()
+        # Força hero como BG do slide 1
+        vars_["BG_IMAGE"] = hero_uri
+        if "story_vars" in brief:
+            brief["story_vars"]["BG_IMAGE"] = hero_uri
+        brief["_bg_debug"]["source"] = "asset_finder.multi (carousel)"
+        brief["_bg_debug"]["final"] = hero_uri
+        # Slides 2-N — restantes (preservando ordem do asset_finder)
+        extras = [Path(p["path"]).as_uri() for i, p in enumerate(photos) if i != hero_idx]
+        brief["extra_photos"] = extras
+        print(f"📸 carrossel news: 1 capa + {len(extras)} slide(s) foto")
+
     review = reviewer.review(brief)
     return brief, plan_entry, review
 

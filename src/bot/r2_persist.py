@@ -48,6 +48,10 @@ def backup(aid: str, png_path: Optional[Path] = None) -> bool:
 
     Chamar logo após o preview ser enviado no Telegram. Retorna True se ao
     menos o JSON foi pra R2.
+
+    Carrossel news: se png_path é `{id}.png` e existem `{id}.2.png`,
+    `{id}.3.png`, ... no mesmo diretório (sequência do publish.py), sobe
+    TODOS pra sobreviver redeploy do Railway entre preview e postar.
     """
     pending = PENDING_DIR / f"{aid}.json"
     if not pending.exists():
@@ -69,6 +73,20 @@ def backup(aid: str, png_path: Optional[Path] = None) -> bool:
                 f"{R2_PREFIX}/{aid}.png",
                 ExtraArgs={"ContentType": "image/png"},
             )
+            # Carrossel: sobe slides extras 2..N enquanto existirem
+            stem = png_path.stem  # ex: "news_morning_..._aspero"
+            i = 2
+            while True:
+                extra = png_path.parent / f"{stem}.{i}.png"
+                if not extra.exists():
+                    break
+                client.upload_file(
+                    str(extra),
+                    bucket,
+                    f"{R2_PREFIX}/{aid}.{i}.png",
+                    ExtraArgs={"ContentType": "image/png"},
+                )
+                i += 1
         return True
     except Exception as e:  # noqa: BLE001
         print(f"⚠ r2_persist.backup falhou ({aid}): {e!r}")
@@ -101,7 +119,7 @@ def restore_approval(aid: str) -> Optional[dict]:
             print(f"⚠ r2_persist.restore_approval falhou ({aid}): {e!r}")
             return None
 
-    # Tenta restaurar PNG também
+    # Tenta restaurar PNG também (slide 1 + extras de carrossel)
     brief = approval.get("brief") or {}
     bid = brief.get("id")
     if bid:
@@ -115,15 +133,35 @@ def restore_approval(aid: str) -> Optional[dict]:
             except Exception as e:  # noqa: BLE001
                 print(f"⚠ r2_persist PNG restore falhou ({bid}): {e!r}")
                 # Não fatal — caller pode re-renderizar a partir do brief
+        # Slides extras de carrossel news (idempotente)
+        extras = brief.get("extra_photos") or []
+        for i in range(2, 2 + len(extras)):
+            extra_png = FEED_DIR / f"{bid}.{i}.png"
+            if extra_png.exists():
+                continue
+            try:
+                client = _client()
+                client.download_file(_bucket(), f"{R2_PREFIX}/{aid}.{i}.png", str(extra_png))
+                print(f"↓ r2_persist: restaurou slide extra {bid}.{i} do R2")
+            except Exception as e:  # noqa: BLE001
+                print(f"⚠ r2_persist extra {i} restore falhou ({bid}): {e!r}")
     return approval
 
 
 def delete_backup(aid: str) -> None:
-    """Apaga backup do R2 (chamar pós-publicação ou rejeição)."""
+    """Apaga backup do R2 (chamar pós-publicação ou rejeição).
+
+    Limpa também slides extras de carrossel (.2.png .. .9.png) silenciosamente.
+    """
     try:
         client = _client()
         bucket = _bucket()
         client.delete_object(Bucket=bucket, Key=f"{R2_PREFIX}/{aid}.json")
         client.delete_object(Bucket=bucket, Key=f"{R2_PREFIX}/{aid}.png")
+        for i in range(2, 10):
+            try:
+                client.delete_object(Bucket=bucket, Key=f"{R2_PREFIX}/{aid}.{i}.png")
+            except Exception:  # noqa: BLE001
+                break
     except Exception as e:  # noqa: BLE001
         print(f"⚠ r2_persist.delete_backup falhou ({aid}): {e!r}")

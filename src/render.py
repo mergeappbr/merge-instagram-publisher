@@ -287,11 +287,33 @@ def build_html(brief: dict, size: str) -> str:
     return html
 
 
+def _render_html_to_png(page, html: str, w: int, h: int, out_path: Path, tag: str) -> None:
+    """Carrega HTML temp num viewport WxH e tira screenshot pra out_path."""
+    tmp_html = ROOT / "output" / f".tmp_{tag}.html"
+    tmp_html.write_text(html, encoding="utf-8")
+    page.set_viewport_size({"width": w, "height": h})
+    page.goto(tmp_html.as_uri(), wait_until="networkidle")
+    page.evaluate("document.fonts.ready")
+    page.screenshot(
+        path=str(out_path),
+        omit_background=False,
+        full_page=False,
+        clip={"x": 0, "y": 0, "width": w, "height": h},
+    )
+    tmp_html.unlink(missing_ok=True)
+
+
 def render_brief(page, brief: dict) -> list[Path]:
     """Renderiza feed (1080x1350) e story (1080x1920) de um brief.
 
     Quizzes saem só em feed: o sticker de enquete do Instagram não pode ser
     adicionado via API, então a versão story sem ele não tem utilidade real.
+
+    Carrossel de news: quando `brief['extra_photos']` está populado (lista
+    de URLs/paths), além do slide 1 normal, renderiza N slides extras como
+    `news_photo` (foto + watermark merge.) salvos como `{id}.2.png`,
+    `{id}.3.png`, ... no feed (publish.py auto-detecta a sequência).
+    Stories não recebem slides extras — só o slide 1.
     """
     written = []
     sizes = [("feed", 1080, 1350, OUT_FEED)]
@@ -299,20 +321,23 @@ def render_brief(page, brief: dict) -> list[Path]:
         sizes.append(("story", 1080, 1920, OUT_STORY))
     for size, w, h, out_dir in sizes:
         html = build_html(brief, size)
-
-        # Salva HTML temporário pra debug e pra Playwright carregar com fontes do Google
-        tmp_html = ROOT / "output" / f".tmp_{brief['id']}_{size}.html"
-        tmp_html.write_text(html, encoding="utf-8")
-
-        page.set_viewport_size({"width": w, "height": h})
-        page.goto(tmp_html.as_uri(), wait_until="networkidle")
-        # Garante carregamento das webfonts
-        page.evaluate("document.fonts.ready")
-
         out = out_dir / f"{brief['id']}.png"
-        page.screenshot(path=str(out), omit_background=False, full_page=False, clip={"x": 0, "y": 0, "width": w, "height": h})
+        _render_html_to_png(page, html, w, h, out, f"{brief['id']}_{size}")
         written.append(out)
-        tmp_html.unlink(missing_ok=True)
+
+    # Slides extras (carrossel news_photo) — só no feed
+    extras = brief.get("extra_photos") or []
+    for i, photo_url in enumerate(extras, start=2):
+        photo_brief = {
+            "id": f"{brief['id']}__slide{i}",
+            "template": "news_photo",
+            "vars": {"BG_IMAGE": photo_url},
+        }
+        html = build_html(photo_brief, "feed")
+        out = OUT_FEED / f"{brief['id']}.{i}.png"
+        _render_html_to_png(page, html, 1080, 1350, out, photo_brief["id"])
+        written.append(out)
+
     return written
 
 
