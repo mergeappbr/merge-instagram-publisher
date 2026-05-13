@@ -1101,6 +1101,139 @@ quem fechou inscrição? quem vai pra cidade ver?
 
 ---
 
+## forerunner_amoled · CARROSSEL · review garmin forerunner amoled
+**Hook do post:** qual forerunner é o seu?
+
+4 amoled, 4 perfis. De r$ 2.499 a r$ 8.999 — e a diferença não é só preço.
+
+forerunner 165 music · r$ 2.499. entry amoled, gps simples, sem mapas, pulse ox básico. quem começou a correr e quer métrica decente sem virar engenheiro.
+
+forerunner 265 · r$ 3.999. multifrequência l1+l5, gps mais preciso em cidade, training readiness, race predictor que acerta. amador sério que treina por zona de fc.
+
+forerunner 570 · r$ 4.999. multibanda + mapas turn-by-turn, ecg, skin temperature, modo triatlo completo. ponte natural pra quem fez 70.3 e quer fechar um ironman.
+
+forerunner 970 · r$ 8.999. titânio + safira, lanterna led, voice assistant, running tolerance, projected race time. quem treina pra fechar sub-3h ou kona.
+
+—
+
+amoled vale a pena? sim — visibilidade brutal em pleno sol, leitura instantânea no ritmo de prova. always-on consome menos do que parece (12 → 18 dias dependendo do modelo).
+
+multibanda l1+l5 só do 265 pra cima — diferença real em meio urbano denso e mata fechada. abaixo disso, gps single-band serve pra estrada aberta mas falha em rio de janeiro e trilha.
+
+—
+
+quem é você? Z1 amador? Z3 sério? Z5 elite? o forerunner certo é o que combina com a sua próxima prova, não com o teu ego.
+
+salva esse pra escolher na hora certa.
+
+#garmin #forerunner #fr165 #fr265 #fr570 #fr970 #correr #running #triathlon #ironman #wearables #merge
+
+---
+
+## recovery_tipos · CARROSSEL · 4 modalidades de recovery + clínicas BH/SP
+**Hook do post:** recovery — qual modalidade você precisa hoje?
+
+recovery não é luxo, é parte do treino. 4 modalidades, 4 efeitos diferentes — escolhe pela necessidade, não pela hype.
+
+banho de gelo · frio · r$ 60 a 150 / sessão. reduz inflamação aguda, acelera retorno depois de prova ou treino destruidor. nunca usa logo após sessão de força (corta adaptação muscular) — deixa pelo menos 6h.
+
+sauna seca · calor · r$ 60 a 180 / sessão. expansão vascular, aumenta plasma sanguíneo, treina tolerância ao calor pra prova no verão. ritual 2-3× por semana entrega ganho mensurável de vo2.
+
+bota pneumática · drenagem · r$ 60 a 120 / sessão. compressão sequencial que empurra retorno venoso, reduz edema pós-longão. quem corre 60+ km/semana sente diferença real. cuidado se tem histórico de trombose.
+
+pistola de massagem · percussão · r$ 80 a 150 / sessão. liberação miofascial pontual, mobilidade pré-treino, redução de dor tardia. funciona, mas não substitui fisio em lesão aguda.
+
+—
+
+onde testar — 6 indicações merge (preços estimados por sessão, podem variar):
+
+BH. persera wellness — r$ 240 (sauna + crioterapia + liberação). three reabilitação — r$ 180 (mesma stack, melhor custo). recovery space bh — varia por protocolo.
+
+SP. kontrast club — recovery boutique. body recovery — r$ 210 (bota + banheira + liberação). reboost — protocolos modulares.
+
+—
+
+recovery bem feito é o que separa quem volta no dia seguinte de quem volta na semana seguinte. salva esse pra próxima vez que o corpo pedir.
+
+#recovery #banhodegelo #crioterapia #sauna #botapneumatica #pistoladermassagem #correr #running #triathlon #ironman #merge
+
+---
+
+## roka_maverick_ii · CARROSSEL · review wetsuit roka maverick ii
+**Hook do post:** roka maverick ii. acaba de lançar.
+
+5mm no torso — exatamente no limite máximo permitido em prova ironman e 70.3. yamamoto japonês 39 cell, neoprene de mais alto recovery do mercado, manga slim que reduz arrasto sem comprometer mobilidade de ombro.
+
+painel arms-up de 1.5mm na axila e ombro — cadência alta de braçada sem fadiga. core lift no torso eleva quadril e calcanhar à superfície, postura hidrodinâmica natural. zíper inverso com puxador magnético — entrada e saída em segundos na transição.
+
+—
+
+categoria do roka maverick ii: triatlo de alta performance, ironman e 70.3.
+
+faixa de preço internacional: us$ 950 (versão mavx). importação BR com taxas chega em r$ 8.500–9.500. revendedores oficiais ainda não confirmados pro mercado brasileiro.
+
+—
+
+quem ganha com essa peça? quem nada abaixo de 1:25/100m e busca otimização real em prova longa. nadador iniciante não vai sentir os 0,5s ganhos por braçada — peça correta, momento errado.
+
+salva pro próximo upgrade de prova.
+
+#roka #rokamaverick #wetsuit #triathlon #ironman #natacao #aguasabertas #swim #merge
+
+---
+
+## super_shoes_2026 · CARROSSEL · review super shoes 2026
+**Hook do post:** super shoes 2026 — qual carrega seu pr?
+
+5 modelos, 5 propostas. Todas com placa de carbono e foam ultra-leve, mas o resultado na pista é completamente diferente.
+
+nike alphafly 3 · r$ 2.799. zoomx + airpods no antepé, drop 8mm, 220g. máxima propulsão na velocidade de meia + maratona, sensação de "trampolim". instabilidade lateral pra quem tem passada irregular.
+
+adidas adizero adios pro 4 · r$ 2.499. lightstrike pro + 5 energyrods de carbono, drop 6mm, 195g. maratona pura, transição fluida, leveza brutal. atleta sub-3h tira o máximo dela.
+
+asics metaspeed sky paris · r$ 2.599. ff turbo + plate full-length, drop 5mm, 205g. velocidade alta sustentada, ritmo de meia maratona. modelo "sky" é pro stride runner; "edge" pro cadence runner.
+
+saucony endorphin pro 4 · r$ 2.299. pwrrun pb + plate, drop 8mm, 215g. melhor custo-benefício da seleção, atende 10k a maratona, conforto pra atleta amador sério.
+
+mizuno wave rebellion pro 3 · r$ 2.199. enerzy nxt + nylon plate + smoothride, drop 8mm, 210g. tecnologia japonesa, durabilidade acima da média, alternativa subestimada.
+
+—
+
+veredicto merge: alphafly 3 pra explosão · adios pro 4 pra leveza · metaspeed pra cadência consistente · endorphin pro 4 pra primeiro upgrade · rebellion pro 3 pra quem quer fugir do óbvio.
+
+placa de carbono não é mágica. é tecnologia que devolve mais energia por passada — funciona melhor pra quem já tem técnica.
+
+salva esse pra próxima prova.
+
+#supershoes #placadecarbono #nikealphafly #adidasadios #asicsmetaspeed #sauconyendorphin #mizunorebellion #correr #running #marathon #merge
+
+---
+
+## wearables_2026 · CARROSSEL · review wearables 2026
+**Hook do post:** wearables 2026 — qual mede o seu treino direito?
+
+4 marcas dominam o mercado endurance hoje. Cada uma com proposta diferente — e o erro caro é comprar pelo hype.
+
+garmin forerunner 970 · r$ 8.999. titânio + safira, multibanda l1+l5, mapas turn-by-turn, lanterna led, running tolerance, voice assistant. ecossistema mais completo, training readiness mais maduro do mercado.
+
+coros pace 3 · r$ 1.799. multibanda, 24 dias bateria, peso 39g (mais leve da seleção). melhor custo-benefício do mercado, app simples, foco em métrica que importa. zero penduricalho.
+
+polar vantage v3 · r$ 5.499. amoled, ecg, biosensor 4.0, vo2max teste sem prova. coletor de fisiologia mais avançado, fc no pulso mais precisa, hrv overnight referência da indústria.
+
+apple watch ultra 2 · r$ 8.499. amoled brilhante, gps dupla freq, ecosistema apple, action button, suunto-ready, mergulho até 40m. melhor wearable pra quem vive no iphone — workouts apple bons mas não substituem garmin/coros pra atleta sério.
+
+—
+
+veredicto merge: garmin 970 pra triatleta full-stack · coros pace 3 pra corredor focado · polar vantage v3 pra quem prioriza fisiologia · apple watch ultra 2 pra híbrido lifestyle + esporte casual.
+
+bateria importa: coros 24 dias > polar 8 dias > garmin 6 dias (always-on) > apple 36h. métrica de fc no pulso varia até 8 bpm entre marcas — peito ainda é referência.
+
+salva pra escolher pela tua necessidade, não pelo instagram.
+
+#wearables #garmin #coros #polar #applewatch #fr970 #pace3 #vantagev3 #applewatchultra #correr #running #triathlon #merge
+
+---
+
 ## geis_br · CARROSSEL · review géis energéticos brasileiros
 **Hook do post:** qual gel acelera sua corrida?
 
