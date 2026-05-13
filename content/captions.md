@@ -1101,6 +1101,43 @@ quem fechou inscrição? quem vai pra cidade ver?
 
 ---
 
+## geis_br · CARROSSEL · review géis energéticos brasileiros
+**Hook do post:** qual gel acelera sua corrida?
+
+Carboidrato não é carboidrato. Razão de açúcares, sódio, cafeína e tecnologia de absorção mudam tudo na sua corrida. Por r$ 11 a 16 você escolhe o motor da sua próxima prova.
+
+4 marcas brasileiras. Zero argumento de "fica com importado".
+
+z2 loadup — br endurance · r$ 15. 25 g de carbo a 2:1:1 malto/fru/palatinose, 9 sabores, 2 fórmulas (com e sem cafeína), loadup 40 g pra carga pré-largada. Ecossistema mais completo do mercado nacional. Z2+ Double Expresso vai a 200 mg de cafeína — fim de corrida em outro patamar.
+
+true source go energy gel — br premium · r$ 14. 25 g de carbo a 1:0.8 malto/fru, 110 mg de sódio, clean label com sabores limão, kiwi mentol e morango/kiwi. Versão com 75 mg de cafeína pra dias de quality. Fórmula nacional que não enjoa.
+
+dux energy gel — br enzimático · r$ 15. 22 g de carbo + 250 mg de taurina + 153 mg de sódio (mais alto da seleção). Tecnologia enzimática Zyma melhora a absorção. 4 sabores naturais. Diferencial pra quem sua muito — ciclismo, calor, sessões longas.
+
+dobro carbs gel — br plant based · r$ 11. 21 g de maltodextrina, 100–200 mg de sódio, vegano e sem corante. Sabor neutro fresh é o ponto de entrada perfeito pra quem nunca usou gel. Custo-benefício imbatível.
+
+—
+
+cafeína sim ou não? slide 04 explica. Em curto: sem cafeína pra base aeróbica e manhã cedo · com cafeína no terço final da corrida, em timing programado de 40 min · nunca primeiro gel.
+
+—
+
+faixa de preço: r$ 11 → 16
+mais carbo: z2 · ts (25 g)
+mais cafeína: z2+ · 200 mg
+mais sódio: dux · 153 mg
+mais sabores: z2 · 9 opções
+plant based: dobro · r$ 11
+veredicto merge: z2 endurance — único ecossistema completo BR
+
+Teste no treino. Nunca na corrida.
+
+salva esse pra próxima ida na nutri esportiva.
+
+#geisenergeticos #z2 #z2performance #truesource #dux #duxnutrition #dobro #correr #running #endurance #nutricaoesportiva #ultramaratona #triathlon #ciclismo #merge
+
+---
+
 ## oura_ring_gen4 · CARROSSEL · review oura ring 4
 **Hook do post:** oura ring gen 4 — o anel que sente antes de você.
 
