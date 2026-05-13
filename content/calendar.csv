@@ -28,7 +28,7 @@ slot,scheduled_at,format,post_id,theme,note
 27,2026-05-19 09:00,static,50,natacao,respiração bilateral
 28,2026-05-19 19:00,static,64,forca,quiz exercício corredor
 29,2026-05-20 09:00,static,55,prevencao,periodização
-30,2026-05-20 19:00,static,69,nutricao,quanto carbo por hora
+30,2026-05-20 19:00,carousel,recovery_tipos,prevencao,recovery 4 modalidades + clínicas BH/SP
 31,2026-05-21 09:00,carousel,57,equipamento,wearables Garmin × Coros × Polar
 32,2026-05-21 19:00,static,34,atletas,em dupla
 33,2026-05-22 09:00,static,08,launch,wearables o relógio mede
@@ -60,3 +60,5 @@ slot,scheduled_at,format,post_id,theme,note
 59,2026-06-04 09:00,static,22,launch,longão
 60,2026-06-04 19:00,static,23,launch,técnica antes de volume
 61,2026-06-05 09:00,static,24,launch,ninguém treina por métrica
+62,2026-06-05 19:00,static,69,nutricao,quanto carbo por hora
+63,2026-05-13 14:25,carousel,oura_ring_gen4,review,Oura Ring 4 — review (publish manual fora cadência)
