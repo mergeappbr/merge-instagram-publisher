@@ -2,9 +2,30 @@
 __pycache__/
 *.pyc
 .tmp_posts/
-output/
+# Ignora tudo em output/ por padrão, depois whitelist seletivo.
+output/*
 !output/reels/
 !output/published.csv
+# Assets de reviews (necessários no CI pra publicar via GitHub Actions)
+!output/feed/
+output/feed/*
+!output/feed/_captions/
+!output/feed/forerunner_amoled*.png
+!output/feed/oura_ring_gen4*.png
+!output/feed/roka_maverick_ii*.png
+!output/feed/geis_br*.png
+!output/feed/recovery_tipos*.png
+!output/feed/super_shoes_2026*.png
+!output/feed/wearables_2026*.png
+!output/posts/
+output/posts/*
+!output/posts/forerunner_amoled/
+!output/posts/oura_ring_gen4/
+!output/posts/roka_maverick_ii/
+!output/posts/geis_br/
+!output/posts/recovery_tipos/
+!output/posts/super_shoes_2026/
+!output/posts/wearables_2026/
 .DS_Store
 
 # Imagens geradas por IA (imgen.py) — sobem pro R2/storage, não pro git

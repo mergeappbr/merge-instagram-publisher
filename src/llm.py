@@ -70,7 +70,7 @@ def complete_json(
     system: str,
     user: str,
     fast: bool = False,
-    max_tokens: int = 4000,
+    max_tokens: int = 8000,
     temperature: float = 0.4,
 ) -> Any:
     """Completion que devolve JSON. Extrai bloco ```json``` se vier cercado."""
@@ -86,20 +86,65 @@ def complete_json(
         return json.loads(raw)
     except json.JSONDecodeError:
         pass
-    # Tenta extrair bloco ```json```
+    # Tenta extrair bloco ```json``` (com fechamento)
     match = re.search(r"```(?:json)?\s*(.+?)\s*```", raw, re.DOTALL)
     if match:
         try:
             return json.loads(match.group(1))
         except json.JSONDecodeError:
             pass
-    # Tenta achar primeiro { ou [
-    for opener, closer in (("{", "}"), ("[", "]")):
-        start = raw.find(opener)
-        end = raw.rfind(closer)
-        if start != -1 and end > start:
-            try:
-                return json.loads(raw[start : end + 1])
-            except json.JSONDecodeError:
-                continue
+    # Strip fence só de abertura (resposta truncada antes do ``` final)
+    stripped = re.sub(r"^```(?:json)?\s*", "", raw.strip()).strip()
+    if stripped.endswith("```"):
+        stripped = stripped[:-3].strip()
+    # Tenta achar primeiro { ou [ na resposta crua
+    for source in (stripped, raw):
+        for opener, closer in (("{", "}"), ("[", "]")):
+            start = source.find(opener)
+            end = source.rfind(closer)
+            if start != -1 and end > start:
+                try:
+                    return json.loads(source[start : end + 1])
+                except json.JSONDecodeError:
+                    pass
+            # Fallback: JSON truncado — escaneia char-por-char fechando braces
+            # balanceados até achar um sub-objeto válido.
+            if start != -1:
+                depth = 0
+                in_str = False
+                esc = False
+                last_valid = -1
+                for i, ch in enumerate(source[start:], start=start):
+                    if esc:
+                        esc = False
+                        continue
+                    if ch == "\\" and in_str:
+                        esc = True
+                        continue
+                    if ch == '"':
+                        in_str = not in_str
+                        continue
+                    if in_str:
+                        continue
+                    if ch == opener:
+                        depth += 1
+                    elif ch == closer:
+                        depth -= 1
+                        if depth == 0:
+                            last_valid = i
+                            break
+                if last_valid != -1:
+                    try:
+                        return json.loads(source[start : last_valid + 1])
+                    except json.JSONDecodeError:
+                        pass
+    # Falhou tudo — salva raw num log pra debug
+    try:
+        import pathlib, datetime
+        debug_dir = pathlib.Path("output/llm_debug")
+        debug_dir.mkdir(parents=True, exist_ok=True)
+        ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        (debug_dir / f"{ts}_raw.txt").write_text(raw, encoding="utf-8")
+    except Exception:
+        pass
     raise ValueError(f"resposta não é JSON parseável: {raw[:300]}")

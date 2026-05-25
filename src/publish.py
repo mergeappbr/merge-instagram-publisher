@@ -242,9 +242,26 @@ def create_story_container(
 
 
 def wait_until_finished(client: httpx.Client, container_id: str, timeout_s: int = 180) -> None:
+    """Aguarda container ficar FINISHED. Resiliente a Graph 100/33 (mai/2026):
+    Meta passou a bloquear GET em containers com Page Token (erro
+    GraphMethodException 100/33). Quando isso ocorre, fazemos *blind wait*:
+    25s pra IMAGE (slide / static), 60s pra REEL. Continua erro real (ERROR /
+    EXPIRED) abortando como antes."""
     deadline = time.time() + timeout_s
     while time.time() < deadline:
-        info = _get(client, container_id, {"fields": "status_code,status"})
+        params = {"fields": "status_code,status", "access_token": ACCESS_TOKEN}
+        resp = client.get(f"{GRAPH_BASE}/{container_id}", params=params, timeout=30)
+        if resp.status_code >= 400:
+            body = resp.text
+            # Meta passou a bloquear GET em containers com Page Token
+            # (100/33). Cai pra blind wait.
+            if '"code":100' in body and ('"error_subcode":33' in body or 'GraphMethodException' in body):
+                blind_wait_s = 60 if timeout_s >= REEL_WAIT_TIMEOUT else 25
+                print(f"  ⚠ GET status bloqueado (Meta 100/33) — blind wait {blind_wait_s}s")
+                time.sleep(blind_wait_s)
+                return
+            sys.exit(f"Graph API {resp.status_code}: {body}")
+        info = resp.json()
         status = info.get("status_code")
         if status == "FINISHED":
             return

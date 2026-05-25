@@ -1,0 +1,67 @@
+name: publish-review
+
+# Cadência fixa: dom / ter / qui às 11:45 BRT (= 14:45 UTC).
+# Dispara o próximo review pendente da QUEUE em scripts/publish_next_review.sh.
+# Workflow_dispatch permite trigger manual pela UI do GitHub.
+on:
+  schedule:
+    - cron: '45 14 * * 0,2,4'
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Slug específico (deixe vazio para próximo da fila)'
+        required: false
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install deps (sem playwright)
+        run: |
+          # Em CI só precisamos publicar (não renderizar). Pulamos playwright
+          # pra evitar download do Chromium (~150MB) que não é usado.
+          grep -v '^playwright' requirements.txt > /tmp/requirements-ci.txt
+          pip install -r /tmp/requirements-ci.txt
+
+      - name: Publicar próximo review
+        env:
+          MERGE_ROOT: ${{ github.workspace }}
+          META_GRAPH_ACCESS_TOKEN: ${{ secrets.META_GRAPH_ACCESS_TOKEN }}
+          IG_BUSINESS_ACCOUNT_ID: ${{ secrets.IG_BUSINESS_ACCOUNT_ID }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+        run: |
+          chmod +x scripts/publish_next_review.sh
+          bash scripts/publish_next_review.sh "${{ inputs.slug }}"
+
+      - name: Commit published.csv atualizado
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git diff --quiet output/published.csv; then
+            echo "Nenhuma mudança em published.csv"
+          else
+            git add output/published.csv output/cron_publish.log 2>/dev/null || true
+            git commit -m "chore: log publicação automática $(date -u +%Y-%m-%d)"
+            git push
+          fi
