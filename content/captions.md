@@ -1293,3 +1293,59 @@ rose gold — us$ 499. patina viva — escurece com o tempo, cada anel vira úni
 smart sensing™ com 8 caminhos ppg. ecg, hrv, spo2, temperatura, sono, readiness, ciclo. à prova d'água até 100m. usb-c. subscription oura us$ 5,99/mês.
 
 #oura #ouraring #smartring #recovery #sleep #hrv #merge
+
+## fitbit_vs_whoop · CARROSSEL · google entrou no jogo do whoop (charge 6 vs whoop mg)
+
+**Hook do post:** fitbit charge 6 × whoop mg — us$ 159 uma vez ou us$ 359 todo ano.
+
+fitbit charge 6 × whoop mg — google entrou no jogo do whoop.
+
+us$ 159 uma vez ou us$ 359 todo ano. dois caminhos opostos pra mesma promessa: ecg, fc 24/7, recuperação, sono — só que um te dá tela e o outro te dá silêncio.
+
+fitbit charge 6 — r$ 1.499 (importação google store us) · amoled touchscreen 1,04" · gps built-in · ecg + eda + spo2 + temperatura · google maps, wallet e yt music no pulso. fitbit premium r$ 19,90/mês é opcional — sem ele, você tem tracker premium sem pagar mensalidade.
+
+whoop mg — ≈ r$ 1.800–2.500/ano (whoop life subscription) · strap sem tela, 14 dias bateria · 26 amostras de fc por segundo · ecg medical grade (heart screener) · blood pressure insights · whoop age + healthspan score. assinatura é o pacto: device incluso, mas só funciona enquanto você paga.
+
+—
+
+ecg em ambos. whoop é medical grade (clínica), fitbit é wellness check.
+
+bateria: charge 6 dura 7 dias. whoop mg dura 14. zero recarga durante semana de treino forte.
+
+gps: charge 6 tem built-in. whoop mg usa o do iphone — sem celular, sem trace.
+
+5 anos de custo total: charge 6 r$ 1.499 (single payment) vs whoop mg ≈ r$ 12.500 (5 anos de subscription).
+
+veredicto: charge 6 pra quem quer tracker premium sem mensalidade. whoop mg pra quem encara wearable como serviço médico contínuo e vai usar ecg + bp + heart screener pra valer.
+
+charge 6: importação direta google store us (us$ 159) ou revendas mercado livre br. whoop mg: whoop.com plano anual, cartão internacional, ativação 7-14 dias.
+
+#wearables #fitbit #charge6 #whoop #whoopmg #ecg #recovery #merge
+
+
+---
+
+## canyon_aeroad_cfr · CARROSSEL · canyon aeroad cf sl / cf slx / cfr (3 degraus)
+
+**Hook do post:** a aero do van der poel em 3 degraus de carbono — r$ 42k → 88k.
+
+canyon aeroad — a aero da semana clássica em 3 degraus de carbono.
+
+mesma silhueta que mathieu van der poel usa pra ganhar a roubaix. o que muda entre cf sl, cf slx e cfr é carbono, groupset e wheels — não a aero. importação direta canyon.com europa/eua, sem revendedor oficial no brasil.
+
+aeroad cf sl 8 — ≈ r$ 42.000. cf sl carbon 1.150 g · shimano 105 di2 12s · dt swiss arc 1600 disc · 7,9 kg. entry race, primeira aero de carbono real.
+
+aeroad cf slx 8 di2 — ≈ r$ 62.000. cf slx carbon 1.050 g · shimano ultegra di2 12s · dt swiss arc 1400 disc 50 mm · 7,5 kg. 90% da cfr a 70% do preço — sweet spot pra masters, granfondos, ironman 70.3.
+
+aeroad cfr di2 — ≈ r$ 88.000. cfr carbon 960 g (mistura toray t1100 + t800 + m40x) · shimano dura-ace di2 12s + power meter · dt swiss arc 1100 disc 62 mm · cockpit cp0040 cfr · 7,0 kg. mesma layup do van der poel.
+
+—
+
+aero idêntico nos 3: o ganho real entre slx e cfr é peso (90 g no frame) + componentes premium. cfr é seu se você quer topo absoluto. cf slx é seu se você quer 90% disso pagando 70%.
+
+canyon brasil: importação direta canyon.com (eu ou us), pagamento internacional, frete via courier ~us$ 700, impostos ~80% sobre fob+frete. compra usada de quem importou também é caminho. atletas br como vinícius rangel e wagner iglecio rodam aeroad.
+
+#ciclismo #road #canyon #aeroad #cfr #aerobike #grupodavip #merge
+
+
+---

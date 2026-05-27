@@ -17,6 +17,8 @@ output/feed/*
 !output/feed/recovery_tipos*.png
 !output/feed/super_shoes_2026*.png
 !output/feed/wearables_2026*.png
+!output/feed/fitbit_vs_whoop*.png
+!output/feed/canyon_aeroad_cfr*.png
 !output/posts/
 output/posts/*
 !output/posts/forerunner_amoled/
@@ -26,6 +28,8 @@ output/posts/*
 !output/posts/recovery_tipos/
 !output/posts/super_shoes_2026/
 !output/posts/wearables_2026/
+!output/posts/fitbit_vs_whoop/
+!output/posts/canyon_aeroad_cfr/
 .DS_Store
 
 # Imagens geradas por IA (imgen.py) — sobem pro R2/storage, não pro git
