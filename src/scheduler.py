@@ -312,6 +312,11 @@ def _maybe_collect_insights(now: datetime) -> None:
 
 
 def _maybe_news_watch(now: datetime) -> None:
+    # Watcher continua rodando mesmo em MERGE_QUIET=1 — ele só popula o pool
+    # de notícias que alimenta o hourly_news_report (lista pro Pedro aprovar).
+    # Sem watcher, Pedro não tem assuntos pra escolher.
+    if os.environ.get("NEWS_WATCHER_DISABLED") == "1":
+        return
     try:
         from news.watcher import maybe_run as news_maybe_run
         news_maybe_run(now)
@@ -320,6 +325,8 @@ def _maybe_news_watch(now: datetime) -> None:
 
 
 def _maybe_stories(now: datetime) -> None:
+    if os.environ.get("MERGE_QUIET") == "1" or os.environ.get("STORIES_DISABLED") == "1":
+        return
     try:
         from news.stories import maybe_dispatch
         maybe_dispatch(now)
@@ -330,6 +337,8 @@ def _maybe_stories(now: datetime) -> None:
 def _maybe_news_feed(now: datetime) -> None:
     """Feed news 2x/dia (08h/14h BRT) — pega top item do pool e gera feed
     post via writer+reviewer. Roda ANTES de stories pra reservar o item top."""
+    if os.environ.get("MERGE_QUIET") == "1" or os.environ.get("NEWS_FEED_DISABLED") == "1":
+        return
     try:
         from news.feed_post import maybe_dispatch as feed_news_dispatch
         feed_news_dispatch(now)
@@ -448,6 +457,8 @@ def _maybe_visual_weekly_report(now: datetime) -> None:
 
 def _maybe_autogen(now: datetime) -> None:
     """Gatilha geração de briefs quando runway < threshold."""
+    if os.environ.get("MERGE_QUIET") == "1" or os.environ.get("AUTOGEN_DISABLED") == "1":
+        return
     info = runway_info(now)
     if info["days_remaining"] >= RUNWAY_AUTOGEN_THRESHOLD_DAYS:
         return
