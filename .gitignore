@@ -10,6 +10,11 @@ output/*
 !output/feed/
 output/feed/*
 !output/feed/_captions/
+# Posts numerados de lançamento (NN.png + NN.N.png) — Railway precisa pra publicar
+!output/feed/[0-9].png
+!output/feed/[0-9][0-9].png
+!output/feed/[0-9].[0-9].png
+!output/feed/[0-9][0-9].[0-9].png
 !output/feed/forerunner_amoled*.png
 !output/feed/oura_ring_gen4*.png
 !output/feed/roka_maverick_ii*.png
