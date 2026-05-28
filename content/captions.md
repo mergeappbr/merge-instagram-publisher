@@ -1349,3 +1349,63 @@ canyon brasil: importação direta canyon.com (eu ou us), pagamento internaciona
 
 
 ---
+
+## edge_1050_vs_coros_dura · CARROSSEL · garmin edge 1050 vs coros dura (tela vs bateria)
+
+**Hook do post:** garmin edge 1050 × coros dura — tela vívida ou bateria infinita?
+
+garmin edge 1050 × coros dura — tela vívida ou bateria infinita?
+
+dois caminhos opostos pro mesmo guidão. a edge 1050 aposta tudo em tela touch premium, speaker e ecossistema garmin. a coros dura aposta em autonomia solar e preço — pela metade do valor.
+
+garmin edge 1050 — r$ 5.999 (garmin br oficial). tela 3,5" touchscreen color vívida (a mais brilhante da linha edge) · speaker embutido (alertas sonoros, bell virtual) · garmin pay · group ride messaging e tracking · mapas full + climbpro · 20 h de bateria (60 h em battery saver). gps multi-band. ecossistema garmin connect completo.
+
+coros dura — ≈ r$ 2.799 (importação direta). tela 2,7" memory-in-pixel transflective + painel solar integrado · 120 h de gps no modo padrão (e mais com sol direto — semanas de pedal sem cabo) · gps dual-frequency · mapas offline grátis · navegação por dial + botão (sem touch). custo-benefício absurdo.
+
+—
+
+tela: edge ganha disparado (touch color vívida vs mip refletiva). bateria: coros atropela (120 h + solar vs 20 h). preço: coros custa menos da metade.
+
+a edge é pra quem vive no ecossistema garmin — structured workouts, garmin pay, group ride, speaker pra alertas. a dura é pra quem encara ultra, bikepacking e provas longas e prioriza autonomia acima de tudo.
+
+onde comprar: edge 1050 na garmin.com.br, centauro, decathlon. coros dura por importação direta coros.com (us$ 289) ou revenda nacional. ambos têm mapas offline grátis.
+
+#ciclismo #bike #garmin #edge1050 #coros #corosdura #gps #ciclocomputador #merge
+
+
+---
+
+## theragun_pro_plus · CARROSSEL · theragun pro plus — 6 terapias num aparelho
+
+**Hook do post:** theragun pro plus — 6 terapias de recovery num corpo só. vale os r$ 4.500?
+
+theragun pro plus — recovery virou multi-terapia num aparelho só.
+
+a therabody empilhou 6 ciências de recuperação no gen 6: percussão profunda, calor, frio, vibração, led vermelho e breathwork. um corpo substitui pistola de massagem + bolsa térmica + máscara de led. importação br ~r$ 4.500.
+
+as 6 terapias:
+
+percussão — até 2.400 ppm, amplitude 16 mm, motor brushless quietforce. deep tissue de verdade.
+
+calor — 3 níveis (45 / 50 / 55 °C). aquece tecido antes do trabalho profundo.
+
+frio — 3 níveis (5 / 10 / 15 °C). attachment vendido à parte (+us$ 99).
+
+vibração — 3 frequências (47 / 50 / 53 hz). terapia de baixa intensidade.
+
+led vermelho — near-infrared no attachment. circulação e recovery localizado.
+
+breathwork — guia de respiração no app therabody. baixa o sistema nervoso pós-treino.
+
+—
+
+ficha: 2.400 ppm, amplitude 16 mm, ~150 min de bateria com troca rápida, sensor de fc biométrico embutido, 5 attachments + calor + vibração.
+
+pra quem vale: maratonista/triatleta (calor pré + percussão pós + frio nos picos), força/crossfit (percussão profunda + led em tendão), e quem trata recovery a sério (fc + breathwork no app). se você usaria só percussão, o theragun prime resolve por menos.
+
+onde comprar: importação direta therabody.com (us$ 599) ou revenda nacional / mercado livre. o attachment de frio é à parte.
+
+#recovery #theragun #therabody #percussao #massagem #recuperacao #merge
+
+
+---
